@@ -1,0 +1,530 @@
+body {
+  font-family: 'Fredoka One', cursive;
+}
+
+#app_wrap {
+  background: #dddddd;
+  height: 480px;
+  width: 640px;  
+  display: flex;
+  overflow: hidden;
+}
+
+.play_area {
+  background: #ddaaaa;
+  position: absolute;
+  opacity: 0.5;
+  height: 480px;
+  width: 640px;
+}
+
+.app {
+  position: relative;
+  width: 100%;
+}
+
+.stroked {
+  -webkit-text-stroke-width: 1px;
+  -webkit-text-stroke-color: black;
+}
+
+.card {
+  border-radius: 1em;
+  box-shadow: 0 1px 3px 0 #a2a2d3,
+              0 0 0 1px #a4a4d5;
+}
+
+.roll_overlay {
+  position: absolute;
+  width: 100%;
+  height: 100%;
+  background: black;
+  z-index: 1;
+  opacity: 0.4;
+}
+
+.roll_wrap {
+  position: absolute;
+  top: calc(50% - 50px);
+  left: calc(50% - 50px);
+  width: 100px;
+  height: 100px;
+  background: white;
+  border-radius: 50px;
+  box-shadow: 0 0px 10px 4px  #000000;
+  display: flex;
+  justify-content: center;
+  z-index: 2;
+  overflow: hidden;
+  animation: fade-in .2s;
+}
+
+.roll {
+  cursor: pointer;
+  border-radius: 50px;
+  background: #c4a400;
+  border: 1px solid black;
+  width: 92%;
+  height: 92%;
+  text-align: center;
+  align-self: center;
+  display: flex;
+  justify-content: center;
+}
+
+.roll > span {
+  align-self: center;
+  color: white;
+  font-size: 1.6em;
+  -webkit-text-stroke-width: 2px;
+  -webkit-text-stroke-color: black;
+}
+
+.dice_wrap {
+  position: absolute;
+  top: calc(50% - 50px);
+  left: calc(50% - 50px);
+  width: 100px;
+  height: 100px;
+  background: white;
+  border: solid 1px black;
+  border-radius: 50px;
+  display: flex;
+  justify-content: center;
+  z-index: 2;
+  overflow: hidden;
+  animation: fade-in .2s;
+}
+
+.dice {
+  border-radius: 50px;
+  background: #white;
+  box-shadow: 0 0px 4px 1px  #000000 inset;
+  width: 92%;
+  height: 92%;
+  text-align: center;
+  align-self: center;
+  display: flex;
+  justify-content: center;
+}
+
+.dice > span {
+  align-self: center;
+  color: #c4a400;
+  font-size: 4em;
+  -webkit-text-stroke-width: 2px;
+  -webkit-text-stroke-color: black;
+}
+
+.turn {
+  position: absolute;
+  top: 150px;
+  color: white;
+  font-size: 1em;
+  margin: 0px 8px;
+}
+
+.turn > span:nth-child(2) {
+  color: #c4a300;
+  margin: 0px 8px;
+  font-size: 1.2em;
+}
+
+.paytoll {
+  position: absolute;
+  top: calc(50% - 12px);
+  left: calc(50% - 80px);
+  color: white;
+  -webkit-text-stroke-width: 1px;
+  -webkit-text-stroke-color: black;
+  animation: popup .5s;
+}
+
+.paytoll > .city_name {
+  padding: 2px 40px;
+  border-radius: 10px 10px 0 0;
+  border: 4px solid #0000ff;
+  background: #1f1f4c;
+}
+
+.paytoll > .details {
+  padding: 2px 8px;
+  border-radius: 0 0 10px 10px;
+  border: 4px solid white;
+  background: black;
+}
+
+.paytoll > .details > span:nth-child(2) {
+  color: #c4a000;
+  margin-left: 60px;
+}
+
+.buycity {
+  position: absolute;
+  bottom: 0;
+  width: 90%;
+  left: 32px;
+  background: #f0f0f0;
+  border-radius: 1em 1em 0em 0;
+  display: flex;
+  flex-direction: column;
+  justify-content: flex-end;
+  z-index: 2;
+  animation: swipe_up .4s;
+}
+
+.buycity > .close_button {
+  cursor: pointer;
+  position: absolute;
+  top: -4px;
+  right: 16px;
+  background: red;
+  border-radius: 0 0 2em 2em;
+  padding: 8px;
+  color: white;
+}
+
+.buycity > .title {
+  display: flex;
+  justify-content: space-between;
+  background: #3f3f3f;
+  border-radius: 10px;
+  margin: 10px;
+  padding: 4px;
+  color: white;
+  -webkit-text-stroke-width: 1px;
+  -webkit-text-stroke-color: black;  
+}
+
+.buycity > .title > .toll {
+  height: 100%;
+  background: black;
+  border-radius: 10px;
+  padding: 0 16px;
+  margin: 4px 8px;
+  display: flex;
+  align-content: flex-start;
+  align-self: center;
+}
+
+.buycity > .title > .toll > span {
+  margin: 0 16px;
+  align-self: center;
+}
+
+.buycity > .title > .toll > .current {
+  display: flex;
+  flex-direction: column;
+}
+
+.toll > .current > span:nth-child(1) {
+  font-size: 0.6em;
+}
+
+.toll > .current > span:nth-child(2) {
+  font-size: 1em;
+  color: #c4a000;
+}
+
+.buycity > .title > .city {
+  height: 100%;
+  background: black;
+  border-radius: 10px;
+  padding: 0 32px;
+  margin: 4px 8px;
+  align-self: center;
+}
+
+.buycity > .title > .cash {
+  height: 100%;
+  background: black;
+  border-radius: 10px;
+  padding: 0 32px;
+  margin: 4px 8px;
+  align-self: center;
+}
+
+.buycity > .title > .cash > span:nth-child(2) {
+  margin: 0 8px;
+  font-size: 1em;
+  color: #a0c400;  
+}
+
+.buycity > .lands {
+  display: flex;
+  justify-content: space-around;
+  padding: 2px 4px;
+}
+
+.buycity > .lands > .land {
+  cursor: pointer;
+  display: flex;
+  flex-direction: column;
+  border: 4px solid black;
+  border-radius: 10px;
+  width: 120px;
+  overflow: hidden;
+}
+
+.land > span,
+.land > .land_name {
+  text-align: center;
+  color: white;
+  font-size: .8em;
+  -webkit-text-stroke-width: 1px;
+  -webkit-text-stroke-color: black;
+}
+
+.land > .land_name {
+  color: #8c8cc4;
+}
+
+.land > .land_info {
+  height: 100%;
+  display: flex;
+  flex-direction: column;
+  align-content: flex-end;
+}
+
+.land > .land_info > .nomoney {
+  height: 100%;
+  align-self: center;
+  display: flex;
+  flex-direction: column;
+}
+
+.land > .land_info > img {
+  align-self: center;
+  height: 80px;
+  width: 80px;
+  margin: 1em 0 1em 0;
+}
+
+.land_info > .nomoney > span {
+  margin: 2em 0 2em 0;
+  padding: 4px;
+  background: #3f3f3f;
+  border-radius: 10px;
+  color: white;
+}
+
+.land_info > .toll,
+.land_info > .cost {
+  color: white;
+}
+
+.land_info > .cost {
+  background: brown;
+}
+
+.land_info.inactive > .cost {
+  background: #3f3f3f;
+}
+
+.land_info > .toll > span,
+.land_info > .cost > span  {
+  -webkit-text-stroke-width: 1px;
+  -webkit-text-stroke-color: black;  
+}
+
+.land_info > .toll > span:nth-child(1),
+.land_info > .cost > span:nth-child(1) {
+  margin: 0 8px;
+}
+
+.land_info > .toll > span:nth-child(2) {
+  margin: 0 20px;
+  color: #c4a300;
+}
+
+.land_info > .cost > span:nth-child(2) {
+  margin: 0 20px;
+  color: #44a300;
+}
+
+.land_info.inactive > .toll > span:nth-child(2),
+.land_info.inactive > .cost > span:nth-child(2) {
+  color: #afafaf;
+}
+
+.player_wrap {
+  position: absolute;
+  width: 200px;
+}
+
+.player_wrap > .cash_diff {
+  position: absolute;
+  background: black;
+  color: white;
+  width: 100%;
+  height: 68px;
+  display: flex;
+  font-size: 1.8em;
+}
+
+.cash_diff.diff_down {
+  color: #c40000;
+}
+
+.cash_diff.diff_up {
+  color: #00c400;
+}
+
+.cash_diff.diff_up > .diff_image > i {
+  animation: diff_up 200ms infinite;
+}
+.cash_diff.diff_down > .diff_image > i {
+  animation: diff_down 200ms infinite;
+}
+
+
+.cash_diff > .diff_image {
+  display: flex;
+  flex-direction: column;
+  text-align: center;
+  font-size: 0.6em;
+  margin: 1em;
+  color: white;
+}
+
+.cash_diff > span {
+  align-self: center;
+  margin: 0 0.4em;
+}
+
+.player {
+  background: #bababa;
+  margin: 0px 2px;
+  display: flex;
+  flex-direction: column;
+  overflow: hidden;
+}
+
+.player > .username {
+  padding: 2px 16px;
+}
+
+.player > .score {
+  display: flex;
+  flex-direction: column;
+}
+
+.player > .score {
+  margin: 4px 16px;
+}
+
+.player > .score span {
+  margin-left: 4px;
+}
+
+.player > .score > .assets {
+  font-size: 0.8em;
+}
+
+.player.glow {
+  animation: glowing 2000ms infinite;
+}
+
+.score > .assets > span:nth-child(1),
+.score > .cash > span:nth-child(1) {
+  color: white;
+}
+
+.score > .assets > span:nth-child(2) {
+  color: #d5d500;
+}
+
+.score > .cash > span:nth-child(2) {
+  color: #00d500;
+  -webkit-text-stroke-width: 1px;
+  -webkit-text-stroke-color: black;
+}
+
+.player_wrap.player1 {
+  top: 0px;
+  left: 0px;
+}
+
+.player_wrap.player2 {
+  bottom: 0px;
+  right: 0px;
+}
+
+.player_wrap > .rank {
+  margin: 0px 8px;
+  font-size: 2em;
+  color: white;
+}
+
+.player1 > .cash_diff {
+  border-radius: 0em 1em 1em 0em;
+  justify-content: flex-end;
+}
+
+.player2 > .cash_diff {
+  border-radius: 1em 0em 0em 1em;
+}
+
+.player1 > .rank {
+  color: #c4a300;
+}
+
+.player2 > .rank {
+  color: #c40000;
+  text-align: right;
+}
+
+.rank > span:nth-child(2) {
+  font-size: 0.8em;
+  color: white;
+  margin: 0px 2px;
+}
+
+.player1 > .player > .username {
+  background: #c4a300;
+}
+
+.player2 > .player > .username {
+  background: #c40000;
+}
+
+
+@keyframes glowing {
+  0% { box-shadow: 0 0 0px #c4a300; }
+  40% { box-shadow: 0 0 10px #c4a300; }
+  60% { box-shadow: 0 0 10px #c4a300; }
+  100% { box-shadow: 0 0 0px #c4a300; }
+}
+
+@keyframes diff_up {
+  0% {
+    -webkit-transform: translateY(0px);
+  }
+  100% {
+    -webkit-transform: translateY(10px);
+  }
+}
+
+@keyframes diff_down {
+  0% {
+    -webkit-transform: translateY(0px);
+  }
+  100% {
+    -webkit-transform: translateY(-10px);
+  }
+}
+
+@keyframes fade-in {
+  from { transform: scale(0, 0) }
+  to { transform: scale(1, 1) }
+}
+
+@keyframes swipe_up {
+  from { transform: translateY(300px); }
+  to { transform: translateY(0px); }
+}
+
+@keyframes pop_up {
+  from { transform: scale(0, 0) }
+  to { transform: scale(1, 1) }  
+}

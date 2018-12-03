@@ -1,0 +1,77 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>webpack-minimal</title>
+    <link href="https://fonts.googleapis.com/css?family=Fredoka+One" rel="stylesheet">
+    <link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.5.0/css/all.css" integrity="sha384-B4dIYHKNBt8Bc12p+WXckhzcICo0wtJAoU8YZTY5qE0Id1GSseTk6S+L3BlXeVIU" crossorigin="anonymous">
+    <style>
+     .canvas {
+         cursor: none;
+     }
+    </style>
+</head>
+<body>
+<section>
+  <div id="app"></div>
+
+  <div id="controls">
+    <button id="pay_toll">Pay Toll</button>
+    <button id="prompt_roll">Prompt Roll</button>
+    <button id="prompt_buycity">Prompt Buy City</button>
+    <button id="dice_roll">Dice Roll</button>
+  </div>
+</section>
+
+<script>
+ var config = {
+   events: {
+     noBuyland: () => {
+       api.clearBuyCity();
+     },
+     roll: () => {
+       api.clearRoll();
+       diceRoll();
+     }
+   }
+ };
+
+ const api = City(document.getElementById('app'), config);
+
+ const elPayToll = document.getElementById('pay_toll');
+ const elPromptRoll = document.getElementById('prompt_roll');
+ const elPromptBuyCity = document.getElementById('prompt_buycity');
+ const elDiceRoll = document.getElementById('dice_roll');
+
+
+ onClick(elPayToll, function() {
+   api.payToll('player1', 'player2', 'seoul');
+ });
+
+ onClick(elPromptRoll, function() {
+   api.promptRoll();
+ });
+
+ onClick(elPromptBuyCity, function() {
+   api.promptBuyCity();
+ });
+
+ onClick(elDiceRoll, function() {
+   diceRoll();
+ });
+
+ function diceRoll() {
+   const dice1 = Math.floor((Math.random() * 6)) + 1;
+   const dice2 = Math.floor((Math.random() * 6)) + 1;
+
+   api.roll(dice1, dice2);
+ }
+
+ function onClick(button, f) {
+   button.addEventListener('click', f);
+ }
+ 
+</script>
+
+</body>
+</html>
