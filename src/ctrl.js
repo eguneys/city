@@ -73,6 +73,7 @@ export default function Controller(state, redraw) {
 
   this.promptRoll = function() {
     this.vm.rollingDice = true;
+    this.vm.myturn = true;
   };
 
   this.promptBuyCity = function() {
@@ -85,6 +86,11 @@ export default function Controller(state, redraw) {
 
   this.clearRoll = function() {
     delete this.vm.rollingDice;
+
+    setTimeout(() => {
+      delete this.vm.myturn;
+      redraw();
+    }, 1000);
   };
 
   this.clearBuyCity = function() {

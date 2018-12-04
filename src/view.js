@@ -1,7 +1,15 @@
 import { h } from 'snabbdom';
 
+import threeStart from './threeMain';
+
 function canvas(ctrl) {
   return h('canvas.play_area', {
+    hook: {
+      insert: (vnode) => {
+        const element = vnode.elm;
+        threeStart(element, ctrl.data);
+      }
+    }
   });
 }
 
@@ -10,6 +18,16 @@ function turn(ctrl) {
     h('span.stroked', 'TURN'),
     h('span.stroked', 17)
   ]);
+}
+
+function myturn(ctrl) {
+  if (ctrl.vm.myturn) {
+    return h('div.myturn', {}, [
+      h('span.stroked', 'MY TURN'),
+      h('i.fas.fa-caret-down')
+    ]);
+  }
+  return '';
 }
 
 function paytoll(ctrl) {
@@ -225,6 +243,7 @@ function renderApp(ctrl) {
     roll(ctrl),
     dice(ctrl),
     buycity(ctrl),
+    myturn(ctrl),
     turn(ctrl),
     paytoll(ctrl),
     h('div.player_wrap.player1', {}, [
