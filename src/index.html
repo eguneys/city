@@ -20,6 +20,7 @@
     <button id="prompt_roll">Prompt Roll</button>
     <button id="prompt_buycity">Prompt Buy City</button>
     <button id="dice_roll">Dice Roll</button>
+    <button id="move">Move</button>
   </div>
 </section>
 
@@ -42,6 +43,7 @@
  const elPromptRoll = document.getElementById('prompt_roll');
  const elPromptBuyCity = document.getElementById('prompt_buycity');
  const elDiceRoll = document.getElementById('dice_roll');
+ const elMove = document.getElementById('move');
 
 
  onClick(elPayToll, function() {
@@ -58,6 +60,10 @@
 
  onClick(elDiceRoll, function() {
    diceRoll();
+ });
+
+ onClick(elMove, function() {
+   api.move(1);
  });
 
  function diceRoll() {

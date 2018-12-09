@@ -1,21 +1,22 @@
 import * as THREE from 'three';
 
 export default function initObjects(camera, state) {
-  const scene = group();
+  const objects = {};
+
+  const scene = newScene();
 
   scene.add(lights());
-  scene.add(meshBoard(state));
+  scene.add(meshBoard(state, objects));
   scene.add(meshSkyBox());
 
   scene.add(gridHelper());
 
   setupCamera(camera);
 
-  scene.updateMatrixWorld();
-
   return {
     scene,
-    camera
+    camera,
+    ...objects
   };
   
 }
@@ -73,7 +74,7 @@ function lights() {
   return result;
 }
 
-function meshBoard(state) {
+function meshBoard(state, objects) {
   const result = group();
 
   const boardGeo = geoCube(100, 100, 2),
@@ -82,11 +83,14 @@ function meshBoard(state) {
   boardMesh.rotation.x = -Math.PI / 2.0;
   result.add(boardMesh);
 
+  objects.tiles = [];
+
   const tilesGroup = group();
   tilesGroup.position.set(-3, 3, 0);
   boardMesh.add(tilesGroup);
 
   let tileMesh = oneSideTileGroup(
+    objects.tiles,
     state.textures,
     state.tiles.slice(1, 6));
   
@@ -94,6 +98,7 @@ function meshBoard(state) {
   tilesGroup.add(tileMesh);
 
   tileMesh = oneSideTileGroup(
+    objects.tiles,
     state.textures,
     state.tiles.slice(7, 12));
   tileMesh.position.set(-30 - (6 * .5), -40, 2);
@@ -101,6 +106,7 @@ function meshBoard(state) {
   tilesGroup.add(tileMesh);
 
   tileMesh = oneSideTileGroup(
+    objects.tiles,
     state.textures,
     state.tiles.slice(13, 18), -1);
   tileMesh.position.set(-30 - (6 * .5), 30 + (6 * .5), 2);
@@ -108,16 +114,35 @@ function meshBoard(state) {
   tilesGroup.add(tileMesh);
 
   tileMesh = oneSideTileGroup(
+    objects.tiles,
     state.textures,
     state.tiles.slice(19, 24), -1);
   tileMesh.position.set(40, 30 + (6 * .5), 2);
   tileMesh.rotation.z = - Math.PI * (3 / 2);
   tilesGroup.add(tileMesh);
-  
+
+  tilesGroup.updateWorldMatrix(true, true);
+
+  const playerGeo = geoCube(4, 4, 4),
+        playerMat = matPhong({ color: 0xff0000 }),
+        playerMesh = mesh(playerGeo, playerMat);
+  const playerPos = getTilePosition(
+    objects.tiles,
+    state.players['player1'].currentTile);
+  playerMesh.position.set(playerPos.x, -playerPos.z, 4);
+  tilesGroup.add(playerMesh);
+
+  objects.player1 = playerMesh;
+
   return result;
 }
 
-function oneSideTileGroup(textures, tiles, rotation = 1) {
+export function getTilePosition(tiles, index) {
+  const tile = tiles[index];
+  return vec3().setFromMatrixPosition(tile.matrixWorld);
+}
+
+function oneSideTileGroup(objectsTiles, textures, tiles, rotation = 1) {
   const colorMap = {
     hongkong: { color: 0xffd700 },
     shanghai: { color: 0xffd700 },
@@ -145,6 +170,7 @@ function oneSideTileGroup(textures, tiles, rotation = 1) {
         cornerMesh = mesh(cornerGeo, cornerMat);
   // cornerMesh.position.set(38, -38, 2);
   tileGroup.add(cornerMesh);
+  objectsTiles.push(cornerMesh);
 
   for (var i = 0; i < 5; i++) {
     const tile = tiles[i],
@@ -164,6 +190,7 @@ function oneSideTileGroup(textures, tiles, rotation = 1) {
           tileMesh = mesh(tileGeo, tileMat);
     tileMesh.position.set((i + 1) * (- 10 - .5) - 5, 0, 0);
     tileGroup.add(tileMesh);
+    objectsTiles.push(tileMesh);
   }
 
   return tileGroup;
@@ -219,4 +246,8 @@ function mesh(geo, mat) {
 
 function group() {
   return new THREE.Group();
+}
+
+function newScene() {
+  return new THREE.Scene();
 }

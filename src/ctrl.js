@@ -1,3 +1,7 @@
+import TWEEN from '@tweenjs/tween.js';
+import { getTilePosition } from './objects';
+
+import { tileNeighbors } from './util';
 
 function callUserFunction(f, ...args) {
   if (f) setTimeout(() => f(...args), 1);
@@ -104,4 +108,28 @@ export default function Controller(state, redraw) {
   this.onRoll = function() {
     callUserFunction(state.events.roll);
   };
+
+  this.move = function(amount) {
+    const player = state.players[state.turnColor],
+          nextTile = (player.currentTile + amount) % state.tiles.length,
+          nTiles = tileNeighbors(player.currentTile, nextTile, 1, state.tiles.length);
+    player.currentTile = nextTile;
+
+    const nextTilePos = getTilePosition(
+      state.threeD.elements.tiles, nextTile);
+    nextTilePos.x += 4;
+    nextTilePos.z += 4;
+
+    var t = tween(state.threeD
+                  .elements['player1']
+                  .position);
+    t.to({ x: nextTilePos.x, y: -nextTilePos.z })
+      .onUpdate(() => {
+      })
+      .start();
+  };
+
+  function tween(obj) {
+    return new TWEEN.Tween(obj);
+  }
 }
