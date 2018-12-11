@@ -38,13 +38,17 @@ export default function start(ctrl, redraw) {
       redraw();
     },
 
-    roll(dice1, dice2) {
-      ctrl.roll(dice1, dice2);
+    clearCamera() {
+      anim(ctrl.data, () => { ctrl.clearCamera(); });
+    },
+
+    roll(dice1, dice2, fn) {
+      ctrl.roll(dice1, dice2, fn);
       redraw();
     },
 
-    move(amount) {
-      anim(ctrl.data, () => { ctrl.move(amount); });
+    move(amount, fn) {
+      anim(ctrl.data, () => { ctrl.move(amount, fn); });
     }
   };
 

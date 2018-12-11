@@ -62,7 +62,7 @@ export default function Controller(state, redraw) {
     }, 1000);
   };  
 
-  this.roll = function(dice1, dice2) {
+  this.roll = function(dice1, dice2, fn) {
 
     setTimeout(() => {
       this.vm.dice = dice1 + dice2;
@@ -71,6 +71,8 @@ export default function Controller(state, redraw) {
       setTimeout(() => {
         delete this.vm.dice;
         redraw();
+
+        callUserFunction(fn, dice1 + dice2);
       }, 1400);
     }, 1000);
   };
@@ -109,24 +111,71 @@ export default function Controller(state, redraw) {
     callUserFunction(state.events.roll);
   };
 
-  this.move = function(amount) {
+  this.clearCamera = function() {
+    const threeD = state.threeD.elements;
+
+    var cout = tween(threeD.camera.position)
+        .to(threeD.camera.basePosition, 500)
+        .start();
+  };  
+  
+  this.move = function(amount, fn) {
+    const threeD = state.threeD.elements;
     const player = state.players[state.turnColor],
-          nextTile = (player.currentTile + amount) % state.tiles.length,
-          nTiles = tileNeighbors(player.currentTile, nextTile, 1, state.tiles.length);
+          currentTile = player.currentTile,
+          nextTile = (currentTile + amount) % state.tiles.length,
+          nTiles = tileNeighbors(currentTile, nextTile, 1, state.tiles.length);
     player.currentTile = nextTile;
 
-    const nextTilePos = getTilePosition(
-      state.threeD.elements.tiles, nextTile);
-    nextTilePos.x += 4;
-    nextTilePos.z += 4;
+    const currentTilePos = getTilePosition(
+      threeD.tiles, currentTile);
 
-    var t = tween(state.threeD
-                  .elements['player1']
-                  .position);
-    t.to({ x: nextTilePos.x, y: -nextTilePos.z })
-      .onUpdate(() => {
-      })
-      .start();
+    var ct = tween(threeD.camera.position)
+        .to({
+          x: currentTilePos.x + 170,
+          y: currentTilePos.y + 100,
+          z: currentTilePos.z + 170
+        }, 500);
+    
+    var cout = tween(threeD.camera.position)
+        .to(threeD.camera.basePosition, 500);
+
+    let firstTween, prevTween;
+
+    for (var key in nTiles) {
+      var tile = nTiles[key];
+      const nextTilePos = getTilePosition(
+        threeD.tiles, tile);
+      nextTilePos.x += 4;
+      nextTilePos.z += 4;
+
+      var t = tween(threeD['player1']
+                    .position);
+      t.to({ x: nextTilePos.x,
+             y: -nextTilePos.z }, 300)
+        .onUpdate((e) => {
+          threeD.camera.position
+            .set(e.x + 170,
+                 e.z + 100,
+                -e.y + 170);
+        });
+
+      if (!firstTween) {
+        firstTween = t;
+      }
+
+      if (prevTween) {
+        prevTween.chain(t);
+      }
+      prevTween = t;
+    }
+
+    prevTween.onComplete(() => {
+      callUserFunction(fn);
+    });
+
+    ct.chain(firstTween);
+    ct.start();
   };
 
   function tween(obj) {

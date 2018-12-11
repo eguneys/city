@@ -29,6 +29,7 @@
    events: {
      noBuyland: () => {
        api.clearBuyCity();
+       api.clearCamera();
      },
      roll: () => {
        api.clearRoll();
@@ -44,7 +45,6 @@
  const elPromptBuyCity = document.getElementById('prompt_buycity');
  const elDiceRoll = document.getElementById('dice_roll');
  const elMove = document.getElementById('move');
-
 
  onClick(elPayToll, function() {
    api.payToll('player1', 'player2', 'seoul');
@@ -63,14 +63,35 @@
  });
 
  onClick(elMove, function() {
-   api.move(1);
+   api.move(8);
  });
+
+ function afterDiceRoll(dice) {
+   const state = api.getState();
+
+
+
+   if (state.turnColor !== state.playerColor) {
+     return;
+   }
+
+   api.move(dice, () => {
+     const ownPlayer = state.playerColor;
+     const turnPlayer = state.players[state.turnColor],
+           currentTile = state.tiles[turnPlayer.currentTile];
+
+     if (currentTile.type === 'city') {
+       api.promptBuyCity();
+     }
+
+   });
+ }
 
  function diceRoll() {
    const dice1 = Math.floor((Math.random() * 6)) + 1;
    const dice2 = Math.floor((Math.random() * 6)) + 1;
 
-   api.roll(dice1, dice2);
+   api.roll(dice1, dice2, afterDiceRoll);
  }
 
  function onClick(button, f) {

@@ -92,6 +92,7 @@ function buycity(ctrl) {
   const data = ctrl.data;
 
   if (ctrl.vm.buyingCity) {
+    const city = ctrl.vm.buyingCity;
     const player = data.players[data.playerColor];
 
     const lands = ['land', 'villa', 'building', 'hotel'].map(landName => {
@@ -158,12 +159,12 @@ function buycity(ctrl) {
                      h('span', 'CURRENT'),
                      h('span', 'TOLL')
                    ]),
-                   h('span', '512')
+                   h('span', city.currentToll)
                  ]),
-                 h('div.city', h('span', 'Seoul')),
+                 h('div.city', h('span', city.name)),
                  h('div.cash', [
                    h('span', 'CASH'),
-                   h('span', '634')
+                   h('span', player.cash)
                  ])
                ]),
                h('div.lands', lands)

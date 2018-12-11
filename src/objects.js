@@ -27,6 +27,9 @@ function setupCamera(camera) {
   const cameraBasePos = vec3(xzWidth, yHeight, xzWidth),
         cameraTargetPos = vec3(0, 0, 0);
 
+  camera.basePosition = cameraBasePos;
+  camera.targetPosition = cameraTargetPos;
+
   camera.position.copy(cameraBasePos);
   camera.lookAt(cameraTargetPos);
 }
