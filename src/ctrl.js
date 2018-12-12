@@ -1,5 +1,5 @@
 import TWEEN from '@tweenjs/tween.js';
-import { getTilePosition } from './objects';
+import { vec3, addProperty, getTilePosition } from './objects';
 
 import { tileNeighbors } from './util';
 
@@ -117,11 +117,40 @@ export default function Controller(state, redraw) {
     var cout = tween(threeD.camera.position)
         .to(threeD.camera.basePosition, 500)
         .start();
-  };  
-  
-  this.move = function(amount, fn) {
+  };
+
+  this.buyCity = function(landType) {
     const threeD = state.threeD.elements;
     const player = state.players[state.turnColor],
+          currentTileNo = player.currentTile,
+          currentTile = state.tiles[currentTileNo],
+          property = state.properties[currentTile.key],
+          land = property[landType];
+
+    const threeDTile = threeD.tiles[currentTileNo];
+
+    const threeDProp = addProperty(state, threeD,
+                                   currentTile.key,
+                                   threeDTile,
+                                   state.turnColor,
+                                   landType);
+
+    threeDProp.scale.set(0, 0, 0);
+    tween(threeDProp.scale)
+      .to({x: 1, y: 1, z: 1 }, 500)
+      .start();
+
+    this.playerCash(state.turnColor,
+                    player.cash - land.cost);
+
+    property.owner = state.turnColor;
+    property.owned = landType;
+  };
+  
+  this.move = function(amount, nofollow, fn) {
+    const threeD = state.threeD.elements;
+    const player = state.players[state.turnColor],
+          colors = state.colors[state.turnColor],
           currentTile = player.currentTile,
           nextTile = (currentTile + amount) % state.tiles.length,
           nTiles = tileNeighbors(currentTile, nextTile, 1, state.tiles.length);
@@ -137,27 +166,24 @@ export default function Controller(state, redraw) {
           z: currentTilePos.z + 170
         }, 500);
     
-    var cout = tween(threeD.camera.position)
-        .to(threeD.camera.basePosition, 500);
-
     let firstTween, prevTween;
 
     for (var key in nTiles) {
       var tile = nTiles[key];
       const nextTilePos = getTilePosition(
         threeD.tiles, tile);
-      nextTilePos.x += 4;
-      nextTilePos.z += 4;
 
-      var t = tween(threeD['player1']
+      var t = tween(threeD[state.turnColor]
                     .position);
-      t.to({ x: nextTilePos.x,
-             y: -nextTilePos.z }, 300)
+      t.to({ x: nextTilePos.x + colors.dx.x,
+             y: -nextTilePos.z + colors.dx.y }, 300)
         .onUpdate((e) => {
-          threeD.camera.position
-            .set(e.x + 170,
-                 e.z + 100,
-                -e.y + 170);
+          if (!nofollow) {
+            threeD.camera.position
+              .set(e.x + 170,
+                   e.z + 100,
+                   -e.y + 170);
+          }
         });
 
       if (!firstTween) {
@@ -174,11 +200,22 @@ export default function Controller(state, redraw) {
       callUserFunction(fn);
     });
 
-    ct.chain(firstTween);
-    ct.start();
+    if (nofollow) {
+      firstTween.start();
+    } else {
+      ct.chain(firstTween);
+      ct.start();
+    }
   };
 
   function tween(obj) {
     return new TWEEN.Tween(obj);
   }
+}
+
+if (module.hot) {
+  module.hot.accept('./objects', function() {
+    console.log('accepting objects');
+    
+  });
 }

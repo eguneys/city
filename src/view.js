@@ -210,18 +210,19 @@ function playerCashDiff(ctrl, player) {
   return h('div.card.cash_diff.' + diff_up_klass, contents);
 }
 
-function player(ctrl, key, player) {
-  const isActive = player.color === 'white';
+function player(ctrl, key) {
+  const player = ctrl.data.players[key],
+        isActive = key === ctrl.data.turnColor;
 
   let contents =            [
-    h('div.username', 'Player 1'),
+    h('div.username', player.name),
     h('div.score', [
       h('div.assets',
         [h('span.stroked', 'ASSET'),
-         h('span.stroked', '2000')]),
+         h('span.stroked', player.asset)]),
       h('div.cash',
         [h('span.stroked', 'CASH'),
-         h('span.stroked', '2000')]) 
+         h('span.stroked', player.cash)]) 
     ])
   ];
 
@@ -249,7 +250,7 @@ function renderApp(ctrl) {
     paytoll(ctrl),
     h('div.player_wrap.player1', {}, [
       playerCashDiff(ctrl, 'player1'),
-      player(ctrl, 'player1', { color: 'white' }),
+      player(ctrl, 'player1'),
       h('div.rank', [
         h('span.stroked', 1),
         h('span.stroked', 'ST')
@@ -261,7 +262,7 @@ function renderApp(ctrl) {
         h('span.stroked', 'ND')
       ]),
       playerCashDiff(ctrl, 'player2'),
-      player(ctrl, 'player2', { color: 'black' }),
+      player(ctrl, 'player2'),
     ])
   ];
 }

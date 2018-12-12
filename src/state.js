@@ -1,22 +1,36 @@
 export function defaults() {
   return {
-    playerColor: 'player1',
+    playerColor: 'player2',
     prompt: 'roll',
     turnColor: 'player1',
     players: {
       player1: {
+        name: 'Player 1',
         cash: 1000,
+        asset: 0,
         currentTile: 0
       },
       player2: {
+        name: 'Player 2',
         cash: 1000,
+        asset: 0,
         currentTile: 0
       },
+    },
+    colors: {
+      player1: {
+        color: 0xffff00,
+        dx: { x: 0, y: -4 }
+      },
+      player2: {
+        color: 0xff0000,
+        dx: { x: 0, y: 0 }
+      }
     },
     properties: {
       newyork: {
         name: 'New York',
-        currentToll: 100,
+        currentToll: 0,
         land: { toll: 100, cost: 99, },
         villa: { toll: 100, cost: 99, },
         building: { toll: 100, cost: 99, },
@@ -24,7 +38,7 @@ export function defaults() {
       },
       jejudo: {
         name: 'Jejudo',
-        currentToll: 100,
+        currentToll: 0,
         land: { toll: 100, cost: 99, },
         villa: { toll: 100, cost: 99, },
         building: { toll: 100, cost: 99, },
@@ -32,7 +46,7 @@ export function defaults() {
       },
       seoul: {
         name: 'Seoul',
-        currentToll: 100,
+        currentToll: 0,
         land: { toll: 100, cost: 99, },
         villa: { toll: 100, cost: 99, },
         building: { toll: 100, cost: 99, },
@@ -40,7 +54,7 @@ export function defaults() {
       },
       london: {
         name: 'London',
-        currentToll: 100,
+        currentToll: 0,
         land: { toll: 100, cost: 99, },
         villa: { toll: 100, cost: 99, },
         building: { toll: 100, cost: 99, },
@@ -48,7 +62,7 @@ export function defaults() {
       },
       rome: {
         name: 'Rome',
-        currentToll: 100,
+        currentToll: 0,
         land: { toll: 100, cost: 99, },
         villa: { toll: 100, cost: 99, },
         building: { toll: 100, cost: 99, },
@@ -56,7 +70,7 @@ export function defaults() {
       },
       berlin: {
         name: 'Berlin',
-        currentToll: 100,
+        currentToll: 0,
         land: { toll: 100, cost: 99, },
         villa: { toll: 100, cost: 99, },
         building: { toll: 100, cost: 99, },
@@ -64,7 +78,7 @@ export function defaults() {
       },
       madrid: {
         name: 'Madrid',
-        currentToll: 100,
+        currentToll: 0,
         land: { toll: 100, cost: 99, },
         villa: { toll: 100, cost: 99, },
         building: { toll: 100, cost: 99, },
@@ -72,7 +86,7 @@ export function defaults() {
       },
       lisbon: {
         name: 'Lisbon',
-        currentToll: 100,
+        currentToll: 0,
         land: { toll: 100, cost: 99, },
         villa: { toll: 100, cost: 99, },
         building: { toll: 100, cost: 99, },
@@ -80,7 +94,7 @@ export function defaults() {
       },
       saopaulo: {
         name: 'SaoPaulo',
-        currentToll: 100,
+        currentToll: 0,
         land: { toll: 100, cost: 99, },
         villa: { toll: 100, cost: 99, },
         building: { toll: 100, cost: 99, },
@@ -88,7 +102,7 @@ export function defaults() {
       },
       buenos: {
         name: 'Buenos',
-        currentToll: 100,
+        currentToll: 0,
         land: { toll: 100, cost: 99, },
         villa: { toll: 100, cost: 99, },
         building: { toll: 100, cost: 99, },
@@ -96,7 +110,7 @@ export function defaults() {
       },
       tahran: {
         name: 'Tahran',
-        currentToll: 100,
+        currentToll: 0,
         land: { toll: 100, cost: 99, },
         villa: { toll: 100, cost: 99, },
         building: { toll: 100, cost: 99, },
@@ -104,7 +118,7 @@ export function defaults() {
       },
       mumbai: {
         name: 'Mumbai',
-        currentToll: 100,
+        currentToll: 0,
         land: { toll: 100, cost: 99, },
         villa: { toll: 100, cost: 99, },
         building: { toll: 100, cost: 99, },
@@ -112,7 +126,7 @@ export function defaults() {
       },
       singapore: {
         name: 'Singapore',
-        currentToll: 100,
+        currentToll: 0,
         land: { toll: 100, cost: 99, },
         villa: { toll: 100, cost: 99, },
         building: { toll: 100, cost: 99, },
@@ -120,7 +134,7 @@ export function defaults() {
       },
       jakarta: {
         name: 'Jakarta',
-        currentToll: 100,
+        currentToll: 0,
         land: { toll: 100, cost: 99, },
         villa: { toll: 100, cost: 99, },
         building: { toll: 100, cost: 99, },
@@ -128,7 +142,7 @@ export function defaults() {
       },
       shanghai: {
         name: 'Shanghai',
-        currentToll: 100,
+        currentToll: 0,
         land: { toll: 100, cost: 99, },
         villa: { toll: 100, cost: 99, },
         building: { toll: 100, cost: 99, },
@@ -136,7 +150,7 @@ export function defaults() {
       },
       hongkong: {
         name: 'Hongkong',
-        currentToll: 100,
+        currentToll: 0,
         land: { toll: 100, cost: 99, },
         villa: { toll: 100, cost: 99, },
         building: { toll: 100, cost: 99, },

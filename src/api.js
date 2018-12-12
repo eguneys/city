@@ -1,8 +1,15 @@
 import TWEEN from '@tweenjs/tween.js';
 
+import { configure } from './config';
+
 export default function start(ctrl, redraw) {
 
   return {
+
+    set(config) {
+      anim(ctrl.data, (state) => configure(state, config));
+      redraw();
+    },
 
     getState() {
       return ctrl.data;
@@ -42,13 +49,17 @@ export default function start(ctrl, redraw) {
       anim(ctrl.data, () => { ctrl.clearCamera(); });
     },
 
+    buyCity(land) {
+      anim(ctrl.data, () => { ctrl.buyCity(land); });
+    },
+
     roll(dice1, dice2, fn) {
       ctrl.roll(dice1, dice2, fn);
       redraw();
     },
 
-    move(amount, fn) {
-      anim(ctrl.data, () => { ctrl.move(amount, fn); });
+    move(amount, nofollow, fn) {
+      anim(ctrl.data, () => { ctrl.move(amount, nofollow, fn); });
     }
   };
 
@@ -59,7 +70,7 @@ const perf = window.performance !== undefined ? window.performance : Date;
 const raf = window.requestAnimationFrame;
 
 function anim(state, mutate) {
-  const result = mutate();
+  const result = mutate(state);
 
   step(state, perf.now());
 
@@ -67,12 +78,13 @@ function anim(state, mutate) {
     // state.redraw();
     const tweens = TWEEN.getAll();
 
+    TWEEN.update();
+    state.redraw();
+    state.threeD.redraw();
+
     if (tweens.length === 0) {
       return;
     }
-
-    TWEEN.update();
-    state.threeD.redraw();
     raf((now = perf.now()) => step(state, now));
   }
 }

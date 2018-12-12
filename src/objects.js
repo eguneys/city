@@ -1,7 +1,9 @@
 import * as THREE from 'three';
 
 export default function initObjects(camera, state) {
-  const objects = {};
+  const objects = {
+    properties: {}
+  };
 
   const scene = newScene();
 
@@ -126,17 +128,69 @@ function meshBoard(state, objects) {
 
   tilesGroup.updateWorldMatrix(true, true);
 
-  const playerGeo = geoCube(4, 4, 4),
-        playerMat = matPhong({ color: 0xff0000 }),
+  for (var key in state.players) {
+    var player = state.players[key];
+    var { color, dx } = state.colors[key];
+
+    let playerGeo = geoCube(4, 4, 4),
+        playerMat = matPhong({ color: color }),
         playerMesh = mesh(playerGeo, playerMat);
-  const playerPos = getTilePosition(
-    objects.tiles,
-    state.players['player1'].currentTile);
-  playerMesh.position.set(playerPos.x, -playerPos.z, 4);
-  tilesGroup.add(playerMesh);
+    let playerPos = getTilePosition(
+      objects.tiles,
+      player.currentTile);
+    playerMesh.position.set(playerPos.x + dx.x,
+                            -playerPos.z + dx.y , 4);
+    tilesGroup.add(playerMesh);
 
-  objects.player1 = playerMesh;
+    objects[key] = playerMesh;
+  }
 
+  for (key in state.properties) {
+    var property = state.properties[key];
+    var tile = objects.tiles[tileIndexByKey(state.tiles, key)];
+
+    if (property.owner) {
+      addProperty(state, objects,
+                  key,
+                  tile,
+                  property.owner,
+                  property.owned);
+    }
+  }
+
+  return result;
+}
+
+function tileIndexByKey(tiles, key) {
+  for (var i = 0; i < tiles.length; i++) {
+    if (tiles[i].key === key) return i;
+  }
+  return -1;
+}
+
+export function addProperty(state, objects,
+                            key, tile,
+                            owner,
+                            propType) {
+  const { color } = state.colors[owner];  
+  const result = group();
+
+  const tileIndex = tileIndexByKey(state.tiles, key);
+
+  let geo = geoCube(4, 2, 4),
+      mat = matPhong({ color: color }),
+      pMesh = mesh(geo, mat);
+
+  result.add(pMesh);
+
+  if (tileIndex < 6 || tileIndex > 18) {
+    result.position.set(0, 8, 2);
+  } else {
+    result.position.set(0, -8, 2);
+  }
+
+  tile.add(result);
+  objects.properties[key] = result;
   return result;
 }
 
@@ -215,7 +269,7 @@ function meshSkyBox() {
   return mesh(skyGeo, skyMat);
 }
 
-function vec3(x, y, z) {
+export function vec3(x, y, z) {
   return new THREE.Vector3(x, y, z);
 }
 

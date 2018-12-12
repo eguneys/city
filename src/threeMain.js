@@ -28,6 +28,16 @@ export default function threeStart(element, state) {
   loadAssets(state, renderer, () => {
     redrawAll();
   });
+
+  if (module.hot) {
+    module.hot.accept('./objects', function() {
+      try {
+      redrawAll();      
+      } catch (e) {
+        console.log(e);
+      }
+    });
+  }
 }
 
 function loadAssets(state, renderer, onLoad) {
@@ -94,4 +104,6 @@ function initCamera(w, h) {
 
   return camera;
 }
+
+
 
