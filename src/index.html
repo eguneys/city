@@ -35,7 +35,8 @@
      roll: () => {
        api.clearRoll();
        diceRoll();
-     }
+     },
+     afterRoll: afterDiceRoll
    }
  };
 
@@ -68,32 +69,31 @@
  });
 
  function afterDiceRoll(dice) {
+   api.move(dice);
+ }
+
+ function afterUserMove() {
    const state = api.getState();
 
+   const isMyTurn = state.turnColor === state.playerColor;
 
+   const ownPlayer = state.playerColor;
+   const turnPlayer = state.players[state.turnColor],
+         currentTile = state.tiles[turnPlayer.currentTile];
 
-   const isMyTurn = state.turnColor === state.playerColor,
-         noFollow = !isMyTurn;
-
-   api.move(dice, noFollow, () => {
-     const ownPlayer = state.playerColor;
-     const turnPlayer = state.players[state.turnColor],
-           currentTile = state.tiles[turnPlayer.currentTile];
-
-     if (!isMyTurn) {
-       if (currentTile.type === 'city') {
-         api.buyCity('land');
-       }
-       api.set({
-         turnColor: 'player2'
-       });
-     } else if (currentTile.type === 'city') {
-       api.promptBuyCity();
-     } else {
-       endTurn();
+   if (!isMyTurn) {
+     if (currentTile.type === 'city') {
+       api.buyCity('land');
      }
+     api.set({
+       turnColor: 'player2'
+     });
+   } else if (currentTile.type === 'city') {
+     api.promptBuyCity();
+   } else {
+     endTurn();
+   }
 
-   });
  }
 
  function endTurn() {
@@ -106,7 +106,7 @@
    const dice1 = Math.floor((Math.random() * 6)) + 1;
    const dice2 = Math.floor((Math.random() * 6)) + 1;
 
-   api.roll(dice1, dice2, afterDiceRoll);
+   api.roll(dice1, dice2);
  }
 
  function onClick(button, f) {

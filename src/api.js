@@ -53,13 +53,13 @@ export default function start(ctrl, redraw) {
       anim(ctrl.data, () => { ctrl.buyCity(land); });
     },
 
-    roll(dice1, dice2, fn) {
-      ctrl.roll(dice1, dice2, fn);
+    roll(dice1, dice2) {
+      ctrl.roll(dice1, dice2);
       redraw();
     },
 
-    move(amount, nofollow, fn) {
-      anim(ctrl.data, () => { ctrl.move(amount, nofollow, fn); });
+    move(amount) {
+      anim(ctrl.data, () => { ctrl.move(amount); });
     }
   };
 

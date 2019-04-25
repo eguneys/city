@@ -49,7 +49,9 @@ export default function Controller(state, redraw) {
     const fromCashNew = fromPlayer.cash - amount,
           toCashNew = toPlayer.cash + amount;
 
-    this.playerCash(fromPlayerName, fromCashNew);
+    setTimeout(() =>
+      this.playerCash(fromPlayerName, fromCashNew),
+      0);
 
     setTimeout(() => {
       this.playerCash(toPlayerName, toCashNew);
@@ -62,7 +64,7 @@ export default function Controller(state, redraw) {
     }, 1000);
   };  
 
-  this.roll = function(dice1, dice2, fn) {
+  this.roll = function(dice1, dice2) {
 
     setTimeout(() => {
       this.vm.dice = dice1 + dice2;
@@ -72,7 +74,7 @@ export default function Controller(state, redraw) {
         delete this.vm.dice;
         redraw();
 
-        callUserFunction(fn, dice1 + dice2);
+        callUserFunction(state.events.afterRoll, dice1 + dice2);
       }, 1400);
     }, 1000);
   };
@@ -147,7 +149,10 @@ export default function Controller(state, redraw) {
     property.owned = landType;
   };
   
-  this.move = function(amount, nofollow, fn) {
+  this.move = function(amount) {
+   const isMyTurn = state.turnColor === state.playerColor,
+         noFollow = !isMyTurn;
+
     const threeD = state.threeD.elements;
     const player = state.players[state.turnColor],
           colors = state.colors[state.turnColor],
@@ -197,7 +202,7 @@ export default function Controller(state, redraw) {
     }
 
     prevTween.onComplete(() => {
-      callUserFunction(fn);
+      callUserFunction(state.events.afterMove);
     });
 
     if (nofollow) {
