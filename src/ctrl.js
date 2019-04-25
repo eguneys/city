@@ -49,9 +49,10 @@ export default function Controller(state, redraw) {
     const fromCashNew = fromPlayer.cash - amount,
           toCashNew = toPlayer.cash + amount;
 
-    setTimeout(() =>
-      this.playerCash(fromPlayerName, fromCashNew),
-      0);
+    setTimeout(() => {
+      this.playerCash(fromPlayerName, fromCashNew);
+      redraw();
+    }, 0);
 
     setTimeout(() => {
       this.playerCash(toPlayerName, toCashNew);
@@ -65,18 +66,19 @@ export default function Controller(state, redraw) {
   };  
 
   this.roll = function(dice1, dice2) {
-
-    setTimeout(() => {
-      this.vm.dice = dice1 + dice2;
-      redraw();
-
+    return new Promise(resolve =>
       setTimeout(() => {
-        delete this.vm.dice;
+        this.vm.dice = dice1 + dice2;
         redraw();
 
-        callUserFunction(state.events.afterRoll, dice1 + dice2);
-      }, 1400);
-    }, 1000);
+        setTimeout(() => {
+          delete this.vm.dice;
+          redraw();
+
+          resolve();
+        }, 1400);
+      }, 1000)
+    );
   };
 
   this.promptRoll = function() {
@@ -183,7 +185,7 @@ export default function Controller(state, redraw) {
       t.to({ x: nextTilePos.x + colors.dx.x,
              y: -nextTilePos.z + colors.dx.y }, 300)
         .onUpdate((e) => {
-          if (!nofollow) {
+          if (!noFollow) {
             threeD.camera.position
               .set(e.x + 170,
                    e.z + 100,
@@ -205,7 +207,7 @@ export default function Controller(state, redraw) {
       callUserFunction(state.events.afterMove);
     });
 
-    if (nofollow) {
+    if (noFollow) {
       firstTween.start();
     } else {
       ct.chain(firstTween);

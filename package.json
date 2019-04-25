@@ -4,7 +4,7 @@
   "main": "index.js",
   "license": "MIT",
   "scripts": {
-    "start": "webpack-dev-server --port=5000 --mode=development"
+    "start": "webpack-dev-server --port=3000 --mode=development"
   },
   "dependencies": {
     "@tweenjs/tween.js": "^17.2.0",

@@ -25,6 +25,37 @@
 </section>
 
 <script>
+
+const promiseSerial = funcs =>
+  funcs.reduce((promise, func) =>
+    promise.then(result => func().then(Array.prototype.concat.bind(result))),
+    Promise.resolve([]))
+
+ function init(api) {
+ 
+   const handlers = {
+     move(o) {
+       const reqs = o.events.map(event => {
+         if (event.roll) {
+           return () =>
+             api.roll(event.roll[0], event.roll[1]);
+         }
+         if (event.move) {
+           return () => api.move(event.move);
+         }
+       });
+       promiseSerial(reqs);
+     }
+   };
+   
+   const server = new City.Server();
+
+   server.connect('player1', handlers);
+
+   const data = server.get();
+   setData(config, data);
+ }
+
  var config = {
    events: {
      noBuyland: () => {
@@ -36,38 +67,12 @@
        api.clearRoll();
        diceRoll();
      },
-     afterRoll: afterDiceRoll
+     onLoad: () => { init(api); }
    }
  };
 
  const api = City(document.getElementById('app'), config);
-
- const elPayToll = document.getElementById('pay_toll');
- const elPromptRoll = document.getElementById('prompt_roll');
- const elPromptBuyCity = document.getElementById('prompt_buycity');
- const elDiceRoll = document.getElementById('dice_roll');
- const elMove = document.getElementById('move');
-
- onClick(elPayToll, function() {
-   api.payToll('player1', 'player2', 'seoul');
- });
-
- onClick(elPromptRoll, function() {
-   api.promptRoll();
- });
-
- onClick(elPromptBuyCity, function() {
-   api.promptBuyCity();
- });
-
- onClick(elDiceRoll, function() {
-   diceRoll();
- });
-
- onClick(elMove, function() {
-   api.move(8);
- });
-
+ 
  function afterDiceRoll(dice) {
    api.move(dice);
  }
@@ -95,6 +100,41 @@
    }
 
  }
+
+ function setData(config, data) {
+   config.players = data.players;
+   config.tolls = data.tolls;
+   config.playerColor = data.playerColor;
+   config.turnColor = data.turnColor;
+   config.prompt = data.prompt;
+ }
+
+
+ const elPayToll = document.getElementById('pay_toll');
+ const elPromptRoll = document.getElementById('prompt_roll');
+ const elPromptBuyCity = document.getElementById('prompt_buycity');
+ const elDiceRoll = document.getElementById('dice_roll');
+ const elMove = document.getElementById('move');
+
+ onClick(elPayToll, function() {
+   api.payToll('player1', 'player2', 'seoul');
+ });
+
+ onClick(elPromptRoll, function() {
+   api.promptRoll();
+ });
+
+ onClick(elPromptBuyCity, function() {
+   api.promptBuyCity();
+ });
+
+ onClick(elDiceRoll, function() {
+   diceRoll();
+ });
+
+ onClick(elMove, function() {
+   api.move(8);
+ });
 
  function endTurn() {
    api.set({

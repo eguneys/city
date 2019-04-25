@@ -7,8 +7,7 @@ export default function start(ctrl, redraw) {
   return {
 
     set(config) {
-      anim(ctrl.data, (state) => configure(state, config));
-      redraw();
+      return anim(ctrl.data, (state) => configure(state, config));
     },
 
     getState() {
@@ -46,20 +45,19 @@ export default function start(ctrl, redraw) {
     },
 
     clearCamera() {
-      anim(ctrl.data, () => { ctrl.clearCamera(); });
+      return anim(ctrl.data, () => { return ctrl.clearCamera(); });
     },
 
     buyCity(land) {
-      anim(ctrl.data, () => { ctrl.buyCity(land); });
+      return anim(ctrl.data, () => { return ctrl.buyCity(land); });
     },
 
     roll(dice1, dice2) {
-      ctrl.roll(dice1, dice2);
-      redraw();
+      return anim(ctrl.data, () => { return ctrl.roll(dice1, dice2); });
     },
 
     move(amount) {
-      anim(ctrl.data, () => { ctrl.move(amount); });
+      return anim(ctrl.data, () => { return ctrl.move(amount); });
     }
   };
 
@@ -70,21 +68,30 @@ const perf = window.performance !== undefined ? window.performance : Date;
 const raf = window.requestAnimationFrame;
 
 function anim(state, mutate) {
-  const result = mutate(state);
+  const resultP = mutate(state);
 
-  step(state, perf.now());
+  return Promise
+    .all([resultP,
+           new Promise((resolve) => {
 
-  function step() {
-    // state.redraw();
-    const tweens = TWEEN.getAll();
 
-    TWEEN.update();
-    state.redraw();
-    state.threeD.redraw();
+             // step(state, perf.now());
 
-    if (tweens.length === 0) {
-      return;
-    }
-    raf((now = perf.now()) => step(state, now));
-  }
+             function step() {
+               // state.redraw();
+               const tweens = TWEEN.getAll();
+
+               TWEEN.update();
+               state.redraw();
+               state.threeD.redraw();
+
+               if (tweens.length === 0) {
+                 resolve();
+                 return;
+               }
+               raf((now = perf.now()) => step(state, now));
+             }
+             raf((now = perf.now()) => step(state, now));
+  })
+          ]);
 }

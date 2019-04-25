@@ -25,10 +25,6 @@ export default function threeStart(element, state) {
     redrawNow();
   }
 
-  loadAssets(state, renderer, () => {
-    redrawAll();
-  });
-
   if (module.hot) {
     module.hot.accept('./objects', function() {
       try {
@@ -38,6 +34,11 @@ export default function threeStart(element, state) {
       }
     });
   }
+
+  loadAssets(state, renderer, () => {
+    redrawAll();
+    if (state.events.onLoad) state.events.onLoad();
+  });
 }
 
 function loadAssets(state, renderer, onLoad) {
