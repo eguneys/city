@@ -36,7 +36,7 @@ const promiseSerial = funcs =>
  var config = {
    events: {
      noBuyland: () => {
-
+       server.send('player2', { uci: 'nobuyland' });
      },
      roll: () => {
        server.send('player2', { uci: 'roll' });
@@ -49,9 +49,12 @@ const promiseSerial = funcs =>
  
    const handlers = {
      move(o) {
+       const oldTurnColor = config.turns % 2 === 0 ? 'player1':'player2';
        config.turns = o.turns;
        config.turnColor = o.turns % 2 === 0 ? 'player1':'player2';
        const myTurn = config.turnColor === 'player2';
+
+       api.clearCamera();
 
        const reqs = o.events.map(event => {
          if (event.roll) {
@@ -62,7 +65,7 @@ const promiseSerial = funcs =>
            return () => api.move(event.move);
          }
        });
-       promiseSerial(reqs).then(() => {
+       return promiseSerial(reqs).then(() => {
          if (o.prompt === 'roll') {
            if (myTurn) {
              api.promptRoll();
@@ -72,15 +75,15 @@ const promiseSerial = funcs =>
              api.promptBuyCity();
            }
          }
-       });
-
-       api.set({
-         turnColor: config.turnColor
+         api.set({
+           turnColor: config.turnColor
+         });
        });
      }
    };
-   
-   server.connect('player2', handlers);
+
+   const socket = new City.Socket(handlers);
+   server.connect('player2', socket);
 
    const data = server.get();
    setData(config, data);

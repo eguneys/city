@@ -110,7 +110,6 @@ export default function Controller(state, redraw) {
 
   this.onNoBuyland = function() {
     this.clearBuyCity();
-    this.clearCamera();
     callUserFunction(state.events.noBuyland);
   };
   

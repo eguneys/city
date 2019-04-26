@@ -1,3 +1,105 @@
+const ragstoriches = {
+  play(game) {
+    nextTurn(game);
+  }
+};
+
+const visitseoul = {
+  play(game) {
+    nextTurn(game);
+  }
+};
+
+const backward1 = {
+  play(game) {
+    nextTurn(game);
+  }
+};
+
+const forward2 = {
+  play(game) {
+    nextTurn(game);
+  }
+};
+
+const starcity = {
+  play(game) {
+    nextTurn(game);
+  }
+};
+
+const reducetolls = {
+  play(game) {
+    nextTurn(game);
+  }
+};
+
+const halvetolls = {
+  play(game) {
+    nextTurn(game);
+  }
+};
+
+const doubletolls = {
+  play(game) {
+    nextTurn(game);
+  }
+};
+
+const triplesantorini = {
+  play(game) {
+    nextTurn(game);
+  }
+};
+
+const attractinvestments = {
+  play(game) {
+    nextTurn(game);
+  }
+};
+
+const taxoffice = {
+  play(game) {
+    nextTurn(game);
+  }
+};
+
+const donate = {
+  play(game) {
+    nextTurn(game);
+  }
+};
+
+const downgrade = {
+  play(game) {
+    nextTurn(game);
+  }
+};
+
+const Chances = {
+  all: [
+    ragstoriches,
+    visitseoul,
+    backward1,
+    forward2,
+    starcity,
+    reducetolls,
+    halvetolls,
+    doubletolls,
+    triplesantorini,
+    attractinvestments,
+    taxoffice,
+    donate,
+    downgrade
+  ]
+};
+
+function nextTurn(game) {
+    game.turns++;
+    game.turnColor = game.turns % 2 === 0 ? 'player1':'player2';
+    game.prompt = 'roll';
+}
+
 function playOnLandTile(game) {
   const player = game.players[game.turnColor];
   const tile = game.tiles[player.currentTile];
@@ -6,6 +108,13 @@ function playOnLandTile(game) {
   case "city":
     game.prompt = "buycity";
     break;
+  case "chance":
+    const i = Math.floor(Math.random() * Chances.all.length);
+    const chance = Chances.all[i];
+    chance.play(game);
+    break;
+  case "corner":
+    nextTurn(game);
   }
 }
 
@@ -14,23 +123,25 @@ function playGame(game, move) {
   game.prompt = undefined;
   switch(move.uci) {
   case 'roll':
-    const dice1 = Math.ceil(Math.random() * 6);
-    const dice2 = Math.ceil(Math.random() * 6);
+    const dice1 = 1;// = Math.ceil(Math.random() * 6);
+    const dice2 = 2;// Math.ceil(Math.random() * 6);
+    const advanceAmount = dice1 + dice2;
     game.events.push({ roll: [dice1, dice2] });
     game.players[game.turnColor].currentTile =
-      (game.players[game.turnColor].currentTile + dice1 + dice2);
+      (game.players[game.turnColor].currentTile + advanceAmount);
     if (game.players[game.turnColor].currentTile >= 24) {
       // passed go
       game.players[game.turnColor].currentTile = game.players[game.turnColor].currentTile % game.tiles.length;
     }
-    game.events.push({ move: game.players[game.turnColor].currentTile});
+    game.events.push({ move: advanceAmount });
 
     playOnLandTile(game);
     break;
   case 'buy':
-    game.turns++;
-    game.turnColor = game.turns % 2 === 0 ? 'player1':'player2';
-    game.prompt = 'roll';
+    nextTurn(game);
+    break;
+  case 'nobuyland':
+    nextTurn(game);
     break;
   }
   
@@ -98,11 +209,10 @@ export function Server() {
   this.send = function(pov, move) {
     if (pov === game.turnColor) {
       const events = playMove(game, move);
-
       requestFishnet(this, game);
       this.members.forEach(member=>
         events.map(e => {
-          member[e.typ](e.jsFor(pov));
+          member.push(e.jsFor(pov));
         })
       );
     }
@@ -133,8 +243,10 @@ function playerView(game, pov) {
 function requestFishnet(server, game) {
   if (game.turnColor === 'player1') {
     if (game.prompt === 'roll') {
-      setTimeout(() =>
-        server.send('player1', { uci: 'roll' }), 1000);
+      setTimeout(() => {
+        server.send('player1', { uci: 'roll' });
+      }, 1000);
+
     } else if (game.prompt === 'buycity') {
       setTimeout(() =>
         server.send('player1', { uci: 'buy', type: 'land' }),
@@ -153,10 +265,13 @@ function MoveEvent(game, move) {
 
   this.jsFor = (pov) => {
     return {
-      move,
-      turns: game.turns,
-      prompt: game.prompt,
-      events: game.events
+      "t": this.typ,
+      "d": {
+        move,
+        turns: game.turns,
+        prompt: game.prompt,
+        events: game.events
+      }
     };
   };
 }
