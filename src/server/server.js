@@ -1,3 +1,6 @@
+import { Move } from './move';
+import { makeGame } from './game';
+
 export function Server() {
 
   const player1 = new Pov('player1');
@@ -31,7 +34,7 @@ export function Server() {
 
 
 function playMove(game, move) {
-  const newGame = playGame(game, move);
+  const newGame = game.move(Move.apply(move));
 
   if (!newGame) {
     return [];

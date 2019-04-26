@@ -8,7 +8,7 @@ export const Move = {
     case "nobuy":
       return Nobuyland;
     case "roll":
-      return Roll;
+      return Roll();
     }
     return null;
   }

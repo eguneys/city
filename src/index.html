@@ -26,10 +26,9 @@ const promiseSerial = funcs =>
     promise.then(result => func().then(Array.prototype.concat.bind(result))),
     Promise.resolve([]))
 
- // init(api);
- const tests = new City.Tests();
- tests.run();
-
+ init();
+ /* const tests = new City.Tests();
+  * tests.run(); */
 
  function init() {
  
@@ -82,7 +81,7 @@ const promiseSerial = funcs =>
   var config = {
      events: {
        noBuyland: () => {
-         server.send('player2', { uci: 'nobuyland' });
+         server.send('player2', { uci: 'nobuy' });
        },
        roll: () => {
          server.send('player2', { uci: 'roll' });
@@ -92,7 +91,6 @@ const promiseSerial = funcs =>
    };
 
    const api = City(document.getElementById('app'), config);
- 
 
    const server = new City.Server();
    const socket = new City.Socket(handlers);

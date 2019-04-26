@@ -62,6 +62,7 @@ function gameTests() {
   log('buycity');
   const landOnCity = RollWith(1,1);
   const landOnChance = RollWith(1,2, 'ragstoriches');
+  const landOnCorner = RollWith(3,3);
   withGame(game => {
     const game2 = game.move(landOnCity);
     is('prompt is ok', game2.prompt, 'buycity');
@@ -100,7 +101,16 @@ function gameTests() {
   });
 
   withGame(game => {
+    log('land on chance');
     const game2 = applyMoves(game, landOnChance);
+    not('no buy prompt', game2.prompt, 'buycity');
+    is('cant nobuyland', game2.move(Nobuyland), null);
+    is('cant buyland', game2.move(Buy("land")), null);
+  });
+
+  withGame(game => {
+    log('land on corner');
+    const game2 = applyMoves(game, landOnCorner);
     not('no buy prompt', game2.prompt, 'buycity');
     is('cant nobuyland', game2.move(Nobuyland), null);
     is('cant buyland', game2.move(Buy("land")), null);
