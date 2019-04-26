@@ -26,21 +26,12 @@ const promiseSerial = funcs =>
     promise.then(result => func().then(Array.prototype.concat.bind(result))),
     Promise.resolve([]))
 
- const server = new City.Server();
+ // init(api);
+ const tests = new City.Tests();
+ tests.run();
 
- var config = {
-   events: {
-     noBuyland: () => {
-       server.send('player2', { uci: 'nobuyland' });
-     },
-     roll: () => {
-       server.send('player2', { uci: 'roll' });
-     },
-     onLoad: () => { init(api); }
-   }
- };
 
- function init(api) {
+ function init() {
  
    const handlers = {
      move(o) {
@@ -88,6 +79,22 @@ const promiseSerial = funcs =>
      }
    };
 
+  var config = {
+     events: {
+       noBuyland: () => {
+         server.send('player2', { uci: 'nobuyland' });
+       },
+       roll: () => {
+         server.send('player2', { uci: 'roll' });
+       },
+       onLoad: () => {}
+     }
+   };
+
+   const api = City(document.getElementById('app'), config);
+ 
+
+   const server = new City.Server();
    const socket = new City.Socket(handlers);
    server.connect('player2', socket);
 
@@ -101,8 +108,6 @@ const promiseSerial = funcs =>
    setData(config, data);
  }
 
- const api = City(document.getElementById('app'), config);
- 
  function setData(config, data) {
    config.players = data.players;
    config.tolls = data.tolls;

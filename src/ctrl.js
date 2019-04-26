@@ -178,7 +178,7 @@ export default function Controller(state, redraw) {
           colors = state.colors[state.turnColor],
           currentTile = player.currentTile,
           nextTile = (currentTile + amount) % state.tiles.length,
-          nTiles = tileNeighbors(currentTile, nextTile, 1, state.tiles.length);
+          nTiles = tileNeighbors(currentTile, nextTile, amount<0?-1:1, state.tiles.length);
     player.currentTile = nextTile;
 
     const currentTilePos = getTilePosition(
