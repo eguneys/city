@@ -27,8 +27,8 @@ const promiseSerial = funcs =>
     Promise.resolve([]))
 
  init();
- /* const tests = new City.Tests();
-  * tests.run(); */
+ const tests = new City.Tests();
+ tests.run();
 
  function init() {
  
@@ -82,6 +82,9 @@ const promiseSerial = funcs =>
      events: {
        noBuyland: () => {
          server.send('player2', { uci: 'nobuy' });
+       },
+       buyland: (type) => {
+         server.send('player2', { uci: 'buy', type });
        },
        roll: () => {
          server.send('player2', { uci: 'roll' });

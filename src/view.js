@@ -127,7 +127,10 @@ function buycity(ctrl) {
 
       if (!land.owner) {
         if (canAfford) {
-          landInfo = h('div.land_info', {}, [
+          landInfo = h('div.land_info', {
+            on: {
+              click: () => ctrl.onBuyland(landName) }
+          }, [
             h('img', { attrs: {
               src: 'http://placekitten.com/200/200'
             } }),

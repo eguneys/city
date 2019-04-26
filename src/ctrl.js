@@ -132,6 +132,11 @@ export default function Controller(state, redraw) {
     callUserFunction(state.events.roll);
   };
 
+  this.onBuyland = function(type) {
+    this.clearBuyCity();
+    callUserFunction(state.events.buyland, type);
+  };
+
   this.clearCamera = function() {
     const threeD = state.threeD.elements;
 
