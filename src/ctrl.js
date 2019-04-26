@@ -1,5 +1,6 @@
 import TWEEN from '@tweenjs/tween.js';
-import { vec3, addProperty, getTilePosition } from './objects';
+import { vec3, addProperty, getTilePosition, selectCityTexture, newSprite } from './objects';
+import { mesh, geoCube, matBasic } from './objects';
 
 import { tileNeighbors } from './util';
 
@@ -172,6 +173,31 @@ export default function Controller(state, redraw) {
     return this
       .playerCash(state.turnColor,
                   player.cash - land.cost);
+  };
+
+  this.selectCity = function() {
+    const threeD = state.threeD.elements;
+    const player = state.players[state.turnColor];
+
+    const cityIndexes = [1,2,3, 4, 8, 11, 18, 19,22,23];
+
+    state.clickables = [];
+
+    cityIndexes.forEach(index => {
+      const amount = 128;
+      const tile = threeD.tiles[index];
+      tile.position.z += 2;
+      //const sprite = newSprite({ map: selectCityTexture(128, 0xcdcd00) });
+      const sprite = newSprite({ map: selectCityTexture(amount, '#cdfd00', '#bac000')});
+      sprite.scale.set(16, 4, 1.0);
+      sprite.position.set(5, 0, 5);
+      // const sprite = mesh(geoCube(20, 10, 10), matBasic({map: selectCityTexture(128, 0xcdcd00)}));
+      sprite.tileIndex = index;
+      sprite.tileAmount = amount;
+
+      tile.add(sprite);
+      state.clickables.push(sprite);
+    });
   };
   
   this.move = function(amount) {

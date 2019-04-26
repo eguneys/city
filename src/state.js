@@ -18,16 +18,6 @@ export function defaults() {
       },
     },
     tolls: {},
-    colors: {
-      player1: {
-        color: 0xffff00,
-        dx: { x: 0, y: -4 }
-      },
-      player2: {
-        color: 0xff0000,
-        dx: { x: 0, y: 0 }
-      }
-    },
     properties: {
       newyork: {
         name: 'New York',
@@ -169,7 +159,17 @@ export function defaults() {
       { type: 'city', key: 'jejudo' },
       { type: 'city', key: 'newyork' }
     ],
-    events: {}
+    events: {},
+    colors: {
+      player1: {
+        color: 0xffff00,
+        dx: { x: 0, y: -4 }
+      },
+      player2: {
+        color: 0xff0000,
+        dx: { x: 0, y: 0 }
+      }
+    }
   };
 }
 

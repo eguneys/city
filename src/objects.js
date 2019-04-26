@@ -273,38 +273,100 @@ export function vec3(x, y, z) {
   return new THREE.Vector3(x, y, z);
 }
 
-function lightAmbient(color) {
+export function lightAmbient(color) {
   return new THREE.AmbientLight(color);
 }
 
-function lightDirectional(color, intensity) {
+export function lightDirectional(color, intensity) {
   return new THREE.DirectionalLight(color, intensity);
 }
 
-function geoCube(w, h, d) {
+export function geoCube(w, h, d) {
   return new THREE.CubeGeometry(w, h, d);
 }
 
-function matPhong(opts) {
+export function matPhong(opts) {
   return new THREE.MeshPhongMaterial(opts);
 }
 
-function matBasic(opts) {
+export function matBasic(opts) {
   return new THREE.MeshBasicMaterial(opts);
 }
 
-function matMulti(array) {
+export function matMulti(array) {
   return new THREE.MultiMaterial(array);
 }
 
-function mesh(geo, mat) {
+export function mesh(geo, mat) {
   return new THREE.Mesh(geo, mat);
 }
 
-function group() {
+export function group() {
   return new THREE.Group();
 }
 
-function newScene() {
+export function newScene() {
   return new THREE.Scene();
+}
+
+export function newTexture(canvas) {
+  return new THREE.Texture(canvas);
+}
+
+export function newSprite(opts) {
+  const mat = new THREE.SpriteMaterial(opts);
+  return new THREE.Sprite(mat);
+}
+
+export function selectCityTexture(amount, color, color2) {
+  const width = 256,
+        height = 128;
+  const canvas = withCanvas(width, height, (canvas, ctx) => {
+    const border1 = 2,
+          border2 = 10,
+          radius = 50;
+
+    ctx.font = '60pt Arial';
+    ctx.fillStyle = 'black';
+    roundRect(ctx, 0, 0, width, height, radius);
+    ctx.fillStyle = color;
+    roundRect(ctx, border1, border1, width-border1 * 2, height-border1 * 2, radius);
+    ctx.fillStyle = color2;
+    roundRect(ctx, border2, border2, width-border2 * 2, height-border2 * 2, radius);
+    ctx.fillStyle = 'white';
+    ctx.textAlign='center';
+    ctx.textBaseline='middle';
+    ctx.fillText(amount, 128, 80);
+    return canvas;
+  });
+
+  const texture = newTexture(canvas);
+  texture.needsUpdate = true;
+  return texture;  
+}
+
+// https://github.com/stemkoski/stemkoski.github.com/blob/master/Three.js/Sprite-Text-Labels.html
+// function for drawing rounded rectangles
+function roundRect(ctx, x, y, w, h, r) 
+{
+  ctx.beginPath();
+  ctx.moveTo(x+r, y);
+  ctx.lineTo(x+w-r, y);
+  ctx.quadraticCurveTo(x+w, y, x+w, y+r);
+  ctx.lineTo(x+w, y+h-r);
+  ctx.quadraticCurveTo(x+w, y+h, x+w-r, y+h);
+  ctx.lineTo(x+r, y+h);
+  ctx.quadraticCurveTo(x, y+h, x, y+h-r);
+  ctx.lineTo(x, y+r);
+  ctx.quadraticCurveTo(x, y, x+r, y);
+  ctx.closePath();
+  ctx.fill();
+  ctx.stroke();   
+}
+
+function withCanvas(width, height, f) {
+  var canvas = document.createElement('canvas');
+  canvas.width = width;
+  canvas.height = height;
+  return f(canvas, canvas.getContext('2d'));
 }

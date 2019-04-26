@@ -1,6 +1,7 @@
 import * as THREE from 'three';
 
 import initObjects from './objects';
+import { selectCityTexture } from './objects';
 
 export default function threeStart(element, state) {
 
@@ -9,6 +10,8 @@ export default function threeStart(element, state) {
 
   const camera = initCamera(state.width, state.height),
         renderer = initRenderer(element);
+
+  const raycaster = new THREE.Raycaster();
 
   function redrawAll() {
     const elements = initObjects(camera, state);
@@ -20,6 +23,7 @@ export default function threeStart(element, state) {
     state.threeD = {
       elements: elements,
       renderer: renderer,
+      raycaster: raycaster,
       redraw: redrawNow
     };
     redrawNow();
@@ -38,6 +42,7 @@ export default function threeStart(element, state) {
   loadAssets(state, renderer, () => {
     redrawAll();
     if (state.events.onLoad) state.events.onLoad();
+    bindEvents(state);
   });
 }
 
@@ -106,5 +111,29 @@ function initCamera(w, h) {
   return camera;
 }
 
+function bindEvents(state) {
+  let intersected;
+  function onDocumentMouseDown(event) {
+    event.preventDefault();
+    const mouseX = (event.clientX / state.width) * 2 - 1;
+    const mouseY = - (event.clientY / state.height) * 2 + 1;
 
+    const camera = state.threeD.elements.camera;
+    const raycaster = state.threeD.raycaster;
 
+    raycaster.setFromCamera(new THREE.Vector2(mouseX, mouseY, 0.5), camera);
+
+    var intersects = raycaster.intersectObjects(state.clickables?state.clickables:[]);
+    if (intersects.length > 0) {
+      if (intersected) intersected.material.map = intersected.currentMap;
+      intersected = intersects[0].object;
+      intersected.currentMap = intersected.material.map;
+      intersected.material.map = selectCityTexture(intersected.tileAmount, '#cccccc', 'cccccc');
+      state.threeD.redraw();
+    }
+    
+  }
+
+  document.addEventListener('mousedown', onDocumentMouseDown, false);
+  document.addEventListener('touchstart', onDocumentMouseDown, false);
+}

@@ -42,6 +42,10 @@ export default function start(ctrl, redraw) {
       return anim(ctrl.data, () => ctrl.showChance(key));
     },
 
+    selectCity() {
+      return anim(ctrl.data, () => ctrl.selectCity());
+    },
+
     buyCity(land) {
       return anim(ctrl.data, () => ctrl.buyCity(land));
     },

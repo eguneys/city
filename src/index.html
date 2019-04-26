@@ -16,6 +16,7 @@
   <div id="app"></div>
 
   <div id="controls">
+    <button id="citySelect"> Select city</button>
   </div>
 </section>
 
@@ -26,7 +27,7 @@ const promiseSerial = funcs =>
     promise.then(result => func().then(Array.prototype.concat.bind(result))),
     Promise.resolve([]))
 
- init();
+ const api = init();
  const tests = new City.Tests();
  tests.run();
 
@@ -101,6 +102,8 @@ const promiseSerial = funcs =>
 
    const data = server.get();
    setData(config, data);
+
+   return api;
  }
 
  function reload() {
@@ -116,6 +119,10 @@ const promiseSerial = funcs =>
    config.turnColor = data.turnColor;
    config.prompt = data.prompt;
  }
+
+ onClick(document.getElementById('citySelect'), (e) => {
+   api.selectCity();
+ });
 
  function onClick(button, f) {
    button.addEventListener('click', f);
