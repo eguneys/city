@@ -1,16 +1,19 @@
 export const ragstoriches = {
+  key: 'ragstoriches',
   play(game) {
-    nextTurn(game);
+    return game.nextTurn();
   }
 };
 
 export const visitseoul = {
+  key: 'visitseoul',
   play(game) {
-    nextTurn(game);
+    return game.nextTurn();
   }
 };
 
 export const backward1 = {
+  key: 'backward1',
   play(game) {
     const player = game.players[game.turnColor];
     player.currentTile = player.currentTile - 1;
@@ -22,62 +25,72 @@ export const backward1 = {
 };
 
 export const forward2 = {
+  key: 'forward2',
   play(game) {
-    nextTurn(game);
+    return game.nextTurn();
   }
 };
 
 export const starcity = {
+  key: 'starcity',
   play(game) {
-    nextTurn(game);
+    return game.nextTurn();
   }
 };
 
 export const reducetolls = {
+  key: 'reducetolls',
   play(game) {
-    nextTurn(game);
+    return game.nextTurn();
   }
 };
 
 export const halvetolls = {
+  key: 'halvetolls',
   play(game) {
-    nextTurn(game);
+    return game.nextTurn();
   }
 };
 
 export const doubletolls = {
+  key: 'doubletolls',
   play(game) {
-    nextTurn(game);
+    return game.nextTurn();
   }
 };
 
 export const triplesantorini = {
+  key: 'triplesantorini',
   play(game) {
-    nextTurn(game);
+    return game.nextTurn();
   }
 };
 
 export const attractinvestments = {
+  key: 'attractinvestments',
   play(game) {
-    nextTurn(game);
+    return game.nextTurn();
   }
 };
 
 export const taxoffice = {
+  key: 'taxoffice',
   play(game) {
-    nextTurn(game);
+    return game.nextTurn();
   }
 };
 
 export const donate = {
+  key: 'donate',
   play(game) {
-    nextTurn(game);
+    return game.nextTurn();
   }
 };
 
 export const downgrade = {
+  key: 'downgrade',
   play(game) {
-    nextTurn(game);
+    return game.nextTurn();
   }
 };
 
@@ -99,3 +112,5 @@ export const Chances = {
   ]
 };
 
+Chances.byKey = Chances.all.reduce((map, chance) => { map[chance.key] = chance;
+                                                      return map; }, {});

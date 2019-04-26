@@ -60,29 +60,28 @@ export function Game({
   this.tiles = tiles;
 
 
-  const nextTurn = () => {
+  this.nextTurn = () => {
     this.turns++;
     this.turnColor = this.turns % 2 === 0 ? 'player1':'player2';
     this.prompt = 'roll';
     return this;
   };
 
-  const buyLand = (type) => {
+  this.buyLand = (type) => {
     const player = this.players[this.turnColor];
     const tile = this.tiles[player.currentTile];
-
     if (tile.type === 'city') {
       if (this.tolls[tile.key]) {
         return null;
       } else {
         this.events.push({ buy: type });
-        return nextTurn();
+        return this.nextTurn();
       }
     }
     return null;
   };
 
-  const rollDice = (dice1, dice2) => {
+  const rollDice = (dice1, dice2, chance) => {
     const player = this.players[this.turnColor];
     const tile = this.tiles[player.currentTile];
 
@@ -98,10 +97,10 @@ export function Game({
     }
     this.events.push({ move: advanceAmount });
 
-    return this.playOnLandTile();
+    return this.playOnLandTile(chance);
   };
 
-  this.playOnLandTile = () => {
+  this.playOnLandTile = (chance) => {
     const player = this.players[this.turnColor];
     const tile = this.tiles[player.currentTile];
 
@@ -115,13 +114,10 @@ export function Game({
       return this;
       break;
     case "chance":
-      let i = Math.floor(Math.random() * Chances.all.length);
-      i = 2;
-      const chance = Chances.all[i];
       return chance.play(this);
       break;
     case "corner":
-      return nextTurn();
+      return this.nextTurn();
     }
     return null;
   };
@@ -134,15 +130,18 @@ export function Game({
         return null;
       let dice1 = move.dice1;
       let dice2 = move.dice2;
-      return rollDice(dice1, dice2);
+      let chance = move.chance;
+      return rollDice(dice1, dice2, chance);
       break;
     case 'buy':
-      return buyLand(move.type);
+      if (this.prompt !== 'buycity')
+        return null;
+      return this.buyLand(move.type);
       break;
     case 'nobuyland':
       if (this.prompt !== 'buycity')
         return null;
-      return nextTurn();
+      return this.nextTurn();
       break;
     }
     return null;

@@ -50,7 +50,8 @@ function gameTests() {
   });
 
   log('foreveryroll');
-  [RollWith(1,1), RollWith(1,2), RollWith(1,5)].forEach(rollMove => {
+  let chance = 'ragstoriches';
+  [RollWith(1,1), RollWith(1,2, chance), RollWith(1,5)].forEach(rollMove => {
     log(rollMove.dice1 + rollMove.dice2);
     not('roll move is ok', makeGame().move(rollMove), null);
     not('roll move is ok', makeGame().move(rollMove), undefined);
@@ -60,25 +61,49 @@ function gameTests() {
 
   log('buycity');
   const landOnCity = RollWith(1,1);
+  const landOnChance = RollWith(1,2, 'ragstoriches');
   withGame(game => {
     const game2 = game.move(landOnCity);
     is('prompt is ok', game2.prompt, 'buycity');
     is('turn is ok', game2.turns, 0);
     is('current tile is ok', game2.players[game2.turnColor].currentTile, 2);
     is('cannot roll twice', game2.move(Roll()), null);
+  });
 
-    const game3 = applyMoves(makeGame(), landOnCity, Nobuyland);
+  withGame(game => {
+    const game2 = applyMoves(game, landOnCity, Nobuyland);
     log('buycity nobuyland');
-    ok('is valid', game3);
-    is('prompt is ok', game3.prompt, 'roll');
-    is('turn is ok', game3.turns, 1);
-    noevent('no buy event', game3, 'buy');
+    ok('is valid', game2);
+    is('prompt is ok', game2.prompt, 'roll');
+    is('turn is ok', game2.turns, 1);
+    noevent('no buy event', game2, 'buy');
+  });
 
-    const game4 = applyMoves(makeGame(), landOnCity, Buy('land'));
+  withGame(game => {
+    const game2 = applyMoves(game, landOnCity, Buy('land'));
     log('buycity buyland');
-    ok('is valid', game4);
-    is('prompt is ok', game4.prompt, 'roll');
-    is('turn is ok', game4.turns, 1);
-    oneevent('one buy event', game4, 'buy');
+    ok('is valid', game2);
+    is('prompt is ok', game2.prompt, 'roll');
+    is('turn is ok', game2.turns, 1);
+    oneevent('one buy event', game2, 'buy');
+  });
+  
+  withGame(game => {
+    const game2 = applyMoves(game, landOnCity, Nobuyland, landOnCity, Nobuyland);
+    log('buycity start roll on city');
+    ok('is valid', game2);
+    is('prompt is ok', game2.prompt, 'roll');
+    is('turn is ok', game2.turns, 2);
+
+    const game3 = game2.move(Buy('land'));
+    is('not possible to buyland before roll', game3, null);
+  });
+
+  withGame(game => {
+    const game2 = applyMoves(game, landOnChance);
+    not('no buy prompt', game2.prompt, 'buycity');
+    is('cant nobuyland', game2.move(Nobuyland), null);
+    is('cant buyland', game2.move(Buy("land")), null);
   });
 }
+

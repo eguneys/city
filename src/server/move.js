@@ -1,3 +1,5 @@
+import { Chances } from './chance';
+
 export const Move = {
   apply: (move) => {
     switch (move.uci) {
@@ -27,15 +29,18 @@ export function Roll() {
   return {
     uci: 'roll',
     dice1: Math.ceil(Math.random() * 6),
-    dice2: Math.ceil(Math.random() * 6)
+    dice2: Math.ceil(Math.random() * 6),
+    chance: Chances.all[Math.floor(Math.random() * Chances.all.length)]
+
   };
 };
 
-export function RollWith(dice1, dice2) {
+export function RollWith(dice1, dice2, chance) {
   return {
     uci: 'roll',
     dice1: dice1,
-    dice2: dice2
+    dice2: dice2,
+    chance: Chances.byKey[chance]
   };
 };
 
