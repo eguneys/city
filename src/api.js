@@ -34,20 +34,6 @@ export default function start(ctrl, redraw) {
       redraw();
     },
 
-    clearRoll () {
-      ctrl.clearRoll();
-      redraw();
-    },
-
-    clearBuyCity () {
-      ctrl.clearBuyCity();
-      redraw();
-    },
-
-    clearCamera() {
-      return anim(ctrl.data, () => { return ctrl.clearCamera(); });
-    },
-
     buyCity(land) {
       return anim(ctrl.data, () => { return ctrl.buyCity(land); });
     },

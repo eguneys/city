@@ -31,10 +31,28 @@ const promiseSerial = funcs =>
     promise.then(result => func().then(Array.prototype.concat.bind(result))),
     Promise.resolve([]))
 
+ const server = new City.Server();
+
+ var config = {
+   events: {
+     noBuyland: () => {
+
+     },
+     roll: () => {
+       server.send('player2', { uci: 'roll' });
+     },
+     onLoad: () => { init(api); }
+   }
+ };
+
  function init(api) {
  
    const handlers = {
      move(o) {
+       config.turns = o.turns;
+       config.turnColor = o.turns % 2 === 0 ? 'player1':'player2';
+       const myTurn = config.turnColor === 'player2';
+
        const reqs = o.events.map(event => {
          if (event.roll) {
            return () =>
@@ -44,63 +62,32 @@ const promiseSerial = funcs =>
            return () => api.move(event.move);
          }
        });
-       promiseSerial(reqs);
+       promiseSerial(reqs).then(() => {
+         if (o.prompt === 'roll') {
+           if (myTurn) {
+             api.promptRoll();
+           }
+         } else if (o.prompt === 'buycity') {
+           if (myTurn) {
+             api.promptBuyCity();
+           }
+         }
+       });
+
+       api.set({
+         turnColor: config.turnColor
+       });
      }
    };
    
-   const server = new City.Server();
-
-   server.connect('player1', handlers);
+   server.connect('player2', handlers);
 
    const data = server.get();
    setData(config, data);
  }
 
- var config = {
-   events: {
-     noBuyland: () => {
-       api.clearBuyCity();
-       api.clearCamera();
-       endTurn();
-     },
-     roll: () => {
-       api.clearRoll();
-       diceRoll();
-     },
-     onLoad: () => { init(api); }
-   }
- };
-
  const api = City(document.getElementById('app'), config);
  
- function afterDiceRoll(dice) {
-   api.move(dice);
- }
-
- function afterUserMove() {
-   const state = api.getState();
-
-   const isMyTurn = state.turnColor === state.playerColor;
-
-   const ownPlayer = state.playerColor;
-   const turnPlayer = state.players[state.turnColor],
-         currentTile = state.tiles[turnPlayer.currentTile];
-
-   if (!isMyTurn) {
-     if (currentTile.type === 'city') {
-       api.buyCity('land');
-     }
-     api.set({
-       turnColor: 'player2'
-     });
-   } else if (currentTile.type === 'city') {
-     api.promptBuyCity();
-   } else {
-     endTurn();
-   }
-
- }
-
  function setData(config, data) {
    config.players = data.players;
    config.tolls = data.tolls;
@@ -128,26 +115,9 @@ const promiseSerial = funcs =>
    api.promptBuyCity();
  });
 
- onClick(elDiceRoll, function() {
-   diceRoll();
- });
-
  onClick(elMove, function() {
    api.move(8);
  });
-
- function endTurn() {
-   api.set({
-     turnColor: 'player1'
-   });
- }
-
- function diceRoll() {
-   const dice1 = Math.floor((Math.random() * 6)) + 1;
-   const dice2 = Math.floor((Math.random() * 6)) + 1;
-
-   api.roll(dice1, dice2);
- }
 
  function onClick(button, f) {
    button.addEventListener('click', f);

@@ -96,7 +96,7 @@ export default function Controller(state, redraw) {
 
   this.clearRoll = function() {
     delete this.vm.rollingDice;
-
+    redraw();
     setTimeout(() => {
       delete this.vm.myturn;
       redraw();
@@ -105,13 +105,17 @@ export default function Controller(state, redraw) {
 
   this.clearBuyCity = function() {
     delete this.vm.buyingCity;
+    redraw();
   };
 
   this.onNoBuyland = function() {
+    this.clearBuyCity();
+    this.clearCamera();
     callUserFunction(state.events.noBuyland);
   };
   
   this.onRoll = function() {
+    this.clearRoll();
     callUserFunction(state.events.roll);
   };
 
