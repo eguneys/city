@@ -128,9 +128,10 @@ export function Game({
 
   this.move = (move) => {
     this.events = [];
-    this.prompt = undefined;
     switch(move.uci) {
     case 'roll':
+      if (this.prompt !== 'roll')
+        return null;
       let dice1 = move.dice1;
       let dice2 = move.dice2;
       return rollDice(dice1, dice2);

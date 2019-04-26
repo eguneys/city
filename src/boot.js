@@ -1,8 +1,8 @@
 require("./index.css");
 const main = require('./main');
-const server = require('./server');
 const socket = require('./socket');
-const tests = require('./tests');
+const server = require('./server/server');
+const tests = require('./server/tests');
 
 module.exports = main.app;
 module.exports.Server = server.Server;
