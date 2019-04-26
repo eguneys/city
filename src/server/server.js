@@ -57,7 +57,7 @@ function requestFishnet(server, game) {
 
     } else if (game.prompt === 'buycity') {
       setTimeout(() =>
-        server.send('player1', { uci: 'buy', type: 'land' }),
+        server.send('player1', { uci: 'buy', type: 'hotel' }),
         5000
       );
     }

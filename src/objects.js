@@ -145,16 +145,16 @@ function meshBoard(state, objects) {
     objects[key] = playerMesh;
   }
 
-  for (key in state.properties) {
-    var property = state.properties[key];
+  for (key in state.tolls) {
+    var toll = state.tolls[key];
     var tile = objects.tiles[tileIndexByKey(state.tiles, key)];
 
-    if (property.owner) {
+    if (toll.owner) {
       addProperty(state, objects,
                   key,
                   tile,
-                  property.owner,
-                  property.owned);
+                  toll.owner,
+                  toll.owned);
     }
   }
 
@@ -168,6 +168,29 @@ function tileIndexByKey(tiles, key) {
   return -1;
 }
 
+function getMeshForProperty(color, propType) {
+  var pMesh = group();
+  switch(propType) {
+  case 'land':
+    pMesh.add(mesh(geoCube(2, 1, 2),
+                   matPhong({ color: color })));
+    break;
+  case 'hotel':
+    pMesh.add(mesh(geoCube(4, 2, 4),
+                   matPhong({ color: color })));
+    pMesh.add(mesh(geoCube(2, 1, 8),
+                   matPhong({ color: color })));
+    pMesh.add(mesh(geoCube(1, 1, 10),
+                   matPhong({ color: color })));
+    break;
+  default:
+    pMesh.add(mesh(geoCube(4, 2, 4),
+                   matPhong({ color: color })));
+  }
+
+  return pMesh;
+}
+
 export function addProperty(state, objects,
                             key, tile,
                             owner,
@@ -177,9 +200,7 @@ export function addProperty(state, objects,
 
   const tileIndex = tileIndexByKey(state.tiles, key);
 
-  let geo = geoCube(4, 2, 4),
-      mat = matPhong({ color: color }),
-      pMesh = mesh(geo, mat);
+  let pMesh = getMeshForProperty(color, propType);
 
   result.add(pMesh);
 
