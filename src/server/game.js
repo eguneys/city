@@ -114,6 +114,7 @@ export function Game({
       return this;
       break;
     case "chance":
+      this.events.push({ chance: chance.key });
       return chance.play(this);
       break;
     case "corner":

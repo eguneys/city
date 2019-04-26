@@ -17,7 +17,6 @@ export const backward1 = {
   play(game) {
     const player = game.players[game.turnColor];
     player.currentTile = player.currentTile - 1;
-    game.events.push({ chance: 'backward1' });
     game.events.push({ move: -1 });
     game.playOnLandTile(game);
     return game;

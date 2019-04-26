@@ -175,9 +175,57 @@ export function defaults() {
 
 export const Chances = {
   all: {
+    ragstoriches: {
+      name: "Rags to Riches",
+      details: "The top ranking player and the lowest ranked player exhange their cash"
+    },
+    visitseoul: {
+      name: "Visit Seoul year",
+      details: "Let's start a journey to Seoul, the capital city of South Korea"
+    },
     backward1: {
       name: "1 slot backward",
       details: "Move backward by 1 slot"
+    },
+    forward2: {
+      name: "2 slots forward",
+      details: "Move forward by 2 slots"
+    },
+    starcity: {
+      name: "Choose a star city",
+      details: "The selected city will be the star city"
+    },
+    reducetolls: {
+      name: "Reduce tolls to 0",
+      details: "Tolls of the selected city are reduced to 0 for three turns"
+    },
+    halvetolls: {
+      name: "Reduce tolls by 50%",
+      details: "Tolls of the selected city are reduced by 50% for three turns"
+    },
+    doubletolls: {
+      name: "Pay double the toll",
+      details: "Pay double the tolls when you arrive at the city of another player"
+    },
+    triplesantorini: {
+      name: "Shoot a CF in Santorini",
+      details: "The beauty of the Santorini village has been shot for a commericial Land price and tolls triple"
+    },
+    attractinvestments: {
+      name: "Attract investments",
+      details: "You get the money for a construction investment fund"
+    },
+    taxoffice: {
+      name: "Go to the tax office",
+      details: "Move to the Office of Tax administration and pay your taxes"
+    },
+    donate: {
+      name: "Please donate",
+      details: "Choose one of your cities to donate to the bank"
+    },
+    downgrade: {
+      name: "Downgrade building",
+      details: "Choose one of the opponents cities and downgrade its building by one level"
     }
   }
 };

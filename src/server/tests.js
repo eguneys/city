@@ -103,9 +103,12 @@ function gameTests() {
   withGame(game => {
     log('land on chance');
     const game2 = applyMoves(game, landOnChance);
+    const game3 = applyMoves(makeGame(), landOnChance, Nobuyland);
+    const game4 = applyMoves(makeGame(), landOnChance, Buy("land"));
     not('no buy prompt', game2.prompt, 'buycity');
-    is('cant nobuyland', game2.move(Nobuyland), null);
-    is('cant buyland', game2.move(Buy("land")), null);
+    oneevent('chance event', game2, 'chance');
+    is('cant nobuyland', game3, null);
+    is('cant buyland', game4, null);
   });
 
   withGame(game => {
@@ -115,5 +118,6 @@ function gameTests() {
     is('cant nobuyland', game2.move(Nobuyland), null);
     is('cant buyland', game2.move(Buy("land")), null);
   });
+
 }
 
