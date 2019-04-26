@@ -67,17 +67,17 @@ export function Game({
     return this;
   };
 
-  const buyLand = () => {
+  const buyLand = (type) => {
     const player = this.players[this.turnColor];
     const tile = this.tiles[player.currentTile];
 
-    if (tile.key === 'city') {
+    if (tile.type === 'city') {
       if (this.tolls[tile.key]) {
         return null;
       } else {
-        this.events.push({ buy: move.type });
+        this.events.push({ buy: type });
+        return nextTurn();
       }
-      return nextTurn();
     }
     return null;
   };
@@ -137,11 +137,12 @@ export function Game({
       return rollDice(dice1, dice2);
       break;
     case 'buy':
-      return buyLand();
+      return buyLand(move.type);
       break;
     case 'nobuyland':
-      // nextTurn();
-      return null;
+      if (this.prompt !== 'buycity')
+        return null;
+      return nextTurn();
       break;
     }
     return null;

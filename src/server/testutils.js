@@ -1,3 +1,5 @@
+export const ok = runtest(matcher((a) => a !== null && a !== undefined, '[is null or undefined]'));
+
 export const not = runtest(matcher((a, b) => a !== b, '==='));
 
 export const is = runtest(matcher((a, b) => a === b, '!=='));
