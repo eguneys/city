@@ -72,8 +72,19 @@ export function Game({
     const tile = this.tiles[player.currentTile];
     if (tile.type === 'city') {
       if (this.tolls[tile.key]) {
-        return null;
+        if (this.tolls[tile.key].owner === this.turnColor) {
+          this.tolls[tile.key] = {
+            owned: type,
+            owner: this.turnColor
+          };
+          this.events.push({ buy: type });
+          return this.nextTurn();
+        }
       } else {
+        this.tolls[tile.key] = {
+          owned: type,
+          owner: this.turnColor
+        };
         this.events.push({ buy: type });
         return this.nextTurn();
       }
@@ -107,7 +118,16 @@ export function Game({
     switch (tile.type) {
     case "city":
       if (this.tolls[tile.key]) {
-        
+        if (this.tolls[tile.key].owner === this.turnColor) {
+          if (this.tolls[tile.key].owned === 'hotel') {
+            return this.nextTurn();
+          } else {
+            this.prompt = "buycity";
+          }
+        } else {
+          this.events.push({ toll: true });
+          return this.nextTurn();
+        }
       } else {
         this.prompt = "buycity";
       }

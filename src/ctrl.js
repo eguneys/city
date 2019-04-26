@@ -1,3 +1,4 @@
+import { Cities } from './state';
 import TWEEN from '@tweenjs/tween.js';
 import { vec3, addProperty, getTilePosition, selectCityTexture, newSprite } from './objects';
 import { mesh, geoCube, matBasic } from './objects';
@@ -48,36 +49,46 @@ export default function Controller(state, redraw) {
       city, amount
     };
 
-    setTimeout(() => {
-      delete this.vm.payingToll;
-      redraw();
-    }, 2500);
+    return new Promise(resolve =>
+      setTimeout(() => {
+        delete this.vm.payingToll;
+        redraw();
+        resolve();
+      }, 2500)
+    );
   };
 
-  this.payToll = function(fromPlayerName, toPlayerName, cityName) {
-    const city = state.properties[cityName];
-    const amount = city.currentToll;
+  this.payToll = function() {
+    const fromPlayerKey = state.turnColor;
+    const fromPlayer = state.players[fromPlayerKey];
 
-    const fromPlayer = state.players[fromPlayerName],
-          toPlayer = state.players[toPlayerName];
+    const currentTile = fromPlayer.currentTile;
+    const cityKey = state.tiles[currentTile].key;
+
+    const city = Cities[cityKey];
+    const toll = state.tolls[cityKey];
+    const amount = city[toll.owned].toll;
+    const toPlayerKey = toll.owner;
+    const toPlayer = state.players[toPlayerKey];
 
     const fromCashNew = fromPlayer.cash - amount,
           toCashNew = toPlayer.cash + amount;
 
     setTimeout(() => {
-      this.playerCash(fromPlayerName, fromCashNew);
+      this.playerCash(fromPlayerKey, fromCashNew);
       redraw();
     }, 0);
 
-    setTimeout(() => {
-      this.playerCash(toPlayerName, toCashNew);
-      redraw();
-
+    return new Promise(resolve =>
       setTimeout(() => {
-        this.showPayToll(city, amount);
+        this.playerCash(toPlayerKey, toCashNew);
         redraw();
-      }, 1000);
-    }, 1000);
+
+        setTimeout(() => {
+          this.showPayToll(city, amount).then(resolve);
+        }, 1000);
+      }, 1000)
+    );
   };  
 
   this.roll = function(dice1, dice2) {
@@ -104,7 +115,7 @@ export default function Controller(state, redraw) {
   this.promptBuyCity = function() {
     const player = state.players[state.playerColor],
           tile = state.tiles[player.currentTile],
-          city = state.properties[tile.key];
+          city = Cities[tile.key];
 
     this.vm.buyingCity = city;
   };
@@ -151,8 +162,8 @@ export default function Controller(state, redraw) {
     const player = state.players[state.turnColor],
           currentTileNo = player.currentTile,
           currentTile = state.tiles[currentTileNo],
-          property = state.properties[currentTile.key],
-          land = property[landType];
+          city = Cities[currentTile.key],
+          land = city[landType];
 
     const threeDTile = threeD.tiles[currentTileNo];
 
@@ -167,8 +178,10 @@ export default function Controller(state, redraw) {
       .to({x: 1, y: 1, z: 1 }, 500)
       .start();
 
-    property.owner = state.turnColor;
-    property.owned = landType;
+    state.tolls[currentTile.key] = {
+      owner: state.turnColor,
+      owned: landType
+    };
 
     return this
       .playerCash(state.turnColor,

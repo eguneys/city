@@ -119,5 +119,29 @@ function gameTests() {
     is('cant buyland', game2.move(Buy("land")), null);
   });
 
+  withGame(game => {
+    log('pay toll');
+    const game2 = applyMoves(game, landOnCity, Buy("land"), landOnCity);
+    is('prompt roll', game2.prompt, 'roll');
+    is('turns ok', game2.turns, 2);
+    oneevent('paytoll event', game2, 'toll');
+    log("land on own city when land owned");
+    const game3 = game.move(RollWith(game.tiles.length, 0));
+    is('prompt buycity', game3.prompt, 'buycity');
+    is('turns ok', game3.turns, 2);
+    noevent('no paytoll', game3, 'toll');
+    log("land on own city when hotel owned");
+    const game4 = applyMoves(game3,
+                             Buy('hotel'),
+                             landOnCity,
+                             Nobuyland,
+                             RollWith(game.tiles.length, 0));
+    ok('is valid', game4);
+    is('prompt is roll', game4.prompt, 'roll');
+    is ('turns ok', game4.turns, 5);
+    noevent('no paytoll', game4, 'toll');
+
+  });
+
 }
 

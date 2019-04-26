@@ -19,11 +19,6 @@ export default function start(ctrl, redraw) {
       redraw();
     },
 
-    payToll(fromPlayer, toPlayer, city) {
-      ctrl.payToll(fromPlayer, toPlayer, city);
-      redraw();
-    },
-
     promptRoll() {
       ctrl.promptRoll();
       redraw();
@@ -36,6 +31,10 @@ export default function start(ctrl, redraw) {
 
     clearCamera() {
       return anim(ctrl.data, () => ctrl.clearCamera());
+    },
+
+    payToll() {
+      return anim(ctrl.data, () => ctrl.payToll());
     },
 
     chance(key) {

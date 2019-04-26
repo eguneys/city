@@ -51,11 +51,13 @@ const promiseSerial = funcs =>
            return () => api.move(event.move);
          }
          if (event.buy) {
-           // console.log(event.buy);
            return () => api.buyCity(event.buy);
          }
          if (event.chance) {
            return () => api.chance(event.chance);
+         }
+         if (event.toll) {
+           return () => api.payToll();
          }
          return () => Promise.reject();
        });
