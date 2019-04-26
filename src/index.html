@@ -16,11 +16,6 @@
   <div id="app"></div>
 
   <div id="controls">
-    <button id="pay_toll">Pay Toll</button>
-    <button id="prompt_roll">Prompt Roll</button>
-    <button id="prompt_buycity">Prompt Buy City</button>
-    <button id="dice_roll">Dice Roll</button>
-    <button id="move">Move</button>
   </div>
 </section>
 
@@ -64,6 +59,14 @@ const promiseSerial = funcs =>
          if (event.move) {
            return () => api.move(event.move);
          }
+         if (event.buy) {
+           // console.log(event.buy);
+           return () => api.buyCity(event.buy);
+         }
+         if (event.chance) {
+           return () => api.chance(event.chance);
+         }
+         return () => Promise.reject();
        });
        return promiseSerial(reqs).then(() => {
          if (o.prompt === 'roll') {
@@ -78,6 +81,9 @@ const promiseSerial = funcs =>
          api.set({
            turnColor: config.turnColor
          });
+       }).catch(err => {
+         throw err;
+         reload();
        });
      }
    };
@@ -86,6 +92,12 @@ const promiseSerial = funcs =>
    server.connect('player2', socket);
 
    const data = server.get();
+   setData(config, data);
+ }
+
+ function reload() {
+   console.log('reload');
+  const data = server.get();
    setData(config, data);
  }
 
@@ -98,29 +110,6 @@ const promiseSerial = funcs =>
    config.turnColor = data.turnColor;
    config.prompt = data.prompt;
  }
-
-
- const elPayToll = document.getElementById('pay_toll');
- const elPromptRoll = document.getElementById('prompt_roll');
- const elPromptBuyCity = document.getElementById('prompt_buycity');
- const elDiceRoll = document.getElementById('dice_roll');
- const elMove = document.getElementById('move');
-
- onClick(elPayToll, function() {
-   api.payToll('player1', 'player2', 'seoul');
- });
-
- onClick(elPromptRoll, function() {
-   api.promptRoll();
- });
-
- onClick(elPromptBuyCity, function() {
-   api.promptBuyCity();
- });
-
- onClick(elMove, function() {
-   api.move(8);
- });
 
  function onClick(button, f) {
    button.addEventListener('click', f);

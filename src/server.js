@@ -12,7 +12,11 @@ const visitseoul = {
 
 const backward1 = {
   play(game) {
-    nextTurn(game);
+    const player = game.players[game.turnColor];
+    player.currentTile = player.currentTile - 1;
+    game.events.push({ chance: 'backward1' });
+    game.events.push({ move: -1 });
+    playOnLandTile(game);
   }
 };
 
@@ -109,7 +113,8 @@ function playOnLandTile(game) {
     game.prompt = "buycity";
     break;
   case "chance":
-    const i = Math.floor(Math.random() * Chances.all.length);
+    let i = Math.floor(Math.random() * Chances.all.length);
+    i = 2;
     const chance = Chances.all[i];
     chance.play(game);
     break;
@@ -123,21 +128,27 @@ function playGame(game, move) {
   game.prompt = undefined;
   switch(move.uci) {
   case 'roll':
-    const dice1 = 1;// = Math.ceil(Math.random() * 6);
-    const dice2 = 2;// Math.ceil(Math.random() * 6);
+    let dice1 = Math.ceil(Math.random() * 6);
+    let dice2 = Math.ceil(Math.random() * 6);
+    dice1 = 1;
+    dice2 = 2;
     const advanceAmount = dice1 + dice2;
+    const player = game.players[game.turnColor];
+
+    player.currentTile =
+      (player.currentTile + advanceAmount);
+
     game.events.push({ roll: [dice1, dice2] });
-    game.players[game.turnColor].currentTile =
-      (game.players[game.turnColor].currentTile + advanceAmount);
-    if (game.players[game.turnColor].currentTile >= 24) {
+    if (player.currentTile >= 24) {
       // passed go
-      game.players[game.turnColor].currentTile = game.players[game.turnColor].currentTile % game.tiles.length;
+      player.currentTile = player.currentTile % game.tiles.length;
     }
     game.events.push({ move: advanceAmount });
 
     playOnLandTile(game);
     break;
   case 'buy':
+    game.events.push({ buy: move.type });
     nextTurn(game);
     break;
   case 'nobuyland':

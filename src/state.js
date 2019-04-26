@@ -172,3 +172,12 @@ export function defaults() {
     events: {}
   };
 }
+
+export const Chances = {
+  all: {
+    backward1: {
+      name: "1 slot backward",
+      details: "Move backward by 1 slot"
+    }
+  }
+};

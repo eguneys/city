@@ -35,19 +35,23 @@ export default function start(ctrl, redraw) {
     },
 
     clearCamera() {
-      return anim(ctrl.data, () => { return ctrl.clearCamera(); });
+      return anim(ctrl.data, () => ctrl.clearCamera());
+    },
+
+    chance(key) {
+      return anim(ctrl.data, () => ctrl.showChance(key));
     },
 
     buyCity(land) {
-      return anim(ctrl.data, () => { return ctrl.buyCity(land); });
+      return anim(ctrl.data, () => ctrl.buyCity(land));
     },
 
     roll(dice1, dice2) {
-      return anim(ctrl.data, () => { return ctrl.roll(dice1, dice2); });
+      return anim(ctrl.data, () => ctrl.roll(dice1, dice2));
     },
 
     move(amount) {
-      return anim(ctrl.data, () => { return ctrl.move(amount); });
+      return anim(ctrl.data, () => ctrl.move(amount));
     }
   };
 
@@ -83,5 +87,5 @@ function anim(state, mutate) {
              }
              raf((now = perf.now()) => step(state, now));
   })
-          ]);
+         ]);
 }

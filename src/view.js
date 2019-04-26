@@ -1,5 +1,5 @@
 import { h } from 'snabbdom';
-
+import { Chances } from './state';
 import threeStart from './threeMain';
 
 function canvas(ctrl) {
@@ -33,11 +33,28 @@ function myturn(ctrl) {
 function paytoll(ctrl) {
   if (ctrl.vm.payingToll) {
     const { city, amount } = ctrl.vm.payingToll;
-    return h('div.paytoll', [
+    return h('div.popup.paytoll', [
       h('div.city_name', h('span', city.name)),
       h('div.details', [
         h('span', 'TOLL'),
         h('span', amount)
+      ])
+    ]);
+  }
+  return '';
+}
+
+function showchance(ctrl) {
+  if (ctrl.vm.showingChance) {
+    const { key } = ctrl.vm.showingChance;
+    const chance = Chances.all[key];
+    return h('div.popup.chance', [
+      h('img', { attrs: {
+        src: 'http://placekitten.com/200/200'
+      } }),
+      h('div.chance_name', h('span', chance.name)),
+      h('div.details', [
+        h('span', chance.details)
       ])
     ]);
   }
@@ -248,6 +265,7 @@ function renderApp(ctrl) {
     myturn(ctrl),
     turn(ctrl),
     paytoll(ctrl),
+    showchance(ctrl),
     h('div.player_wrap.player1', {}, [
       playerCashDiff(ctrl, 'player1'),
       player(ctrl, 'player1'),

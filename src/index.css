@@ -147,14 +147,60 @@ body {
   color: #c4a300;
 }
 
-.paytoll {
+.popup {
   position: absolute;
   top: calc(50% - 12px);
   left: calc(50% - 80px);
+  animation: popup .5s;
+  display: flex;
+  flex-flow: column nowrap;
+  overflow: hidden;
+}
+
+.chance {
+  width: 180px;
+  top: calc(50% - 80px);
+  background: lightgreen;
+  border: 2px solid black;
+  border-radius: 10px;
+  padding: 4px;
   color: white;
   -webkit-text-stroke-width: 1px;
   -webkit-text-stroke-color: black;
-  animation: popup .5s;
+}
+
+.chance > img {
+  height: 120px;
+  width: 100%;
+  border-radius: 10px 10px 0 0;
+
+}
+
+.chance > .chance_name {
+  font-size: 16px;
+  text-align: center;
+  color: white;
+  padding: 2px 4px;
+  background: black;
+}
+
+.chance > .details {
+  height: 60px;
+  text-align: center;
+  display: flex;
+  align-items: center;
+  padding: 2px 8px;
+  font-size: 14px;
+  border-radius: 0 0 10px 10px;
+  background: white;
+  color: black;
+  -webkit-text-stroke-width: 0px;
+}
+
+.paytoll {
+  color: white;
+  -webkit-text-stroke-width: 1px;
+  -webkit-text-stroke-color: black;
 }
 
 .paytoll > .city_name {

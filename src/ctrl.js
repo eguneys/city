@@ -22,10 +22,24 @@ export default function Controller(state, redraw) {
     const diff = newAmount - oldAmount;
     this.vm.playerCashDiff[player] = diff;
 
-    setTimeout(() => {
-      delete this.vm.playerCashDiff[player];
-      redraw();
-    }, 2000);
+    return new Promise(resolve =>
+      setTimeout(() => {
+        delete this.vm.playerCashDiff[player];
+        redraw();
+        resolve();
+      }, 2000)
+    );
+  };
+
+  this.showChance = function(key) {
+    this.vm.showingChance = { key };
+
+    return new Promise(resolve =>
+      setTimeout(() => {
+        delete this.vm.showingChance;
+        redraw();
+        resolve();
+      }, 2500));
   };
 
   this.showPayToll = function(city, amount) {
@@ -147,11 +161,12 @@ export default function Controller(state, redraw) {
       .to({x: 1, y: 1, z: 1 }, 500)
       .start();
 
-    this.playerCash(state.turnColor,
-                    player.cash - land.cost);
-
     property.owner = state.turnColor;
     property.owned = landType;
+
+    return this
+      .playerCash(state.turnColor,
+                  player.cash - land.cost);
   };
   
   this.move = function(amount) {
