@@ -5,7 +5,9 @@ export function Socket(handlers) {
   this.push = (msg) => {
 
     lastProm = lastProm.then(() => {
-      return handlers[msg.t](msg.d);
+      var handler = handlers[msg.t];
+      if (handler) return handler(msg.d);
+      return Promise.resolve();
     });
     return lastProm;
   };

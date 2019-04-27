@@ -164,5 +164,14 @@ function gameTests() {
     is('cant afford buy', game6, null);
   });
 
+  withGame(game => {
+    log("finish game");
+    game.players['player2'].cash = 10;
+    const game2 = applyMoves(game, landOnShanghai,
+                             Buy("hotel"), landOnShanghai);
+    is("game ends when player bankrupts", game2.finished(), true);
+    oneevent("player bankrupts", game2, 'bankrupt');
+  });
+
 }
 

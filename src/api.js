@@ -33,8 +33,12 @@ export default function start(ctrl, redraw) {
       return anim(ctrl.data, () => ctrl.clearCamera());
     },
 
-    payToll() {
-      return anim(ctrl.data, () => ctrl.payToll());
+    bankrupt() {
+      return anim(ctrl.data, () => ctrl.bankrupt());
+    },
+    
+    payToll(showPaytoll) {
+      return anim(ctrl.data, () => ctrl.payToll(showPaytoll));
     },
 
     chance(key) {

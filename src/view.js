@@ -230,6 +230,19 @@ function playerCashDiff(ctrl, player) {
   return h('div.card.cash_diff.' + diff_up_klass, contents);
 }
 
+function playerBankrupt(ctrl, key) {
+  const bankrupt = ctrl.vm.bankrupt === key;
+  const player = ctrl.data.players[key];
+
+  if (!bankrupt) return '';
+
+  return h('div.card.bankrupt', [
+    h('span.name', player.name),
+    h('span.red', 'BANKRUPT')
+  ]);
+  
+}
+
 function player(ctrl, key) {
   const player = ctrl.data.players[key],
         isActive = key === ctrl.data.turnColor;
@@ -271,6 +284,7 @@ function renderApp(ctrl) {
     showchance(ctrl),
     h('div.player_wrap.player1', {}, [
       playerCashDiff(ctrl, 'player1'),
+      playerBankrupt(ctrl, 'player1'),
       player(ctrl, 'player1'),
       h('div.rank', [
         h('span.stroked', 1),
@@ -283,6 +297,7 @@ function renderApp(ctrl) {
         h('span.stroked', 'ND')
       ]),
       playerCashDiff(ctrl, 'player2'),
+      playerBankrupt(ctrl, 'player2'),
       player(ctrl, 'player2'),
     ])
   ];

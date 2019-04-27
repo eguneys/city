@@ -1,6 +1,25 @@
 import { Chances } from './chance';
 import { Cities, Tiles } from './state';
 
+export function testGame() {
+  return new Game({
+    prompt: 'roll',
+    turnColor: 'player1',
+    turns: 0,
+    players: {
+      player1: {
+        cash: 200,
+        currentTile: 0
+      },
+      player2: {
+        cash: 200,
+        currentTile: 0
+      },
+    },
+    tolls: {}
+  });
+}
+
 export function makeGame() {
   return new Game({
     prompt: 'roll',
@@ -16,17 +35,28 @@ export function makeGame() {
         currentTile: 0
       },
     },
-    tolls: {}
+    tolls: {},
+    status: 'created'
   });
 }
 
 export function Game({
-  prompt, turnColor, turns, players, tolls }) {
+  prompt, turnColor, turns, players, tolls, status }) {
   this.prompt = prompt;
   this.turnColor = turnColor;
   this.turns = turns;
   this.players = players;
   this.tolls = tolls;
+  this.status = status;
+
+  this.finished = () => this.status === 'end';
+  this.started = () => this.status === 'started';
+
+  this.start = () => {
+    if (this.started()) return;
+    
+    this.status = 'started';
+  };
 
   this.nextTurn = () => {
     this.turns++;
@@ -65,9 +95,13 @@ export function Game({
     player.cash -= amount;
     owner.cash += amount;
 
-
-
     this.events.push({ toll: true });
+
+    if (player.cash <= 0) {
+      this.events.push({ bankrupt: true });
+      this.status = 'end';
+    }
+
     return this.nextTurn();
   };
 

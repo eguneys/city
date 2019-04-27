@@ -1,12 +1,12 @@
 import { Move } from './move';
-import { makeGame } from './game';
+import { testGame, makeGame } from './game';
 
 export function Server() {
 
   const player1 = new Pov('player1');
   const player2 = new Pov('player2');
   
-  const game = makeGame();
+  const game = testGame();
 
   this.members = [];
 
@@ -16,8 +16,7 @@ export function Server() {
 
   this.send = function(pov, move) {
     if (pov === game.turnColor) {
-      const events = playMove(game, move);
-      requestFishnet(this, game);
+      const events = playMove(this, game, move);
       this.members.forEach(member=>
         events.map(e => {
           member.push(e.jsFor(pov));
@@ -33,13 +32,20 @@ export function Server() {
 }
 
 
-function playMove(game, move) {
+function playMove(server, game, move) {
   const newGame = game.move(Move.apply(move));
 
   if (!newGame) {
     return [];
   } else {
-    return [new MoveEvent(game, move)];
+    var events = [new MoveEvent(game, move)];
+
+    if (newGame.finished()) {
+      events.push(new EndEvent(game));
+    } else {
+      requestFishnet(server, game);
+    }
+    return events;
   }
 }
 
@@ -87,6 +93,17 @@ function MoveEvent(game, move) {
         prompt: game.prompt,
         events: game.events
       }
+    };
+  };
+}
+
+function EndEvent(game) {
+  this.typ = 'end';
+
+  this.jsFor = (pov) => {
+    return {
+      "t": this.typ,
+      "d": {}
     };
   };
 }

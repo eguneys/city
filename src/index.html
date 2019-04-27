@@ -57,9 +57,13 @@ const promiseSerial = funcs =>
            return () => api.chance(event.chance);
          }
          if (event.toll) {
-           return () => api.payToll();
+           const showPaytoll = o.events.filter(e => !!e.bankrupt).length === 0;
+           return () => api.payToll(showPaytoll);
          }
-         return () => Promise.reject();
+         if (event.bankrupt) {
+           return () => api.bankrupt();
+         }
+         return () => Promise.reject("Unhandled move event " + event);
        });
        return promiseSerial(reqs).then(() => {
          if (o.prompt === 'roll') {
@@ -78,6 +82,9 @@ const promiseSerial = funcs =>
          throw err;
          reload();
        });
+     },
+     end() {
+       console.log('done');
      }
    };
 
@@ -96,14 +103,14 @@ const promiseSerial = funcs =>
      }
    };
 
-   const api = City(document.getElementById('app'), config);
-
    const server = new City.Server();
    const socket = new City.Socket(handlers);
    server.connect('player2', socket);
 
    const data = server.get();
    setData(config, data);
+
+   const api = City(document.getElementById('app'), config);
 
    return api;
  }

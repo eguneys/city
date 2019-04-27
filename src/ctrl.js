@@ -63,7 +63,7 @@ export default function Controller(state, redraw) {
     );
   };
 
-  this.payToll = function() {
+  this.payToll = function(showPaytoll) {
     const fromPlayerKey = state.turnColor;
     const fromPlayer = state.players[fromPlayerKey];
 
@@ -86,13 +86,17 @@ export default function Controller(state, redraw) {
 
     return new Promise(resolve =>
       setTimeout(() => {
-        this.playerCash(toPlayerKey, toCashNew);
+        const cashPromise = this.playerCash(toPlayerKey, toCashNew);
         redraw();
 
+        if (!showPaytoll) {
+          cashPromise.then(resolve);
+          return;
+        }
         setTimeout(() => {
           this.showPayToll(city, amount).then(resolve);
         }, 1000);
-      }, 1000)
+      }, 200)
     );
   };  
 
@@ -160,6 +164,11 @@ export default function Controller(state, redraw) {
     var cout = tween(threeD.camera.position)
         .to(threeD.camera.basePosition, 500)
         .start();
+  };
+
+  this.bankrupt = function() {
+    this.vm.bankrupt = this.data.turnColor;
+    redraw();
   };
 
   this.buyCity = function(landType) {
