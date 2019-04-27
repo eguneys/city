@@ -5,14 +5,16 @@ export function testGame() {
   return new Game({
     prompt: 'roll',
     turnColor: 'player1',
-    turns: 0,
+    turns: 1,
     players: {
       player1: {
         cash: 200,
+        asset: 200,
         currentTile: 0
       },
       player2: {
         cash: 100,
+        asset: 100,
         currentTile: 0
       },
     },
@@ -24,14 +26,16 @@ export function makeGame() {
   return new Game({
     prompt: 'roll',
     turnColor: 'player1',
-    turns: 0,
+    turns: 1,
     players: {
       player1: {
         cash: 2000,
+        asset: 2000,
         currentTile: 0
       },
       player2: {
         cash: 2000,
+        asset: 2000,
         currentTile: 0
       },
     },
@@ -60,7 +64,7 @@ export function Game({
 
   this.nextTurn = () => {
     this.turns++;
-    this.turnColor = this.turns % 2 === 0 ? 'player1':'player2';
+    this.turnColor = this.turns % 2 === 1 ? 'player1':'player2';
     this.prompt = 'roll';
     return this;
   };

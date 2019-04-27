@@ -67,7 +67,7 @@ function gameTests() {
   withGame(game => {
     const game2 = game.move(landOnCity);
     is('prompt is ok', game2.prompt, 'buycity');
-    is('turn is ok', game2.turns, 0);
+    is('turn is ok', game2.turns, 1);
     is('current tile is ok', game2.players[game2.turnColor].currentTile, 2);
     is('cannot roll twice', game2.move(Roll()), null);
   });
@@ -77,7 +77,7 @@ function gameTests() {
     log('buycity nobuyland');
     ok('is valid', game2);
     is('prompt is ok', game2.prompt, 'roll');
-    is('turn is ok', game2.turns, 1);
+    is('turn is ok', game2.turns, 2);
     noevent('no buy event', game2, 'buy');
   });
 
@@ -86,7 +86,7 @@ function gameTests() {
     log('buycity buyland');
     ok('is valid', game2);
     is('prompt is ok', game2.prompt, 'roll');
-    is('turn is ok', game2.turns, 1);
+    is('turn is ok', game2.turns, 2);
     oneevent('one buy event', game2, 'buy');
   });
   
@@ -95,7 +95,7 @@ function gameTests() {
     log('buycity start roll on city');
     ok('is valid', game2);
     is('prompt is ok', game2.prompt, 'roll');
-    is('turn is ok', game2.turns, 2);
+    is('turn is ok', game2.turns, 3);
 
     const game3 = game2.move(Buy('land'));
     is('not possible to buyland before roll', game3, null);
@@ -124,12 +124,12 @@ function gameTests() {
     log('pay toll');
     const game2 = applyMoves(game, landOnCity, Buy("land"), landOnCity);
     is('prompt roll', game2.prompt, 'roll');
-    is('turns ok', game2.turns, 2);
+    is('turns ok', game2.turns, 3);
     oneevent('paytoll event', game2, 'toll');
     log("land on own city when land owned");
     const game3 = game.move(RollWith(Tiles.length, 0));
     is('prompt buycity', game3.prompt, 'buycity');
-    is('turns ok', game3.turns, 2);
+    is('turns ok', game3.turns, 3);
     noevent('no paytoll', game3, 'toll');
     log("land on own city when hotel owned");
     const game4 = applyMoves(game3,
@@ -139,7 +139,7 @@ function gameTests() {
                              RollWith(Tiles.length, 0));
     ok('is valid', game4);
     is('prompt is roll', game4.prompt, 'roll');
-    is ('turns ok', game4.turns, 5);
+    is ('turns ok', game4.turns, 6);
     noevent('no paytoll', game4, 'toll');
   });
 

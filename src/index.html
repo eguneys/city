@@ -39,7 +39,7 @@ const promiseSerial = funcs =>
      move(o) {
        const oldTurnColor = config.turns % 2 === 0 ? 'player1':'player2';
        config.turns = o.turns;
-       config.turnColor = o.turns % 2 === 0 ? 'player1':'player2';
+       config.turnColor = o.turns % 2 === 1 ? 'player1':'player2';
        const myTurn = config.turnColor === 'player2';
 
        api.clearCamera();
@@ -78,7 +78,8 @@ const promiseSerial = funcs =>
            }
          }
          api.set({
-           turnColor: config.turnColor
+           turnColor: config.turnColor,
+           turns: config.turns
          });
        }).catch(err => {
          throw err;
@@ -131,6 +132,7 @@ const promiseSerial = funcs =>
  function setData(config, data) {
    config.players = data.players;
    config.tolls = data.tolls;
+   config.turns = data.turns;
    config.playerColor = data.playerColor;
    config.turnColor = data.turnColor;
    config.prompt = data.prompt;

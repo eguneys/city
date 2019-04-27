@@ -1,6 +1,7 @@
 body {
   font-family: 'Fredoka One', cursive;
   /* font-family: 'Luckiest Guy', cursive; */
+  background: black;
 }
 
 #app_wrap {

@@ -16,7 +16,7 @@ function canvas(ctrl) {
 function turn(ctrl) {
   return h('div.turn', {}, [
     h('span.stroked', 'TURN'),
-    h('span.stroked', 17)
+    h('span.stroked', Math.ceil(ctrl.data.turns / 2))
   ]);
 }
 
