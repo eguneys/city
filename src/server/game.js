@@ -1,4 +1,5 @@
 import { Chances } from './chance';
+import { Tiles } from './state';
 
 export function makeGame() {
   return new Game({
@@ -19,46 +20,17 @@ export function makeGame() {
         currentTile: 0
       },
     },
-    tolls: {},
-    tiles: [
-      { type: 'corner', key: 'go' },
-      { type: 'city', key: 'hongkong' },
-      { type: 'city', key: 'shanghai' },
-      { type: 'chance', key: 'chance' },
-      { type: 'city', key: 'jakarta' },
-      { type: 'city', key: 'singapore' },
-      { type: 'corner', key: 'tornado' },
-      { type: 'city', key: 'mumbai' },
-      { type: 'city', key: 'tahran' },
-      { type: 'chance', key: 'chance' },
-      { type: 'city', key: 'buenos' },
-      { type: 'city', key: 'saopaulo' },
-      { type: 'corner', key: 'bomb' },
-      { type: 'city', key: 'lisbon' },
-      { type: 'city', key: 'madrid' },
-      { type: 'chance', key: 'chance' },
-      { type: 'city', key: 'berlin' },
-      { type: 'city', key: 'rome' },
-      { type: 'corner', key: 'flight' },
-      { type: 'city', key: 'london' },
-      { type: 'chance', key: 'chance' },
-      { type: 'city', key: 'seoul' },
-      { type: 'city', key: 'jejudo' },
-      { type: 'city', key: 'newyork' }
-    ]
+    tolls: {}
   });
 }
 
 export function Game({
-  prompt, turnColor, turns, players, tolls, tiles
-}) {
+  prompt, turnColor, turns, players, tolls }) {
   this.prompt = prompt;
   this.turnColor = turnColor;
   this.turns = turns;
   this.players = players;
   this.tolls = tolls;
-  this.tiles = tiles;
-
 
   this.nextTurn = () => {
     this.turns++;
@@ -69,7 +41,7 @@ export function Game({
 
   this.buyLand = (type) => {
     const player = this.players[this.turnColor];
-    const tile = this.tiles[player.currentTile];
+    const tile = Tiles[player.currentTile];
     if (tile.type === 'city') {
       if (this.tolls[tile.key]) {
         if (this.tolls[tile.key].owner === this.turnColor) {
@@ -94,7 +66,7 @@ export function Game({
 
   const rollDice = (dice1, dice2, chance) => {
     const player = this.players[this.turnColor];
-    const tile = this.tiles[player.currentTile];
+    const tile = Tiles[player.currentTile];
 
     const advanceAmount = dice1 + dice2;
 
@@ -104,7 +76,7 @@ export function Game({
     this.events.push({ roll: [dice1, dice2] });
     if (player.currentTile >= 24) {
       // passed go
-      player.currentTile = player.currentTile % this.tiles.length;
+      player.currentTile = player.currentTile % Tiles.length;
     }
     this.events.push({ move: advanceAmount });
 
@@ -113,7 +85,7 @@ export function Game({
 
   this.playOnLandTile = (chance) => {
     const player = this.players[this.turnColor];
-    const tile = this.tiles[player.currentTile];
+    const tile = Tiles[player.currentTile];
 
     switch (tile.type) {
     case "city":

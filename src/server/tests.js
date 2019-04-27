@@ -1,6 +1,7 @@
 import { ok, is, not, isabove, deep_is, runtest, matcher, log } from './testutils';
 import { makeGame, Game } from './game';
 import { Buy, Nobuyland, Roll, RollWith } from './move';
+import { Tiles } from './state';
 
 
 const noevent = runtest(matcher((game, ename) => {
@@ -126,7 +127,7 @@ function gameTests() {
     is('turns ok', game2.turns, 2);
     oneevent('paytoll event', game2, 'toll');
     log("land on own city when land owned");
-    const game3 = game.move(RollWith(game.tiles.length, 0));
+    const game3 = game.move(RollWith(Tiles.length, 0));
     is('prompt buycity', game3.prompt, 'buycity');
     is('turns ok', game3.turns, 2);
     noevent('no paytoll', game3, 'toll');
@@ -135,7 +136,7 @@ function gameTests() {
                              Buy('hotel'),
                              landOnCity,
                              Nobuyland,
-                             RollWith(game.tiles.length, 0));
+                             RollWith(Tiles.length, 0));
     ok('is valid', game4);
     is('prompt is roll', game4.prompt, 'roll');
     is ('turns ok', game4.turns, 5);

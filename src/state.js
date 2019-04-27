@@ -1,3 +1,27 @@
+export function defaults() {
+  return {
+    playerColor: 'player2',
+    prompt: 'roll',
+    turnColor: 'player1',
+    players: {
+      player1: {
+        name: 'Player 1',
+        cash: 1000,
+        asset: 0,
+        currentTile: 0
+      },
+      player2: {
+        name: 'Player 2',
+        cash: 1000,
+        asset: 0,
+        currentTile: 0
+      },
+    },
+    tolls: {},
+    events: {}
+  };
+}
+
 export const Cities = {
   newyork: {
     name: 'New York',
@@ -114,66 +138,45 @@ export const Cities = {
   },
 };
 
+export const Tiles = [
+  { type: 'corner', key: 'go' },
+  { type: 'city', key: 'hongkong' },
+  { type: 'city', key: 'shanghai' },
+  { type: 'chance', key: 'chance' },
+  { type: 'city', key: 'jakarta' },
+  { type: 'city', key: 'singapore' },
+  { type: 'corner', key: 'tornado' },
+  { type: 'city', key: 'mumbai' },
+  { type: 'city', key: 'tahran' },
+  { type: 'chance', key: 'chance' },
+  { type: 'city', key: 'buenos' },
+  { type: 'city', key: 'saopaulo' },
+  { type: 'corner', key: 'bomb' },
+  { type: 'city', key: 'lisbon' },
+  { type: 'city', key: 'madrid' },
+  { type: 'chance', key: 'chance' },
+  { type: 'city', key: 'berlin' },
+  { type: 'city', key: 'rome' },
+  { type: 'corner', key: 'flight' },
+  { type: 'city', key: 'london' },
+  { type: 'chance', key: 'chance' },
+  { type: 'city', key: 'seoul' },
+  { type: 'city', key: 'jejudo' },
+  { type: 'city', key: 'newyork' }
+];
 
-export function defaults() {
-  return {
-    playerColor: 'player2',
-    prompt: 'roll',
-    turnColor: 'player1',
-    players: {
-      player1: {
-        name: 'Player 1',
-        cash: 1000,
-        asset: 0,
-        currentTile: 0
-      },
-      player2: {
-        name: 'Player 2',
-        cash: 1000,
-        asset: 0,
-        currentTile: 0
-      },
+export const Settings = {
+  colors: {
+    player1: {
+      color: 0xffff00,
+      dx: { x: 0, y: -4 }
     },
-    tolls: {},
-    tiles: [
-      { type: 'corner', key: 'go' },
-      { type: 'city', key: 'hongkong' },
-      { type: 'city', key: 'shanghai' },
-      { type: 'chance', key: 'chance' },
-      { type: 'city', key: 'jakarta' },
-      { type: 'city', key: 'singapore' },
-      { type: 'corner', key: 'tornado' },
-      { type: 'city', key: 'mumbai' },
-      { type: 'city', key: 'tahran' },
-      { type: 'chance', key: 'chance' },
-      { type: 'city', key: 'buenos' },
-      { type: 'city', key: 'saopaulo' },
-      { type: 'corner', key: 'bomb' },
-      { type: 'city', key: 'lisbon' },
-      { type: 'city', key: 'madrid' },
-      { type: 'chance', key: 'chance' },
-      { type: 'city', key: 'berlin' },
-      { type: 'city', key: 'rome' },
-      { type: 'corner', key: 'flight' },
-      { type: 'city', key: 'london' },
-      { type: 'chance', key: 'chance' },
-      { type: 'city', key: 'seoul' },
-      { type: 'city', key: 'jejudo' },
-      { type: 'city', key: 'newyork' }
-    ],
-    events: {},
-    colors: {
-      player1: {
-        color: 0xffff00,
-        dx: { x: 0, y: -4 }
-      },
-      player2: {
-        color: 0xff0000,
-        dx: { x: 0, y: 0 }
-      }
+    player2: {
+      color: 0xff0000,
+      dx: { x: 0, y: 0 }
     }
-  };
-}
+  }
+};
 
 export const Chances = {
   all: {

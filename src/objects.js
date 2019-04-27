@@ -1,3 +1,4 @@
+import { Settings, Tiles } from './state';
 import * as THREE from 'three';
 
 export default function initObjects(camera, state) {
@@ -97,7 +98,7 @@ function meshBoard(state, objects) {
   let tileMesh = oneSideTileGroup(
     objects.tiles,
     state.textures,
-    state.tiles.slice(1, 6));
+    Tiles.slice(1, 6));
   
   tileMesh.position.set(40, -40, 2);
   tilesGroup.add(tileMesh);
@@ -105,7 +106,7 @@ function meshBoard(state, objects) {
   tileMesh = oneSideTileGroup(
     objects.tiles,
     state.textures,
-    state.tiles.slice(7, 12));
+    Tiles.slice(7, 12));
   tileMesh.position.set(-30 - (6 * .5), -40, 2);
   tileMesh.rotation.z = - Math.PI / 2;
   tilesGroup.add(tileMesh);
@@ -113,7 +114,7 @@ function meshBoard(state, objects) {
   tileMesh = oneSideTileGroup(
     objects.tiles,
     state.textures,
-    state.tiles.slice(13, 18), -1);
+    Tiles.slice(13, 18), -1);
   tileMesh.position.set(-30 - (6 * .5), 30 + (6 * .5), 2);
   tileMesh.rotation.z = - Math.PI;
   tilesGroup.add(tileMesh);
@@ -121,7 +122,7 @@ function meshBoard(state, objects) {
   tileMesh = oneSideTileGroup(
     objects.tiles,
     state.textures,
-    state.tiles.slice(19, 24), -1);
+    Tiles.slice(19, 24), -1);
   tileMesh.position.set(40, 30 + (6 * .5), 2);
   tileMesh.rotation.z = - Math.PI * (3 / 2);
   tilesGroup.add(tileMesh);
@@ -130,7 +131,7 @@ function meshBoard(state, objects) {
 
   for (var key in state.players) {
     var player = state.players[key];
-    var { color, dx } = state.colors[key];
+    var { color, dx } = Settings.colors[key];
 
     let playerGeo = geoCube(4, 4, 4),
         playerMat = matPhong({ color: color }),
@@ -147,7 +148,7 @@ function meshBoard(state, objects) {
 
   for (key in state.tolls) {
     var toll = state.tolls[key];
-    var tile = objects.tiles[tileIndexByKey(state.tiles, key)];
+    var tile = objects.tiles[tileIndexByKey(Tiles, key)];
 
     if (toll.owner) {
       addProperty(state, objects,
@@ -172,13 +173,15 @@ function getMeshForProperty(color, propType) {
   var pMesh = group();
   switch(propType) {
   case 'land':
-    pMesh.add(mesh(geoCube(2, 1, 2),
+    pMesh.add(mesh(geoCube(4, 4, 0.5),
                    matPhong({ color: color })));
+    pMesh.add(mesh(geoCube(1, 1, 8),
+                   matPhong({ color: '#ffffff' })));
     break;
   case 'hotel':
-    pMesh.add(mesh(geoCube(4, 2, 4),
-                   matPhong({ color: color })));
-    pMesh.add(mesh(geoCube(2, 1, 8),
+    pMesh.add(mesh(geoCube(5, 2, 5),
+                   matPhong({ color: '#ffffff' })));
+    pMesh.add(mesh(geoCube(4, 1, 8),
                    matPhong({ color: color })));
     pMesh.add(mesh(geoCube(1, 1, 10),
                    matPhong({ color: color })));
@@ -195,10 +198,10 @@ export function addProperty(state, objects,
                             key, tile,
                             owner,
                             propType) {
-  const { color } = state.colors[owner];  
+  const { color } = Settings.colors[owner];  
   const result = group();
 
-  const tileIndex = tileIndexByKey(state.tiles, key);
+  const tileIndex = tileIndexByKey(Tiles, key);
 
   let pMesh = getMeshForProperty(color, propType);
 

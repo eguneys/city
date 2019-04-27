@@ -1,4 +1,4 @@
-import { Cities } from './state';
+import { Settings, Tiles, Cities } from './state';
 import TWEEN from '@tweenjs/tween.js';
 import { vec3, addProperty, getTilePosition, selectCityTexture, newSprite } from './objects';
 import { mesh, geoCube, matBasic } from './objects';
@@ -63,7 +63,7 @@ export default function Controller(state, redraw) {
     const fromPlayer = state.players[fromPlayerKey];
 
     const currentTile = fromPlayer.currentTile;
-    const cityKey = state.tiles[currentTile].key;
+    const cityKey = Tiles[currentTile].key;
 
     const city = Cities[cityKey];
     const toll = state.tolls[cityKey];
@@ -114,7 +114,7 @@ export default function Controller(state, redraw) {
 
   this.promptBuyCity = function() {
     const player = state.players[state.playerColor],
-          tile = state.tiles[player.currentTile],
+          tile = Tiles[player.currentTile],
           city = Cities[tile.key];
 
     this.vm.buyingCity = city;
@@ -161,7 +161,7 @@ export default function Controller(state, redraw) {
     const threeD = state.threeD.elements;
     const player = state.players[state.turnColor],
           currentTileNo = player.currentTile,
-          currentTile = state.tiles[currentTileNo],
+          currentTile = Tiles[currentTileNo],
           city = Cities[currentTile.key],
           land = city[landType];
 
@@ -219,10 +219,10 @@ export default function Controller(state, redraw) {
 
     const threeD = state.threeD.elements;
     const player = state.players[state.turnColor],
-          colors = state.colors[state.turnColor],
+          colors = Settings.colors[state.turnColor],
           currentTile = player.currentTile,
-          nextTile = (currentTile + amount) % state.tiles.length,
-          nTiles = tileNeighbors(currentTile, nextTile, amount<0?-1:1, state.tiles.length);
+          nextTile = (currentTile + amount) % Tiles.length,
+          nTiles = tileNeighbors(currentTile, nextTile, amount<0?-1:1, Tiles.length);
     player.currentTile = nextTile;
 
     const currentTilePos = getTilePosition(
