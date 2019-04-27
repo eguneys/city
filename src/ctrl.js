@@ -17,6 +17,11 @@ export default function Controller(state, redraw) {
     playerCashDiff: { }
   };
 
+  this.playerCashDiff = function(player, diff) {
+    const oldAmount = state.players[player].cash;
+    return this.playerCash(player, oldAmount + diff);
+  };
+
   this.playerCash = function(player, newAmount) {
     const oldAmount = state.players[player].cash;
     state.players[player].cash = newAmount;
@@ -236,7 +241,6 @@ export default function Controller(state, redraw) {
         }, 500);
     
     let firstTween, prevTween;
-
     for (var key in nTiles) {
       var tile = nTiles[key];
       const nextTilePos = getTilePosition(
@@ -262,7 +266,20 @@ export default function Controller(state, redraw) {
       if (prevTween) {
         prevTween.chain(t);
       }
-      prevTween = t;
+
+      if (tile === 0) {
+        var go = tween({});
+        go.to({ x: 100 }, 1000)
+          .onStart(() => {
+            this.playerCashDiff(state.turnColor,
+                                300);
+            redraw();
+          });
+        t.chain(go);
+        prevTween = go;
+      } else {
+        prevTween = t;
+      }
     }
 
     prevTween.onComplete(() => {

@@ -1,5 +1,5 @@
 import { Chances } from './chance';
-import { Tiles } from './state';
+import { Cities, Tiles } from './state';
 
 export function makeGame() {
   return new Game({
@@ -8,15 +8,11 @@ export function makeGame() {
     turns: 0,
     players: {
       player1: {
-        name: 'Player 1',
-        cash: 1000,
-        asset: 0,
+        cash: 2000,
         currentTile: 0
       },
       player2: {
-        name: 'Player 2',
-        cash: 1000,
-        asset: 0,
+        cash: 2000,
         currentTile: 0
       },
     },
@@ -39,26 +35,52 @@ export function Game({
     return this;
   };
 
+  const buyLandBase = (type) => {
+    const player = this.players[this.turnColor];
+    const tile = Tiles[player.currentTile];
+    const land = Cities[tile.key][type];
+
+    if (!land) return null;
+
+    if (player.cash < land.cost) return null;
+
+    player.cash -= land.cost;
+
+    this.tolls[tile.key] = {
+      owned: type,
+      owner: this.turnColor,
+      toll: land.toll
+    };
+    this.events.push({ buy: type });
+    return this.nextTurn();
+  };
+
+  const payToll = () => {
+    const player = this.players[this.turnColor];
+    const tile = Tiles[player.currentTile];
+    const toll = this.tolls[tile.key];
+    const owner = this.players[toll.owner];
+    const amount = toll.toll;
+
+    player.cash -= amount;
+    owner.cash += amount;
+
+
+
+    this.events.push({ toll: true });
+    return this.nextTurn();
+  };
+
   this.buyLand = (type) => {
     const player = this.players[this.turnColor];
     const tile = Tiles[player.currentTile];
     if (tile.type === 'city') {
       if (this.tolls[tile.key]) {
         if (this.tolls[tile.key].owner === this.turnColor) {
-          this.tolls[tile.key] = {
-            owned: type,
-            owner: this.turnColor
-          };
-          this.events.push({ buy: type });
-          return this.nextTurn();
+          return buyLandBase(type);
         }
       } else {
-        this.tolls[tile.key] = {
-          owned: type,
-          owner: this.turnColor
-        };
-        this.events.push({ buy: type });
-        return this.nextTurn();
+        return buyLandBase(type);
       }
     }
     return null;
@@ -77,6 +99,7 @@ export function Game({
     if (player.currentTile >= 24) {
       // passed go
       player.currentTile = player.currentTile % Tiles.length;
+      player.cash += 300;
     }
     this.events.push({ move: advanceAmount });
 
@@ -97,8 +120,7 @@ export function Game({
             this.prompt = "buycity";
           }
         } else {
-          this.events.push({ toll: true });
-          return this.nextTurn();
+          return payToll();
         }
       } else {
         this.prompt = "buycity";

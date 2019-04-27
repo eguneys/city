@@ -56,8 +56,15 @@ function requestFishnet(server, game) {
       }, 1000);
 
     } else if (game.prompt === 'buycity') {
-      setTimeout(() =>
-        server.send('player1', { uci: 'buy', type: 'hotel' }),
+      setTimeout(() => {
+        const cash = game.players['player1'].cash;
+
+        const types = ['hotel', 'building', 'villa', 'land'];
+
+        for (var type of types) {
+          server.send('player1', { uci: 'buy', type: type });
+        };
+      },
         5000
       );
     }

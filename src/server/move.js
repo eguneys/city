@@ -28,7 +28,7 @@ export const Nobuyland = {
 export function Roll() {
   return {
     uci: 'roll',
-    dice1: 4, //Math.ceil(Math.random() * 6),
+    dice1: 12, //Math.ceil(Math.random() * 6),
     dice2: 0, //Math.ceil(Math.random() * 6),
     chance: Chances.all[Math.floor(Math.random() * Chances.all.length)]
 

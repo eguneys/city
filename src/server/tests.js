@@ -141,7 +141,27 @@ function gameTests() {
     is('prompt is roll', game4.prompt, 'roll');
     is ('turns ok', game4.turns, 5);
     noevent('no paytoll', game4, 'toll');
+  });
 
+  const landOnShanghai = RollWith(1, 1);
+  const landOnGo = RollWith(Tiles.length, 0);
+  const passGo = RollWith(Tiles.length, 3, 'starcity');
+  withGame(game => {
+    log("cash payments");
+    const game2 = applyMoves(game, landOnShanghai, Buy("land"));
+    is('buy land pays cash', game2.players['player1'].cash, 1900);
+    const game3 = applyMoves(game, landOnShanghai);
+    is('pay toll pays cash', game2.players['player2'].cash, 1910);
+    is('payed toll earns cash', game2.players['player1'].cash, 1990);
+
+    const game4 = applyMoves(makeGame(), landOnGo);
+    is('land on go earns cash', game4.players['player1'].cash, 2300);
+    is('pass go earns cash', game4.move(passGo).players['player1'].cash, 2300);
+   
+    const game5 = makeGame();
+    game5.players['player1'].cash = 100;
+    const game6 = applyMoves(game5, landOnShanghai, Buy("hotel"));
+    is('cant afford buy', game6, null);
   });
 
 }
