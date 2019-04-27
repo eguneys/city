@@ -86,7 +86,6 @@ const promiseSerial = funcs =>
        });
      },
      end({winner}) {
-       console.log(winner);
        if (winner === config.playerColor) {
          api.youWin();
        } else {
@@ -135,6 +134,7 @@ const promiseSerial = funcs =>
    config.playerColor = data.playerColor;
    config.turnColor = data.turnColor;
    config.prompt = data.prompt;
+   api.set(config);
  }
 
  onClick(document.getElementById('citySelect'), (e) => {

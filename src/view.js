@@ -262,6 +262,40 @@ function playerBankrupt(ctrl, key) {
   
 }
 
+function playerRank(ctrl, key) {
+  var klass, text1, text2;
+
+  const players = [];  
+  for (var i of Object.keys(ctrl.data.players)) {
+    const p = ctrl.data.players[i];
+    players.push({ name: i, asset: p.asset });
+  }
+  players.sort((a, b) => a.asset<b.asset?-1:1);
+
+  var rank;
+  for (i in players) {
+    if (players[i].name === key) {
+      rank = i;
+      break;
+    }
+  }
+
+  
+  if (rank === '1') {
+    klass = 'yellow';
+    text1 = 1;
+    text2 = 'ST';
+  } else {
+    klass = 'red';
+    text1 = 2;
+    text2 = 'ND';    
+  }
+  return h('div.rank', [
+    h('span.stroked.' + klass, text1),
+    h('span.stroked', text2)
+  ]);
+}
+
 function player(ctrl, key) {
   const player = ctrl.data.players[key],
         isActive = key === ctrl.data.turnColor;
@@ -306,16 +340,10 @@ function renderApp(ctrl) {
       playerCashDiff(ctrl, 'player1'),
       playerBankrupt(ctrl, 'player1'),
       player(ctrl, 'player1'),
-      h('div.rank', [
-        h('span.stroked.yellow', 1),
-        h('span.stroked', 'ST')
-      ])
+      playerRank(ctrl, 'player1')
     ]),
     h('div.player_wrap.player2', {}, [
-      h('div.rank', [
-        h('span.stroked.red', 2),
-        h('span.stroked', 'ND')
-      ]),
+      playerRank(ctrl, 'player2'),
       playerCashDiff(ctrl, 'player2'),
       playerBankrupt(ctrl, 'player2'),
       player(ctrl, 'player2'),
