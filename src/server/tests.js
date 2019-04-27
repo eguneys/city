@@ -170,6 +170,7 @@ function gameTests() {
     const game2 = applyMoves(game, landOnShanghai,
                              Buy("hotel"), landOnShanghai);
     is("game ends when player bankrupts", game2.finished(), true);
+    is("game winner", game2.winner, 'player1');
     oneevent("player bankrupts", game2, 'bankrupt');
   });
 

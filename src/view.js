@@ -44,6 +44,25 @@ function paytoll(ctrl) {
   return '';
 }
 
+
+function youwin(ctrl) {
+  let klass, text;
+  if (ctrl.vm.youwin) {
+    text = 'YOU WIN';
+    klass = 'yellow';
+  } else if (ctrl.vm.youlose) {
+    text = 'YOU LOSE';
+    klass = 'red';
+  } else {
+    return '';
+  }
+
+ 
+  return h('div.winner.' + klass, [
+    h('span', text)
+  ]);
+}
+
 function showchance(ctrl) {
   if (ctrl.vm.showingChance) {
     const { key } = ctrl.vm.showingChance;
@@ -282,6 +301,7 @@ function renderApp(ctrl) {
     turn(ctrl),
     paytoll(ctrl),
     showchance(ctrl),
+    youwin(ctrl),
     h('div.player_wrap.player1', {}, [
       playerCashDiff(ctrl, 'player1'),
       playerBankrupt(ctrl, 'player1'),

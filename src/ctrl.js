@@ -17,6 +17,20 @@ export default function Controller(state, redraw) {
     playerCashDiff: { }
   };
 
+  this.youWin = function() {
+    this.vm.youwin = true;
+    redraw();
+    return new Promise(resolve => 
+      setTimeout(resolve, 2000));
+  };
+
+  this.youLose = function() {
+    this.vm.youlose = true;
+    redraw();
+    return new Promise(resolve => 
+      setTimeout(resolve, 2000));
+  };
+
   this.playerCashDiff = function(player, diff) {
     const oldAmount = state.players[player].cash;
     return this.playerCash(player, oldAmount + diff);

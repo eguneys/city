@@ -12,7 +12,7 @@ export function testGame() {
         currentTile: 0
       },
       player2: {
-        cash: 200,
+        cash: 100,
         currentTile: 0
       },
     },
@@ -99,6 +99,7 @@ export function Game({
 
     if (player.cash <= 0) {
       this.events.push({ bankrupt: true });
+      this.winner = this.turnColor==='player1'?'player2':'player1';
       this.status = 'end';
     }
 

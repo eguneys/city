@@ -103,7 +103,9 @@ function EndEvent(game) {
   this.jsFor = (pov) => {
     return {
       "t": this.typ,
-      "d": {}
+      "d": {
+        winner: game.winner
+      }
     };
   };
 }

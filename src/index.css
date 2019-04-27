@@ -33,6 +33,29 @@ body {
               0 0 0 1px #a4a4d5;
 }
 
+.winner {
+  position: absolute;
+  top: calc(50% - 60px);
+  left: calc(50% - 210px);
+  font-size: 5em;
+  display: flex;
+  justify-content: center;
+  z-index: 2;
+  animation: fade-in .2s;
+  -webkit-text-stroke-width: 2px;
+  -webkit-text-stroke-color: black;
+}
+
+.winner.red {
+  color: #bdc3c7; /* fallback for old browsers */
+  color: -webkit-linear-gradient(to right, #bdc3c7, #2c3e50); /* Chrome 10-25, Safari 5.1-6 */
+  color: linear-gradient(to right, #bdc3c7, #2c3e50);
+}
+
+.winner.yellow {
+  color: yellow;
+}
+
 .roll_overlay {
   position: absolute;
   width: 100%;
@@ -241,7 +264,10 @@ body {
   position: absolute;
   top: -4px;
   right: 16px;
-  background: red;
+  background: #ED213A;  /* fallback for old browsers */
+  background: -webkit-linear-gradient(to right, #93291E, #ED213A);  /* Chrome 10-25, Safari 5.1-6 */
+  background: linear-gradient(to right, #93291E, #ED213A); /* W3C, IE 10+/ Edge, Firefox 16+, Chrome 26+, Opera 12+, Safari 7+ */
+
   border-radius: 0 0 2em 2em;
   padding: 8px;
   color: white;

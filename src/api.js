@@ -14,11 +14,6 @@ export default function start(ctrl, redraw) {
       return ctrl.data;
     },
 
-    playerCash(player, newAmount) {
-      ctrl.playerCash(player, newAmount);
-      redraw();
-    },
-
     promptRoll() {
       ctrl.promptRoll();
       redraw();
@@ -27,6 +22,14 @@ export default function start(ctrl, redraw) {
     promptBuyCity() {
       ctrl.promptBuyCity();
       redraw();
+    },
+
+    youLose() {
+      return anim(ctrl.data, () => ctrl.youLose());
+    },    
+    
+    youWin() {
+      return anim(ctrl.data, () => ctrl.youWin());
     },
 
     clearCamera() {

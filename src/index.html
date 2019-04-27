@@ -83,8 +83,13 @@ const promiseSerial = funcs =>
          reload();
        });
      },
-     end() {
-       console.log('done');
+     end({winner}) {
+       console.log(winner);
+       if (winner === config.playerColor) {
+         api.youWin();
+       } else {
+         api.youLose();
+       }
      }
    };
 
@@ -99,16 +104,17 @@ const promiseSerial = funcs =>
        roll: () => {
          server.send('player2', { uci: 'roll' });
        },
-       onLoad: () => {}
+       onLoad: () => {
+         server.connect('player2', socket);
+
+         const data = server.get();
+         setData(config, data);
+       }
      }
    };
 
    const server = new City.Server();
    const socket = new City.Socket(handlers);
-   server.connect('player2', socket);
-
-   const data = server.get();
-   setData(config, data);
 
    const api = City(document.getElementById('app'), config);
 
