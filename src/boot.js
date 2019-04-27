@@ -1,3 +1,4 @@
+require("./colors.css");
 require("./index.css");
 const main = require('./main');
 const socket = require('./socket');

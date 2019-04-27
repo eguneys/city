@@ -52,7 +52,7 @@ function youwin(ctrl) {
     klass = 'yellow';
   } else if (ctrl.vm.youlose) {
     text = 'YOU LOSE';
-    klass = 'red';
+    klass = 'gray';
   } else {
     return '';
   }
@@ -115,7 +115,7 @@ function dice(ctrl) {
       }
     },
              h('div.dice',
-               h('span', ctrl.vm.dice)
+               h('span.yellow', ctrl.vm.dice)
               )
             );
     
@@ -191,7 +191,7 @@ function buycity(ctrl) {
                    click: () => ctrl.onNoBuyland()
                  }
                },
-                 h('span.stroked', 'X')),
+                 h('span.stroked.red', 'X')),
                h('div.title', [
                  h('div.toll',[
                    h('div.current', [
@@ -225,7 +225,7 @@ function playerCashDiff(ctrl, player) {
   if (diff < 0) {
     diff_up_klass = 'diff_down';
     contents = [
-      h('span', diff),
+      h('span.red', diff),
       h('div.diff_image', [
         h('span.stroked', 'DOWN'),
         h('i.fas.fa-arrow-down')
@@ -234,7 +234,7 @@ function playerCashDiff(ctrl, player) {
   } else {
     diff_up_klass = 'diff_up';
     contents = [
-      h('span', diff),
+      h('span.green', diff),
       h('div.diff_image', [
         h('i.fas.fa-arrow-up'),
         h('span.stroked', 'UP')
@@ -271,10 +271,10 @@ function player(ctrl, key) {
     h('div.score', [
       h('div.assets',
         [h('span.stroked', 'ASSET'),
-         h('span.stroked', player.asset)]),
+         h('span.stroked.yellow', player.asset)]),
       h('div.cash',
         [h('span.stroked', 'CASH'),
-         h('span.stroked', player.cash)]) 
+         h('span.stroked.green', player.cash)]) 
     ])
   ];
 
@@ -307,13 +307,13 @@ function renderApp(ctrl) {
       playerBankrupt(ctrl, 'player1'),
       player(ctrl, 'player1'),
       h('div.rank', [
-        h('span.stroked', 1),
+        h('span.stroked.yellow', 1),
         h('span.stroked', 'ST')
       ])
     ]),
     h('div.player_wrap.player2', {}, [
       h('div.rank', [
-        h('span.stroked', 2),
+        h('span.stroked.red', 2),
         h('span.stroked', 'ND')
       ]),
       playerCashDiff(ctrl, 'player2'),

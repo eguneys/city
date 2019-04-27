@@ -1,5 +1,6 @@
 body {
   font-family: 'Fredoka One', cursive;
+  /* font-family: 'Luckiest Guy', cursive; */
 }
 
 #app_wrap {
@@ -36,7 +37,7 @@ body {
 .winner {
   position: absolute;
   top: calc(50% - 60px);
-  left: calc(50% - 210px);
+  left: calc(50% - 180px);
   font-size: 5em;
   display: flex;
   justify-content: center;
@@ -44,16 +45,6 @@ body {
   animation: fade-in .2s;
   -webkit-text-stroke-width: 2px;
   -webkit-text-stroke-color: black;
-}
-
-.winner.red {
-  color: #bdc3c7; /* fallback for old browsers */
-  color: -webkit-linear-gradient(to right, #bdc3c7, #2c3e50); /* Chrome 10-25, Safari 5.1-6 */
-  color: linear-gradient(to right, #bdc3c7, #2c3e50);
-}
-
-.winner.yellow {
-  color: yellow;
 }
 
 .roll_overlay {
@@ -84,7 +75,9 @@ body {
 .roll {
   cursor: pointer;
   border-radius: 50px;
-  background: #c4a400;
+  background: #F7971E;  /* fallback for old browsers */
+background: -webkit-linear-gradient(to bottom, #FFD200, #F7971E);  /* Chrome 10-25, Safari 5.1-6 */
+background: linear-gradient(to bottom, #FFD200, #F7971E); /* W3C, IE 10+/ Edge, Firefox 16+, Chrome 26+, Opera 12+, Safari 7+ */
   border: 1px solid black;
   width: 92%;
   height: 92%;
@@ -97,7 +90,7 @@ body {
 .roll > span {
   align-self: center;
   color: white;
-  font-size: 1.6em;
+  font-size: 1.8em;
   -webkit-text-stroke-width: 2px;
   -webkit-text-stroke-color: black;
 }
@@ -460,10 +453,8 @@ body {
 
 .player_wrap > .bankrupt > .red {
   margin-top: -10px;
-  color: red;
   font-size: 1.8em;
 }
-
 
 .player_wrap > .cash_diff {
   position: absolute;
@@ -594,11 +585,15 @@ body {
 }
 
 .player1 > .player > .username {
-  background: #c4a300;
+  background: #F7971E;  /* fallback for old browsers */
+background: -webkit-linear-gradient(to bottom, #FFD200, #F7971E);  /* Chrome 10-25, Safari 5.1-6 */
+background: linear-gradient(to bottom, #FFD200, #F7971E); /* W3C, IE 10+/ Edge, Firefox 16+, Chrome 26+, Opera 12+, Safari 7+ */
 }
 
 .player2 > .player > .username {
-  background: #c40000;
+  background: #F00000;  /* fallback for old browsers */
+  background: -webkit-linear-gradient(to bottom, #DC281E, #F00000);  /* Chrome 10-25, Safari 5.1-6 */
+  background: linear-gradient(to bottom, #DC281E, #F00000); /* W3C, IE 10+/ Edge, Firefox 16+, Chrome 26+, Opera 12+, Safari 7+ */
 }
 
 
