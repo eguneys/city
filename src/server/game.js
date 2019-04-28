@@ -9,12 +9,10 @@ export function testGame() {
     players: {
       player1: {
         cash: 2000,
-        asset: 200,
         currentTile: 0
       },
       player2: {
         cash: 2000,
-        asset: 100,
         currentTile: 0
       },
     },
@@ -68,6 +66,19 @@ export function Game({
     this.status = 'started';
   };
 
+  this.playerAsset = (name) => {
+    const player = this.players[name];
+
+    const assets = Object.keys(this.tolls).reduce((amount, key) => {
+      const toll = this.tolls[key];
+      if (toll.owner !== name) return amount;
+      const cost = Cities[key][toll.owned].cost;
+      return amount + cost;
+    }, 0);
+
+    return assets + Math.max(0, player.cash);
+  };
+
   this.nextTurn = () => {
     this.turns++;
     this.turnColor = this.turns % 2 === 1 ? 'player1':'player2';
@@ -108,11 +119,16 @@ export function Game({
     this.events.push({ toll: true });
 
     if (player.cash <= 0) {
-      this.events.push({ bankrupt: true });
-      this.winner = this.turnColor==='player1'?'player2':'player1';
-      this.status = 'end';
+      if (this.playerAsset(this.turnColor) < Math.abs(player.cash)) {
+        this.events.push({ bankrupt: true });
+        this.winner = this.turnColor==='player1'?'player2':'player1';
+        this.status = 'end';
+        return this;
+      } else {
+        this.prompt = 'sell';
+        return this;
+      }
     }
-
     return this.nextTurn();
   };
 

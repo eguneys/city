@@ -26,18 +26,19 @@ export function Tests() {
 }
 
 function gameTests() {
-  const game = makeGame();
 
-  const invalidMoves = [Buy('land'),
-                        Nobuyland];
-                        
-  invalidMoves.forEach(move =>
-    withGame(game => {
-      var game2 = game.move(move);
-      is(`can't ${move.uci} on first move`,
-         game2, null);
-    })
-  );
+  withGame(game => {
+    const invalidMoves = [Buy('land'),
+                          Nobuyland];
+    
+    invalidMoves.forEach(move =>
+      withGame(game => {
+        var game2 = game.move(move);
+        is(`can't ${move.uci} on first move`,
+           game2, null);
+      })
+    );
+  });
 
   withGame(game => {
     var roll = Roll();
@@ -159,7 +160,7 @@ function gameTests() {
     // is('not valid', game5, null);
   });
 
-  const landOnShanghai = RollWith(1, 1);
+  const landOnShanghai = RollWith(2, 0);
   const landOnGo = RollWith(Tiles.length, 0);
   const passGo = RollWith(Tiles.length, 3, 'starcity');
   withGame(game => {
@@ -188,6 +189,43 @@ function gameTests() {
     is("game ends when player bankrupts", game2.finished(), true);
     is("game winner", game2.winner, 'player1');
     oneevent("player bankrupts", game2, 'bankrupt');
+  });
+
+  withGame(game => {
+    log("player assets");
+    is("cash is asset", game.playerAsset('player1'), game.players['player1'].cash);
+    const game2 = applyMoves(game, landOnShanghai, Buy("land"));
+    const landCost = Cities['shanghai']['land'].cost;
+    is("land is asset", game.playerAsset('player1'), game2.players['player1'].cash + landCost);
+
+    log("pay toll on low cash with assets");
+    // jakarta land toll 7
+    const game3 = applyMoves(makeGame(),
+                             landOnShanghai,
+                             Buy("land"),
+                             RollWith(4, 0),
+                             Buy("land"));
+    game3.players['player1'].cash = 0;
+    const game4 = game3.move(RollWith(2, 0));
+    is("prompt is sell", game4.prompt, 'sell');
+    is("turn is ok", game4.turns, 3);
+    noevent("no bankrupt", game4, 'bankrupt');
+    not('game is not finished', game4.finished(), true);
+
+    log("pay toll on low cash with no assets");
+    // jakarta land toll 7
+    const game5 = applyMoves(makeGame(),
+                             RollWith(2, 0),
+                             Nobuyland,
+                             RollWith(4, 0),
+                             Buy("land"));
+    game5.players['player1'].cash = 0;
+    const game6 = game5.move(RollWith(2, 0));
+    not("prompt is not sell", game6.prompt, 'sell');
+    is("turn is ok", game6.turns, 3);
+    oneevent("bankrupt", game6, 'bankrupt');
+    is('game is finished', game6.finished(), true);
+    
   });
 
 }
