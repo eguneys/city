@@ -1,7 +1,7 @@
 import { ok, is, not, isabove, deep_is, runtest, matcher, log } from './testutils';
 import { makeGame, Game } from './game';
 import { Buy, Nobuyland, Roll, RollWith } from './move';
-import { Tiles } from './state';
+import { Cities, Tiles } from './state';
 
 
 const noevent = runtest(matcher((game, ename) => {
@@ -62,6 +62,7 @@ function gameTests() {
 
   log('buycity');
   const landOnCity = RollWith(1,1);
+  const landOnCity2 = RollWith(1,3);
   const landOnChance = RollWith(1,2, 'ragstoriches');
   const landOnCorner = RollWith(3,3);
   withGame(game => {
@@ -88,6 +89,12 @@ function gameTests() {
     is('prompt is ok', game2.prompt, 'roll');
     is('turn is ok', game2.turns, 2);
     oneevent('one buy event', game2, 'buy');
+
+    log('buycity buyland on no cash');
+    game2.players['player2'].cash = 1;
+    const game3 = game.move(landOnCity2);
+    is('prompt is ok', game2.prompt, 'roll');
+    is('turn is next turn', game2.turns, 3);
   });
   
   withGame(game => {
@@ -149,10 +156,10 @@ function gameTests() {
   withGame(game => {
     log("cash payments");
     const game2 = applyMoves(game, landOnShanghai, Buy("land"));
-    is('buy land pays cash', game2.players['player1'].cash, 1900);
+    is('buy land pays cash', game2.players['player1'].cash, 2000 - Cities['shanghai']['land'].cost);
     const game3 = applyMoves(game, landOnShanghai);
-    is('pay toll pays cash', game2.players['player2'].cash, 1910);
-    is('payed toll earns cash', game2.players['player1'].cash, 1990);
+    is('pay toll pays cash', game2.players['player2'].cash, 2000 - Cities['shanghai']['land'].toll);
+    is('payed toll earns cash', game2.players['player1'].cash, 2000 - Cities['shanghai']['land'].cost + Cities['shanghai']['land'].toll);
 
     const game4 = applyMoves(makeGame(), landOnGo);
     is('land on go earns cash', game4.players['player1'].cash, 2300);

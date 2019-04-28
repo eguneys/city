@@ -145,26 +145,39 @@ export function Game({
     return this.playOnLandTile(chance);
   };
 
+  const promptBuyCityOrNot = () => {
+    const player = this.players[this.turnColor];
+    const tile = Tiles[player.currentTile];
+    const toll = this.tolls[tile.key];
+    const city = Cities[tile.key];
+    
+    const lands = ['land', 'villa', 'building', 'hotel'];
+
+    const availableLands = lands.filter(land => {
+      if (toll && lands.indexOf(land) <= lands.indexOf(toll.owned)) {
+        return false;
+      }
+      return city[land].cost < player.cash;
+    });
+
+    if (availableLands.length === 0) {
+      return this.nextTurn();
+    }
+    this.prompt = "buycity";
+    return this;
+  };
+
   this.playOnLandTile = (chance) => {
     const player = this.players[this.turnColor];
     const tile = Tiles[player.currentTile];
 
     switch (tile.type) {
     case "city":
-      if (this.tolls[tile.key]) {
-        if (this.tolls[tile.key].owner === this.turnColor) {
-          if (this.tolls[tile.key].owned === 'hotel') {
-            return this.nextTurn();
-          } else {
-            this.prompt = "buycity";
-          }
-        } else {
-          return payToll();
-        }
+      if (this.tolls[tile.key] && this.tolls[tile.key].owner !== this.turnColor) {
+        return payToll();
       } else {
-        this.prompt = "buycity";
+        return promptBuyCityOrNot();
       }
-      return this;
       break;
     case "chance":
       this.events.push({ chance: chance.key });
