@@ -2,6 +2,7 @@ import { Settings, Tiles, Cities } from './state';
 import TWEEN from '@tweenjs/tween.js';
 import { vec3, addProperty, getTilePosition, selectCityTexture, newSprite } from './objects';
 import { mesh, geoCube, matBasic } from './objects';
+import { bindSelectEvents } from './select';
 
 import { tileNeighbors } from './util';
 
@@ -175,6 +176,15 @@ export default function Controller(state, redraw) {
     callUserFunction(state.events.buyland, type);
   };
 
+  this.onSellCities = function() {
+    const selectedCities = this.vm.sellCity.selectedCities;
+    this.vm.sellCity.undo();
+    delete this.vm.sellCity;
+    redraw();
+    this.data.threeD.redraw();
+    callUserFunction(state.events.sellcities, selectedCities);
+  };
+
   this.clearCamera = function() {
     const threeD = state.threeD.elements;
 
@@ -211,7 +221,8 @@ export default function Controller(state, redraw) {
 
     state.tolls[currentTile.key] = {
       owner: state.turnColor,
-      owned: landType
+      owned: landType,
+      toll: land.toll
     };
 
     return this
@@ -219,18 +230,33 @@ export default function Controller(state, redraw) {
                   player.cash - land.cost);
   };
 
-  this.selectCity = function() {
+  this.selectCity = function(needMoney) {
     const threeD = state.threeD.elements;
     const player = state.players[state.turnColor];
 
-    const cityIndexes = [1,2,3, 4, 8, 11, 18, 19,22,23];
+    const cityIndexes = [];
+    Tiles.forEach((tile, i) => {
+      const toll = state.tolls[tile.key];
+      if (toll && toll.owner === state.turnColor) {
+        cityIndexes.push(i);
+      }
+    });
 
-    state.clickables = [];
+    const unbind = bindSelectEvents(this, redraw);
 
-    cityIndexes.forEach(index => {
-      const amount = 128;
-      const tile = threeD.tiles[index];
-      tile.position.z += 2;
+    this.vm.sellCity = {
+      needMoney,
+      selectedCities: [],
+      clickables: []
+    };
+
+    const undoChanges = cityIndexes.map(index => {
+      const tile = Tiles[index];
+      const toll = state.tolls[tile.key];
+      const ownedLand = Cities[tile.key][toll.owned];  
+      const amount = ownedLand.cost;
+      const tileMesh = threeD.tiles[index];
+      tileMesh.position.z += 2;
       //const sprite = newSprite({ map: selectCityTexture(128, 0xcdcd00) });
       const sprite = newSprite({ map: selectCityTexture(amount, '#cdfd00', '#bac000')});
       sprite.scale.set(16, 4, 1.0);
@@ -238,10 +264,21 @@ export default function Controller(state, redraw) {
       // const sprite = mesh(geoCube(20, 10, 10), matBasic({map: selectCityTexture(128, 0xcdcd00)}));
       sprite.tileIndex = index;
       sprite.tileAmount = amount;
+      sprite.tileKey = tile.key;
 
-      tile.add(sprite);
-      state.clickables.push(sprite);
+      tileMesh.add(sprite);
+      this.vm.sellCity.clickables.push(sprite);
+
+      return () => {
+        tileMesh.position.z -= 2;
+        tileMesh.remove(sprite);
+      };
     });
+    this.vm.sellCity.undo = () => {
+      unbind();
+      undoChanges.forEach(f => f());
+    };
+
   };
   
   this.move = function(amount) {

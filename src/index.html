@@ -37,7 +37,6 @@ const promiseSerial = funcs =>
  
    const handlers = {
      move(o) {
-       const oldTurnColor = config.turns % 2 === 0 ? 'player1':'player2';
        config.turns = o.turns;
        config.turnColor = o.turns % 2 === 1 ? 'player1':'player2';
        const myTurn = config.turnColor === 'player2';
@@ -106,6 +105,9 @@ const promiseSerial = funcs =>
        roll: () => {
          server.send('player2', { uci: 'roll' });
        },
+       sellcities: (cities) => {
+         console.log(cities);
+       },
        onLoad: () => {
          server.connect('player2', socket);
 
@@ -140,7 +142,7 @@ const promiseSerial = funcs =>
  }
 
  onClick(document.getElementById('citySelect'), (e) => {
-   api.selectCity();
+   api.selectCity(100);
  });
 
  function onClick(button, f) {

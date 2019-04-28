@@ -30,3 +30,7 @@ background: linear-gradient(to bottom, #a8e063, #56ab2f); /* W3C, IE 10+/ Edge, 
   -webkit-background-clip: text;
   -webkit-text-fill-color: transparent;
 }
+
+.blue {
+  background: linear-gradient(to top,  rgba(11,133,234,1) 11.2%, rgba(34,63,201,1) 91.1% );
+}

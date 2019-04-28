@@ -7,7 +7,10 @@ export default function start(ctrl, redraw) {
   return {
 
     set(config) {
-      return anim(ctrl.data, (state) => configure(state, config));
+      return anim(ctrl.data, (state) => {
+        configure(state, config);
+        state.threeD.redrawAll();
+      });
     },
 
     getState() {
@@ -48,8 +51,8 @@ export default function start(ctrl, redraw) {
       return anim(ctrl.data, () => ctrl.showChance(key));
     },
 
-    selectCity() {
-      return anim(ctrl.data, () => ctrl.selectCity());
+    selectCity(needMoney) {
+      return anim(ctrl.data, () => ctrl.selectCity(needMoney));
     },
 
     buyCity(land) {

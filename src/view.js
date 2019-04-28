@@ -1,5 +1,5 @@
 import { h } from 'snabbdom';
-import { Chances } from './state';
+import { Cities, Chances } from './state';
 import threeStart from './threeMain';
 
 function canvas(ctrl) {
@@ -61,6 +61,43 @@ function youwin(ctrl) {
   return h('div.winner.' + klass, [
     h('span', text)
   ]);
+}
+
+function sellCities(ctrl) {
+  if (ctrl.vm.sellCity) {
+    const { needMoney, selectedCities } = ctrl.vm.sellCity;
+    const cash = selectedCities.reduce((amount, key) => {
+      const toll = ctrl.data.tolls[key];
+      return amount + Cities[key][toll.owned].cost;
+    }, 0);
+    const remain = needMoney - cash;
+
+    const buttonKlass = remain <= 0 ? '':'disabled';
+    
+    return h('div.popup.sell_city', [
+      h('div.up', [
+        h('div.title', h('span.stroked', 'SELECT CITY TO SELL')),
+        h('div.details', [
+          h('div.need', [
+            h('span', 'NEED MONEY'),
+            h('span.yellow', needMoney)
+          ]),
+          h('div.remain', [
+            h('span', 'REMAIN'),
+            h('span.red', remain)
+          ])
+        ])
+      ]),
+      h('div.button.' + buttonKlass, {
+        on: {
+          click: () => {
+            if (remain <= 0) ctrl.onSellCities();
+          }
+        }
+      }, h('span.stroked', 'CONFIRM'))
+    ]);
+  }
+  return '';
 }
 
 function showchance(ctrl) {
@@ -346,6 +383,7 @@ function renderApp(ctrl) {
     turn(ctrl),
     paytoll(ctrl),
     showchance(ctrl),
+    sellCities(ctrl),
     youwin(ctrl),
     h('div.player_wrap.player1', {}, [
       playerCashDiff(ctrl, 'player1'),

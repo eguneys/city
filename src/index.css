@@ -174,6 +174,74 @@ background: linear-gradient(to bottom, #FFD200, #F7971E); /* W3C, IE 10+/ Edge, 
   overflow: hidden;
 }
 
+.sell_city {
+  top: calc(50% - 80px);
+  display: inline-block;
+  text-align: center;
+}
+
+.sell_city .button {
+  display: inline-block;
+  padding: 10px;
+  border-radius: 10px;
+  border: 2px solid black;
+  margin-top: 10px;
+  color: white;
+  background: #56ab2f;  /* fallback for old browsers */
+  background: -webkit-linear-gradient(to bottom, #a8e063, #56ab2f);  /* Chrome 10-25, Safari 5.1-6 */
+  background: linear-gradient(to bottom, #a8e063, #56ab2f); /* W3C, IE 10+/ Edge, Firefox 16+, Chrome 26+, Opera 12+, Safari 7+ */
+}
+
+.sell_city .button.disabled {
+  background: gray;
+}
+
+.sell_city .up {
+  width: 180px;
+  border: 1px solid black;
+  border-radius: 6px;
+  overflow: hidden;
+  font-size: 0.8em;
+  color: white;
+  -webkit-text-stroke-width: 1px;
+  -webkit-text-stroke-color: black;
+}
+
+.sell_city .details {
+  background: white;
+}
+
+.sell_city .title {
+  background: lightblue;
+  border-radius: 6px 6px 0px 0px;
+  padding: 4px;
+  text-align: center;
+}
+
+.sell_city .title span {
+  background: darkblue;
+  border-radius: 6px;
+  padding: 2px 16px;
+}
+
+.sell_city .details {
+  padding: 2px;
+}
+
+.sell_city .need,
+.sell_city .remain {
+  background: black;
+  border-radius: 6px;
+  margin: 2px;
+  padding: 2px;
+  display: flex;
+  justify-content: space-around;
+}
+
+.sell_city .remain span {
+  
+}
+
 .chance {
   width: 180px;
   top: calc(50% - 80px);

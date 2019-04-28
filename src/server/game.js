@@ -18,7 +18,13 @@ export function testGame() {
         currentTile: 0
       },
     },
-    tolls: {}
+    tolls: {
+      'shanghai': { owned: 'land', owner: 'player2', toll: 10 },
+      'hongkong': { owned: 'land', owner: 'player2', toll: 10 },
+      'mumbai': { owned: 'land', owner: 'player2', toll: 10 },
+      'london': { owned: 'land', owner: 'player2', toll: 10 },
+
+    }
   });
 }
 
