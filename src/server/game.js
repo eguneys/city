@@ -8,12 +8,12 @@ export function testGame() {
     turns: 1,
     players: {
       player1: {
-        cash: 200,
+        cash: 2000,
         asset: 200,
         currentTile: 0
       },
       player2: {
-        cash: 100,
+        cash: 2000,
         asset: 100,
         currentTile: 0
       },

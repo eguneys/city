@@ -131,20 +131,31 @@ function buycity(ctrl) {
     const city = ctrl.vm.buyingCity;
     const player = data.players[data.playerColor];
 
-    const lands = ['land', 'villa', 'building', 'hotel'].map(landName => {
-      let land = ctrl.vm.buyingCity[landName],
+    const landTypes = ['land', 'villa', 'building', 'hotel'];
+    const lands = landTypes.map(landName => {
+      let { city, toll } = ctrl.vm.buyingCity;
+      let land = city[landName],
           canAfford = land.cost < player.cash;
       
       let preText = '',
-          landInfo = '';
+          landInfo = '',
+          alreadyBought;
 
-      if (landName === 'land') {
+      if (!toll) {
         preText = h('span', 'BUYING');
-      } else if (!land.owner) {
-        preText = h('span', 'UPGRADE TO');
+      } else {
+        alreadyBought = landTypes.indexOf(landName) <= landTypes.indexOf(toll.owned);
+        if (landName === 'land') {
+          preText = h('span', 'BUYING');
+        }
+        else if (alreadyBought) {
+          preText = h('span');
+        } else {
+          preText = h('span', 'UPGRADE TO');
+        }
       }
 
-      if (!land.owner) {
+      if (!alreadyBought) {
         if (canAfford) {
           landInfo = h('div.land_info', {
             on: {
@@ -173,7 +184,7 @@ function buycity(ctrl) {
         }
       } else {
         landInfo = h('div.land_info', {},
-                     h('span', 'SOLD OUT')
+                     h('span.sold.stroked', 'SOLD OUT')
                     );
       }
 

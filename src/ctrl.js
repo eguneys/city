@@ -19,6 +19,7 @@ export default function Controller(state, redraw) {
 
   this.youWin = function() {
     this.vm.youwin = true;
+    this.vm.rollingDice = false;
     redraw();
     return new Promise(resolve => 
       setTimeout(resolve, 2000));
@@ -26,6 +27,7 @@ export default function Controller(state, redraw) {
 
   this.youLose = function() {
     this.vm.youlose = true;
+    this.vm.rollingDice = false;
     redraw();
     return new Promise(resolve => 
       setTimeout(resolve, 2000));
@@ -138,9 +140,10 @@ export default function Controller(state, redraw) {
   this.promptBuyCity = function() {
     const player = state.players[state.playerColor],
           tile = Tiles[player.currentTile],
-          city = Cities[tile.key];
+          city = Cities[tile.key],
+          toll = state.tolls[tile.key];
 
-    this.vm.buyingCity = city;
+    this.vm.buyingCity = { city, toll };
   };
 
   this.clearRoll = function() {

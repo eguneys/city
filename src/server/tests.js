@@ -127,6 +127,7 @@ function gameTests() {
     is('cant buyland', game2.move(Buy("land")), null);
   });
 
+  const landOnSame = RollWith(Tiles.length, 0);
   withGame(game => {
     log('pay toll');
     const game2 = applyMoves(game, landOnCity, Buy("land"), landOnCity);
@@ -134,7 +135,7 @@ function gameTests() {
     is('turns ok', game2.turns, 3);
     oneevent('paytoll event', game2, 'toll');
     log("land on own city when land owned");
-    const game3 = game.move(RollWith(Tiles.length, 0));
+    const game3 = game.move(landOnSame);
     is('prompt buycity', game3.prompt, 'buycity');
     is('turns ok', game3.turns, 3);
     noevent('no paytoll', game3, 'toll');
@@ -143,11 +144,19 @@ function gameTests() {
                              Buy('hotel'),
                              landOnCity,
                              Nobuyland,
-                             RollWith(Tiles.length, 0));
+                             landOnSame);
     ok('is valid', game4);
     is('prompt is roll', game4.prompt, 'roll');
     is ('turns ok', game4.turns, 6);
     noevent('no paytoll', game4, 'toll');
+    log("buy land twice");
+    const game5 = applyMoves(makeGame(),
+                             landOnCity,
+                             Buy("land"),
+                             landOnCity,
+                             landOnSame,
+                             Buy('land'));
+    // is('not valid', game5, null);
   });
 
   const landOnShanghai = RollWith(1, 1);

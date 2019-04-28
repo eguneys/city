@@ -391,6 +391,18 @@ background: linear-gradient(to bottom, #FFD200, #F7971E); /* W3C, IE 10+/ Edge, 
   color: white;
 }
 
+.land_info > span.sold {
+  color: white;
+  font-size: 20px;
+  background: red;
+  border-radius: 4px;
+  text-align: center;
+  padding: 6px;
+  align-self: center;
+  margin-top: 50px;
+  transform: rotate(-25deg);
+}
+
 .land_info > .toll,
 .land_info > .cost {
   color: white;

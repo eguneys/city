@@ -25,11 +25,20 @@ export const Nobuyland = {
   uci: 'nobuyland'
 };
 
+const withRolls = function(arr) {
+  var i = 0;
+  return () => {
+    return arr[(i++)%arr.length];
+  };
+};
+
+const rollTest1 = withRolls([1, 2, 3, 12, 5, 12]);
+
 export function Roll() {
   return {
     uci: 'roll',
-    dice1: Math.ceil(Math.random() * 6),
-    dice2: Math.ceil(Math.random() * 6),
+    dice1: rollTest1(),//Math.ceil(Math.random() * 6),
+    dice2: 0,//Math.ceil(Math.random() * 6),
     chance: Chances.all[Math.floor(Math.random() * Chances.all.length)]
 
   };

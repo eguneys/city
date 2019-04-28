@@ -213,6 +213,10 @@ export function addProperty(state, objects,
     result.position.set(0, -8, 2);
   }
 
+  if (objects.properties[key]) {
+    tile.remove(objects.properties[key]);
+  }
+
   tile.add(result);
   objects.properties[key] = result;
   return result;
