@@ -91,6 +91,7 @@ function MoveEvent(game, move) {
         move,
         turns: game.turns,
         prompt: game.prompt,
+        needMoney: game.needMoney,
         events: game.events
       }
     };

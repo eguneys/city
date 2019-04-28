@@ -12,7 +12,7 @@ export function testGame() {
         currentTile: 0
       },
       player2: {
-        cash: 2000,
+        cash: 0,
         currentTile: 0
       },
     },
@@ -116,8 +116,6 @@ export function Game({
     player.cash -= amount;
     owner.cash += amount;
 
-    this.events.push({ toll: true });
-
     if (player.cash <= 0) {
       if (this.playerAsset(this.turnColor) < Math.abs(player.cash)) {
         this.events.push({ bankrupt: true });
@@ -125,9 +123,12 @@ export function Game({
         this.status = 'end';
         return this;
       } else {
+        this.needMoney = Math.abs(player.cash);
         this.prompt = 'sell';
         return this;
       }
+    } else {
+      this.events.push({ toll: true });
     }
     return this.nextTurn();
   };

@@ -9,7 +9,6 @@ export default function start(ctrl, redraw) {
     set(config) {
       return anim(ctrl.data, (state) => {
         configure(state, config);
-        state.threeD.redrawAll();
       });
     },
 
@@ -51,8 +50,12 @@ export default function start(ctrl, redraw) {
       return anim(ctrl.data, () => ctrl.showChance(key));
     },
 
-    selectCity(needMoney) {
-      return anim(ctrl.data, () => ctrl.selectCity(needMoney));
+    sell(needMoney) {
+      return anim(ctrl.data, (state) =>
+                  ctrl.clearCamera())
+        .then(() => {
+          anim(ctrl.data, (state) => ctrl.selectCity(needMoney));
+        });
     },
 
     buyCity(land) {

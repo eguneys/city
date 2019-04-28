@@ -9,6 +9,8 @@ export const Move = {
       return Nobuyland;
     case "roll":
       return Roll();
+    case "sell":
+      return Sell(move.cities);
     }
     return null;
   }
@@ -17,13 +19,20 @@ export const Move = {
 export function Buy(type) {
   return {
     uci: 'buy',
-    type: type
+    type
   };
 }
 
 export const Nobuyland = {
   uci: 'nobuyland'
 };
+
+export function Sell(cities) {
+  return {
+    uci: 'sell',
+    cities
+  };
+}
 
 const withRolls = function(arr) {
   var i = 0;
@@ -33,11 +42,12 @@ const withRolls = function(arr) {
 };
 
 const rollTest1 = withRolls([1, 2, 3, 12, 5, 12]);
+const rollTest2 = withRolls([1, 2, 3, 2]);
 
 export function Roll() {
   return {
     uci: 'roll',
-    dice1: rollTest1(),//Math.ceil(Math.random() * 6),
+    dice1: rollTest2(),//Math.ceil(Math.random() * 6),
     dice2: 0,//Math.ceil(Math.random() * 6),
     chance: Chances.all[Math.floor(Math.random() * Chances.all.length)]
 

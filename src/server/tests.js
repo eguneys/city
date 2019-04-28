@@ -210,6 +210,7 @@ function gameTests() {
     is("prompt is sell", game4.prompt, 'sell');
     is("turn is ok", game4.turns, 3);
     noevent("no bankrupt", game4, 'bankrupt');
+    noevent("no bankrupt", game4, 'toll');
     not('game is not finished', game4.finished(), true);
 
     log("pay toll on low cash with no assets");
@@ -225,7 +226,6 @@ function gameTests() {
     is("turn is ok", game6.turns, 3);
     oneevent("bankrupt", game6, 'bankrupt');
     is('game is finished', game6.finished(), true);
-    
   });
 
 }
