@@ -1,6 +1,7 @@
 import * as THREE from 'three';
 
 import initObjects from './objects';
+import { addProperty } from './objects';
 
 export default function threeStart(element, state) {
 
@@ -16,6 +17,7 @@ export default function threeStart(element, state) {
     const elements = initObjects(camera, state);
 
     const redrawNow = () => {
+      updateObjects(state);
       renderer.render(elements.scene, camera);
     };
 
@@ -108,4 +110,15 @@ function initCamera(w, h) {
   camera.updateProjectionMatrix();
 
   return camera;
+}
+
+function updateObjects(state) {
+
+  for (var key of Object.keys(state.tolls)) {
+    const toll = state.tolls[key];
+
+    const threeDProp = addProperty(state,
+                                   key,
+                                   toll);
+  }
 }

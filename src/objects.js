@@ -1,9 +1,10 @@
 import { Settings, Tiles } from './state';
 import * as THREE from 'three';
+import TWEEN from '@tweenjs/tween.js';
 
 export default function initObjects(camera, state) {
   const objects = {
-    properties: {}
+    cities: {}
   };
 
   const scene = newScene();
@@ -194,14 +195,23 @@ function getMeshForProperty(color, propType) {
   return pMesh;
 }
 
-export function addProperty(state, objects,
-                            key, tile,
-                            owner,
-                            propType) {
-  const { color } = Settings.colors[owner];  
+export function addProperty(state,
+                            key,
+                            toll) {
+  const objects = state.threeD.elements;
+  const { owner } = toll;
+  const propType = toll.owned;
+
+  if (objects.cities[key] && objects.cities[key].propType === propType) {
+    return objects.cities[key];
+  }
+
+  const { color } = Settings.colors[owner];
+
   const result = group();
 
   const tileIndex = tileIndexByKey(Tiles, key);
+  const tile = objects.tiles[tileIndex];
 
   let pMesh = getMeshForProperty(color, propType);
 
@@ -213,13 +223,24 @@ export function addProperty(state, objects,
     result.position.set(0, -8, 2);
   }
 
-  if (objects.properties[key]) {
-    tile.remove(objects.properties[key]);
+  if (objects.cities[key]) {
+    tile.remove(objects.cities[key]);
   }
 
   tile.add(result);
-  objects.properties[key] = result;
+  objects.cities[key] = result;
+  result.propType = propType;
+
+  result.scale.set(0.1, 0.1, 0.1);
+  tween(result.scale)
+    .to({x: 1, y: 1, z: 1 }, 500)
+    .start();
+
   return result;
+}
+
+function tween(obj) {
+  return new TWEEN.Tween(obj);
 }
 
 export function getTilePosition(tiles, index) {

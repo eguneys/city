@@ -206,19 +206,6 @@ export default function Controller(state, redraw) {
           city = Cities[currentTile.key],
           land = city[landType];
 
-    const threeDTile = threeD.tiles[currentTileNo];
-
-    const threeDProp = addProperty(state, threeD,
-                                   currentTile.key,
-                                   threeDTile,
-                                   state.turnColor,
-                                   landType);
-
-    threeDProp.scale.set(0, 0, 0);
-    tween(threeDProp.scale)
-      .to({x: 1, y: 1, z: 1 }, 500)
-      .start();
-
     state.tolls[currentTile.key] = {
       owner: state.turnColor,
       owned: landType,
