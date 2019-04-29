@@ -254,8 +254,8 @@ function gameTests() {
                              // buenos
                              RollWith(10, 0),
                              Buy("hotel"),
-                             // sao paulo
-                             RollWith(9, 0),
+                             // mumbai
+                             RollWith(5, 0),
                              Buy("hotel"),
                              // player1
                              RollWith(3, 0),
@@ -263,9 +263,30 @@ function gameTests() {
     game6.players['player1'].cash = 0;
     const game7 = applyMoves(game6,
                              // buenos
-                             RollWith(23, 0),
+                             RollWith(3, 0),
                              Sell(['shanghai']));
     is("cant sell not enough cost", game7, null);
+
+
+    const game8 = applyMoves(makeGame(),
+                             // shanghai cost 30
+                             RollWith(2, 0),
+                             Buy("land"),
+                             // buenos hotel toll 525
+                             RollWith(10, 0),
+                             Buy("hotel"),
+                             // mumbai
+                             RollWith(5, 0),
+                             Buy("hotel"),
+                             // player1
+                             RollWith(3, 0),
+                             Nobuyland);
+    game8.players['player1'].cash = 525 - 30;
+    const game9 = applyMoves(game8,
+                             // buenos
+                             RollWith(3, 0),
+                             Sell(['shanghai']));
+    not("can sell with cash and asset", game9, null);
   });
 
   withGame(game => {
@@ -286,6 +307,7 @@ function gameTests() {
     is("prompt is roll", game7.prompt, 'roll');
     is("turns is ok", game7.turns, 4);
     is("player cash is ok", game7.players['player1'].cash, Cities['shanghai']['land'].cost - Cities['jakarta']['land'].toll);
+    is("player doesnt own city", game7.tolls['shanghai'], undefined);
     oneevent("sell event", game7, 'sell');
     oneevent("toll event", game7, 'toll');
   });

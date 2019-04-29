@@ -8,19 +8,19 @@ export function testGame() {
     turns: 1,
     players: {
       player1: {
-        cash: 2000,
+        cash: 100,
         currentTile: 0
       },
       player2: {
-        cash: 0,
+        cash: 2000,
         currentTile: 0
       },
     },
     tolls: {
-      'shanghai': { owned: 'land', owner: 'player2' },
-      'hongkong': { owned: 'land', owner: 'player2' },
-      'mumbai': { owned: 'land', owner: 'player2' },
-      'london': { owned: 'land', owner: 'player2' },
+      // 'shanghai': { owned: 'land', owner: 'player2' },
+      // 'hongkong': { owned: 'land', owner: 'player2' },
+      // 'mumbai': { owned: 'land', owner: 'player2' },
+      // 'london': { owned: 'land', owner: 'player2' },
 
     }
   });
@@ -34,12 +34,10 @@ export function makeGame() {
     players: {
       player1: {
         cash: 2000,
-        asset: 2000,
         currentTile: 0
       },
       player2: {
         cash: 2000,
-        asset: 2000,
         currentTile: 0
       },
     },
@@ -89,6 +87,7 @@ export function Game({
   this.sell = (cities) => {
     if (this.prompt !== 'sell') return null;
 
+    const player = this.players[this.turnColor];
     let amount = 0;
     for (var key of cities) {
       const toll = this.tolls[key];
@@ -96,11 +95,14 @@ export function Game({
       amount += Cities[key][toll.owned].cost;
     }
 
-    if (amount < this.needMoney) return null;
+    if (player.cash + amount < this.needMoney) return null;
 
+    for (key of cities) {
+      delete this.tolls[key];
+    }
 
     delete this.needMoney;
-    this.players[this.turnColor].cash += amount;
+    player.cash += amount;
 
     this.events.push({ sell: cities });
 

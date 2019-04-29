@@ -31,7 +31,7 @@ const promiseSerial = funcs =>
 
  const api = init();
  const tests = new City.Tests();
- // tests.run();
+ tests.run();
 
  function init() {
  
@@ -67,7 +67,7 @@ const promiseSerial = funcs =>
          if (event.sell) {
            return () => api.sell(event.sell);
          }
-         return () => Promise.reject("Unhandled move event " + event);
+         return () => Promise.reject("Unhandled move event " + JSON.stringify(event));
        });
        return promiseSerial(reqs).then(() => {
          if (o.prompt === 'roll') {

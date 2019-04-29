@@ -36,6 +36,8 @@ function playMove(server, game, move) {
   const newGame = game.move(Move.apply(move));
 
   if (!newGame) {
+    console.log("invalid move",
+                JSON.stringify(move));
     return [];
   } else {
     var events = [new MoveEvent(game, move)];
@@ -73,6 +75,17 @@ function requestFishnet(server, game) {
       },
         5000
       );
+    } else if (game.prompt === 'sell') {
+      setTimeout(() => {
+        const cities = [];
+        for (var key of Object.keys(game.tolls)) {
+          const toll = game.tolls[key];
+          if (toll.owner === 'player1') {
+            cities.push(key);
+          }
+        }
+        server.send('player1', { uci: 'sell', cities });
+      }, 5000);
     }
   }
 }

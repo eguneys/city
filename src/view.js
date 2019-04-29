@@ -344,6 +344,20 @@ function playerRank(ctrl, key) {
   ]);
 }
 
+function playerAsset(ctrl, name) {
+  const player = ctrl.data.players[name];
+  const tolls = ctrl.data.tolls;
+
+  const assets = Object.keys(tolls).reduce((amount, key) => {
+    const toll = tolls[key];
+    if (toll.owner !== name) return amount;
+    const cost = Cities[key][toll.owned].cost;
+    return amount + cost;
+  }, 0);
+
+  return assets + player.cash;
+}
+
 function player(ctrl, key) {
   const player = ctrl.data.players[key],
         isActive = key === ctrl.data.turnColor;
@@ -353,7 +367,7 @@ function player(ctrl, key) {
     h('div.score', [
       h('div.assets',
         [h('span.stroked', 'ASSET'),
-         h('span.stroked.yellow', player.asset)]),
+         h('span.stroked.yellow', playerAsset(ctrl, key))]),
       h('div.cash',
         [h('span.stroked', 'CASH'),
          h('span.stroked.green', player.cash)]) 
