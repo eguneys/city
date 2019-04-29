@@ -147,6 +147,58 @@ export default function Controller(state, redraw) {
     this.vm.buyingCity = { city, toll };
   };
 
+  this.promptSell = function(needMoney) {
+    const threeD = state.threeD.elements;
+    const player = state.players[state.turnColor];
+
+    const cityIndexes = [];
+    Tiles.forEach((tile, i) => {
+      const toll = state.tolls[tile.key];
+      if (toll && toll.owner === state.turnColor) {
+        cityIndexes.push(i);
+      }
+    });
+
+    const unbind = bindSelectEvents(this, redraw);
+
+    this.vm.sellCity = {
+      needMoney,
+      selectedCities: [],
+      clickables: []
+    };
+
+    const undoChanges = cityIndexes.map(index => {
+      const tile = Tiles[index];
+      const toll = state.tolls[tile.key];
+      const ownedLand = Cities[tile.key][toll.owned];  
+      const amount = ownedLand.cost;
+      const tileMesh = threeD.tiles[index];
+      tileMesh.position.z += 2;
+      //const sprite = newSprite({ map: selectCityTexture(128, 0xcdcd00) });
+      const sprite = newSprite({ map: selectCityTexture(amount, '#cdfd00', '#bac000')});
+      sprite.scale.set(16, 4, 1.0);
+      sprite.position.set(5, 0, 5);
+      // const sprite = mesh(geoCube(20, 10, 10), matBasic({map: selectCityTexture(128, 0xcdcd00)}));
+      sprite.tileIndex = index;
+      sprite.tileAmount = amount;
+      sprite.tileKey = tile.key;
+
+      tileMesh.add(sprite);
+      this.vm.sellCity.clickables.push(sprite);
+
+      return () => {
+        tileMesh.position.z -= 2;
+        tileMesh.remove(sprite);
+      };
+    });
+    this.vm.sellCity.undo = () => {
+      unbind();
+      undoChanges.forEach(f => f());
+    };
+
+  };
+  
+
   this.clearRoll = function() {
     delete this.vm.rollingDice;
     redraw();
@@ -217,57 +269,19 @@ export default function Controller(state, redraw) {
                   player.cash - land.cost);
   };
 
-  this.selectCity = function(needMoney) {
-    const threeD = state.threeD.elements;
-    const player = state.players[state.turnColor];
+  this.sell = function(cities) {
 
-    const cityIndexes = [];
-    Tiles.forEach((tile, i) => {
-      const toll = state.tolls[tile.key];
-      if (toll && toll.owner === state.turnColor) {
-        cityIndexes.push(i);
-      }
-    });
+    const amount = cities.reduce((amount, city) => {
+      const toll = this.data.tolls[city];
+      return Cities[city][toll.owned].cost + amount;
+    }, 0);
 
-    const unbind = bindSelectEvents(this, redraw);
+    this.data.removeTolls = cities;
+    state.players[state.turnColor].cash += amount;
 
-    this.vm.sellCity = {
-      needMoney,
-      selectedCities: [],
-      clickables: []
-    };
-
-    const undoChanges = cityIndexes.map(index => {
-      const tile = Tiles[index];
-      const toll = state.tolls[tile.key];
-      const ownedLand = Cities[tile.key][toll.owned];  
-      const amount = ownedLand.cost;
-      const tileMesh = threeD.tiles[index];
-      tileMesh.position.z += 2;
-      //const sprite = newSprite({ map: selectCityTexture(128, 0xcdcd00) });
-      const sprite = newSprite({ map: selectCityTexture(amount, '#cdfd00', '#bac000')});
-      sprite.scale.set(16, 4, 1.0);
-      sprite.position.set(5, 0, 5);
-      // const sprite = mesh(geoCube(20, 10, 10), matBasic({map: selectCityTexture(128, 0xcdcd00)}));
-      sprite.tileIndex = index;
-      sprite.tileAmount = amount;
-      sprite.tileKey = tile.key;
-
-      tileMesh.add(sprite);
-      this.vm.sellCity.clickables.push(sprite);
-
-      return () => {
-        tileMesh.position.z -= 2;
-        tileMesh.remove(sprite);
-      };
-    });
-    this.vm.sellCity.undo = () => {
-      unbind();
-      undoChanges.forEach(f => f());
-    };
-
+    return Promise.resolve();
   };
-  
+
   this.move = function(amount) {
    const isMyTurn = state.turnColor === state.playerColor,
          noFollow = !isMyTurn;

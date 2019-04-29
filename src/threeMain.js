@@ -1,7 +1,7 @@
 import * as THREE from 'three';
 
 import initObjects from './objects';
-import { addProperty } from './objects';
+import { addProperty, removeProperty } from './objects';
 
 export default function threeStart(element, state) {
 
@@ -113,6 +113,14 @@ function initCamera(w, h) {
 }
 
 function updateObjects(state) {
+
+  if (state.removeTolls) {
+    for (var city of state.removeTolls) {
+      delete state.tolls[city];
+      removeProperty(state, city);
+    }
+    delete state.removeTolls;
+  }
 
   for (var key of Object.keys(state.tolls)) {
     const toll = state.tolls[key];

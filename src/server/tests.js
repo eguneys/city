@@ -210,6 +210,7 @@ function gameTests() {
     const game4 = game3.move(RollWith(2, 0));
     is("prompt is sell", game4.prompt, 'sell');
     is("turn is ok", game4.turns, 3);
+    is("need money is ok", game4.needMoney, 7);
     noevent("no bankrupt", game4, 'bankrupt');
     noevent("no bankrupt", game4, 'toll');
     not('game is not finished', game4.finished(), true);
@@ -252,10 +253,17 @@ function gameTests() {
                              Buy("land"),
                              // buenos
                              RollWith(10, 0),
-                             Buy("hotel"));
+                             Buy("hotel"),
+                             // sao paulo
+                             RollWith(9, 0),
+                             Buy("hotel"),
+                             // player1
+                             RollWith(3, 0),
+                             Nobuyland);
     game6.players['player1'].cash = 0;
     const game7 = applyMoves(game6,
-                             RollWith(8, 0),
+                             // buenos
+                             RollWith(23, 0),
                              Sell(['shanghai']));
     is("cant sell not enough cost", game7, null);
   });
@@ -263,6 +271,7 @@ function gameTests() {
   withGame(game => {
     log("sell city");
     // jakarta land toll 7
+    // shanghai land cost 30
     const game6 = applyMoves(game,
                              landOnShanghai,
                              Buy("land"),
@@ -276,6 +285,7 @@ function gameTests() {
     ok('game is ok', game7);
     is("prompt is roll", game7.prompt, 'roll');
     is("turns is ok", game7.turns, 4);
+    is("player cash is ok", game7.players['player1'].cash, Cities['shanghai']['land'].cost - Cities['jakarta']['land'].toll);
     oneevent("sell event", game7, 'sell');
     oneevent("toll event", game7, 'toll');
   });

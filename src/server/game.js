@@ -17,10 +17,10 @@ export function testGame() {
       },
     },
     tolls: {
-      'shanghai': { owned: 'land', owner: 'player2', toll: 10 },
-      'hongkong': { owned: 'land', owner: 'player2', toll: 10 },
-      'mumbai': { owned: 'land', owner: 'player2', toll: 10 },
-      'london': { owned: 'land', owner: 'player2', toll: 10 },
+      'shanghai': { owned: 'land', owner: 'player2' },
+      'hongkong': { owned: 'land', owner: 'player2' },
+      'mumbai': { owned: 'land', owner: 'player2' },
+      'london': { owned: 'land', owner: 'player2' },
 
     }
   });
@@ -76,7 +76,7 @@ export function Game({
       return amount + cost;
     }, 0);
 
-    return assets + Math.max(0, player.cash);
+    return assets + player.cash;
   };
 
   this.nextTurn = () => {
@@ -93,11 +93,13 @@ export function Game({
     for (var key of cities) {
       const toll = this.tolls[key];
       if (!toll || toll.owner !== this.turnColor) return null;
-      amount += toll.cost;
+      amount += Cities[key][toll.owned].cost;
     }
 
     if (amount < this.needMoney) return null;
 
+
+    delete this.needMoney;
     this.players[this.turnColor].cash += amount;
 
     this.events.push({ sell: cities });
@@ -118,8 +120,7 @@ export function Game({
 
     this.tolls[tile.key] = {
       owned: type,
-      owner: this.turnColor,
-      toll: land.toll
+      owner: this.turnColor
     };
     this.events.push({ buy: type });
     return this.nextTurn();
@@ -130,23 +131,22 @@ export function Game({
     const tile = Tiles[player.currentTile];
     const toll = this.tolls[tile.key];
     const owner = this.players[toll.owner];
-    const amount = toll.toll;
+    const amount = Cities[tile.key][toll.owned].toll;
 
-    player.cash -= amount;
-    owner.cash += amount;
-
-    if (player.cash <= 0) {
-      if (this.playerAsset(this.turnColor) < Math.abs(player.cash)) {
+    if (player.cash < amount) {
+      if (this.playerAsset(this.turnColor) < Math.abs(player.cash - amount)) {
         this.events.push({ bankrupt: true });
         this.winner = this.turnColor==='player1'?'player2':'player1';
         this.status = 'end';
         return this;
       } else {
-        this.needMoney = Math.abs(player.cash);
+        this.needMoney = Math.abs(player.cash - amount);
         this.prompt = 'sell';
         return this;
       }
     } else {
+      player.cash -= amount;
+      owner.cash += amount;
       this.events.push({ toll: true });
     }
     return this.nextTurn();

@@ -195,6 +195,23 @@ function getMeshForProperty(color, propType) {
   return pMesh;
 }
 
+export function removeProperty(state, key) {
+
+  const objects = state.threeD.elements;
+  const tileIndex = tileIndexByKey(Tiles, key);
+  const tile = objects.tiles[tileIndex];
+
+
+
+  tween(objects.cities[key].scale)
+    .to({x: 0.1, y: 0.1, z: 0.1 }, 500)
+    .onComplete(() => {
+      tile.remove(objects.cities[key]);
+      delete objects.cities[key];
+    })
+    .start();
+}
+
 export function addProperty(state,
                             key,
                             toll) {

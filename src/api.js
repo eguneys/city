@@ -26,6 +26,14 @@ export default function start(ctrl, redraw) {
       redraw();
     },
 
+    promptSell(needMoney) {
+      return anim(ctrl.data, (state) =>
+                  ctrl.clearCamera())
+        .then(() => {
+          anim(ctrl.data, (state) => ctrl.promptSell(needMoney));
+        });
+    },
+
     youLose() {
       return anim(ctrl.data, () => ctrl.youLose());
     },    
@@ -50,16 +58,12 @@ export default function start(ctrl, redraw) {
       return anim(ctrl.data, () => ctrl.showChance(key));
     },
 
-    sell(needMoney) {
-      return anim(ctrl.data, (state) =>
-                  ctrl.clearCamera())
-        .then(() => {
-          anim(ctrl.data, (state) => ctrl.selectCity(needMoney));
-        });
-    },
-
     buyCity(land) {
       return anim(ctrl.data, () => ctrl.buyCity(land));
+    },
+
+    sell(cities) {
+      return anim(ctrl.data, () => ctrl.sell(cities));
     },
 
     roll(dice1, dice2) {
