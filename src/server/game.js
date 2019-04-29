@@ -86,6 +86,25 @@ export function Game({
     return this;
   };
 
+  this.sell = (cities) => {
+    if (this.prompt !== 'sell') return null;
+
+    let amount = 0;
+    for (var key of cities) {
+      const toll = this.tolls[key];
+      if (!toll || toll.owner !== this.turnColor) return null;
+      amount += toll.cost;
+    }
+
+    if (amount < this.needMoney) return null;
+
+    this.players[this.turnColor].cash += amount;
+
+    this.events.push({ sell: cities });
+
+    return payToll();
+  };
+
   const buyLandBase = (type) => {
     const player = this.players[this.turnColor];
     const tile = Tiles[player.currentTile];
@@ -232,6 +251,9 @@ export function Game({
       if (this.prompt !== 'buycity')
         return null;
       return this.nextTurn();
+      break;
+    case 'sell':
+      return this.sell(move.cities);
       break;
     }
     return null;

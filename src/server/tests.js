@@ -1,6 +1,6 @@
 import { ok, is, not, isabove, deep_is, runtest, matcher, log } from './testutils';
 import { makeGame, Game } from './game';
-import { Buy, Nobuyland, Roll, RollWith } from './move';
+import { Sell, Buy, Nobuyland, Roll, RollWith } from './move';
 import { Cities, Tiles } from './state';
 
 
@@ -29,7 +29,8 @@ function gameTests() {
 
   withGame(game => {
     const invalidMoves = [Buy('land'),
-                          Nobuyland];
+                          Nobuyland,
+                          Sell(['jakarta'])];
     
     invalidMoves.forEach(move =>
       withGame(game => {
@@ -226,6 +227,57 @@ function gameTests() {
     is("turn is ok", game6.turns, 3);
     oneevent("bankrupt", game6, 'bankrupt');
     is('game is finished', game6.finished(), true);
+  });
+
+  withGame(game => {
+    log("sell unowned city");
+    // jakarta land toll 7
+    const game3 = applyMoves(game,
+                             landOnShanghai,
+                             Buy("land"),
+                             // jakarta
+                             RollWith(4, 0),
+                             Buy("land"));
+    game3.players['player1'].cash = 0;
+    const game4 = applyMoves(game3,
+                             RollWith(2, 0),
+                             Sell(['hongkong']));
+    is("not valid", game4, null);
+    const game5 = game3.move(Sell(['jakarta']));
+    is("not valid", game5, null);
+
+    const game6 = applyMoves(makeGame(),
+                             // shanghai
+                             RollWith(2, 0),
+                             Buy("land"),
+                             // buenos
+                             RollWith(10, 0),
+                             Buy("hotel"));
+    game6.players['player1'].cash = 0;
+    const game7 = applyMoves(game6,
+                             RollWith(8, 0),
+                             Sell(['shanghai']));
+    is("cant sell not enough cost", game7, null);
+  });
+
+  withGame(game => {
+    log("sell city");
+    // jakarta land toll 7
+    const game6 = applyMoves(game,
+                             landOnShanghai,
+                             Buy("land"),
+                             // jakarta
+                             RollWith(4, 0),
+                             Buy("land"));
+    game6.players['player1'].cash = 0;
+    const game7 = applyMoves(game6,
+                             RollWith(2, 0),
+                             Sell(['shanghai']));
+    ok('game is ok', game7);
+    is("prompt is roll", game7.prompt, 'roll');
+    is("turns is ok", game7.turns, 4);
+    oneevent("sell event", game7, 'sell');
+    oneevent("toll event", game7, 'toll');
   });
 
 }
