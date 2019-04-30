@@ -122,7 +122,8 @@ export function Game({
 
     this.tolls[tile.key] = {
       owned: type,
-      owner: this.turnColor
+      owner: this.turnColor,
+      multiply: 1
     };
     this.events.push({ buy: type });
     return this.nextTurn();

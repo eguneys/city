@@ -1,10 +1,14 @@
-import { Settings, Tiles } from './state';
+import { tileIndexByKey, Settings, Tiles } from './state';
 import * as THREE from 'three';
 import TWEEN from '@tweenjs/tween.js';
 
+
 export default function initObjects(camera, state) {
   const objects = {
-    cities: {}
+    tiles: [],
+    cities: {},
+    streaks: {},
+    multiplies: {}
   };
 
   const scene = newScene();
@@ -70,13 +74,13 @@ function lights() {
 
   const ambient = lightAmbient(0xc0c0c0);
   // result.add(ambient);
-  let light = lightDirectional(0xffffff, 0.8);
+  let light = lightDirectional(0xffffff, 1.8);
   light.position.set(30, 50, 30);
   result.add(light);
 
   light = lightDirectional(0xffffff, 0.8);
   light.position.set(30, 50, 30);
-  result.add(light);
+  // result.add(light);
 
   return result;
 }
@@ -89,8 +93,6 @@ function meshBoard(state, objects) {
         boardMesh = mesh(boardGeo, boardMat);
   boardMesh.rotation.x = -Math.PI / 2.0;
   result.add(boardMesh);
-
-  objects.tiles = [];
 
   const tilesGroup = group();
   tilesGroup.position.set(-3, 3, 0);
@@ -150,13 +152,6 @@ function meshBoard(state, objects) {
   return result;
 }
 
-function tileIndexByKey(tiles, key) {
-  for (var i = 0; i < tiles.length; i++) {
-    if (tiles[i].key === key) return i;
-  }
-  return -1;
-}
-
 function getMeshForProperty(color, propType) {
   var pMesh = group();
   switch(propType) {
@@ -171,8 +166,9 @@ function getMeshForProperty(color, propType) {
                        matPhong({
                          color: color, side: THREE.DoubleSide }));
 
-    tMesh.rotation.setFromVector3(vec3(0,Math.PI * 0.5,-Math.PI*0.0));
-    tMesh.position.z = 4;
+    tMesh.rotation.z = Math.PI * 0.5;
+    tMesh.rotation.z = Math.PI * 0.5;
+    tMesh.position.z = 0;
     cMesh.rotation.x = Math.PI * 0.5;
     pMesh.add(mesh(geoCube(4, 4, 0.1),
                    matPhong({ color: color })));
@@ -199,7 +195,7 @@ function getMeshForProperty(color, propType) {
 export function removeProperty(state, key) {
 
   const objects = state.threeD.elements;
-  const tileIndex = tileIndexByKey(Tiles, key);
+  const tileIndex = tileIndexByKey(key);
   const tile = objects.tiles[tileIndex];
 
 
@@ -228,7 +224,7 @@ export function addProperty(state,
 
   const result = group();
 
-  const tileIndex = tileIndexByKey(Tiles, key);
+  const tileIndex = tileIndexByKey(key);
   const tile = objects.tiles[tileIndex];
 
   let pMesh = getMeshForProperty(color, propType);
@@ -256,6 +252,75 @@ export function addProperty(state,
 
   
   return result;
+}
+
+function getStreakMesh(color) {
+  return mesh(geoExtrude(shapeStreak(), {
+    steps: 2,
+    depth: 2.5,
+    bevelEnabled: true,
+    bevelThickness: 0.1,
+    bevelSize: 0.6,
+    bevelSegments: 10
+  }),
+              matPhong({ color: color, side: THREE.DoubleSide }));
+}
+
+export function addStreak(state, key, owner) {
+  const objects = state.threeD.elements;
+  
+  if (objects.streaks[key]) {
+    return;
+  }
+  const { color } = Settings.colors[owner];
+
+  const result = group();
+
+  const tileIndex = tileIndexByKey(key);
+  const tile = objects.tiles[tileIndex];
+
+  let pMesh = getStreakMesh(color);
+  pMesh.position.x = -15 - 0.25;
+  pMesh.position.y = -10 - 0.25;
+  pMesh.position.z = -1;
+  // pMesh.rotation.y = Math.PI * 0.5;
+  result.add(pMesh);
+
+  tile.add(result);
+  objects.streaks[key] = result;
+
+  result.position.set(0, 0, 100);
+  tween(result.position)
+    .easing(TWEEN.Easing.Bounce.InOut)
+    .to({x: 0, y: 0, z: 0 }, 600)
+    .start();
+
+  return;
+}
+
+export function addTollMultiply(state, key, multiply) {
+  const objects = state.threeD.elements;
+  
+  if (objects.multiplies[key] === multiply) {
+    return;
+  }
+
+  const tileIndex = tileIndexByKey(key);
+  const tile = objects.tiles[tileIndex];
+
+  let pMesh = mesh(geoPlane(10, 5.5),
+                   matBasic({ transparent: true,
+                              alphaTest: 0.1,
+                              map: tollMultiplyTexture('x' + multiply) }));
+  if (tileIndex < 6 || tileIndex > 18) {
+    pMesh.position.set(0, -8, 1.1);
+  } else {
+    pMesh.position.set(0, 8, 1.1);
+    pMesh.rotation.z = Math.PI;
+  }
+
+  tile.add(pMesh);
+  objects.multiplies[key] = multiply;
 }
 
 function tween(obj) {
@@ -368,6 +433,14 @@ export function geoCube(w, h, d) {
   return new THREE.CubeGeometry(w, h, d);
 }
 
+export function geoPlane(w, h) {
+  return new THREE.PlaneGeometry(w, h);
+}
+
+export function geoExtrude(shape, settings) {
+  return new THREE.ExtrudeBufferGeometry(shape, settings);
+}
+
 export function matPhong(opts) {
   return new THREE.MeshPhongMaterial(opts);
 }
@@ -401,15 +474,50 @@ export function newSprite(opts) {
   return new THREE.Sprite(mat);
 }
 
+function shapeStreak() {
+  const width = 20,
+        length = 20,
+        thick = 0.1,
+        radius = 2;
+  var shape = new THREE.Shape();
+  roundedRect3(shape, 0, 0, width, length, radius);
+
+  var hole = new THREE.Path();
+  roundedRect3(hole, thick, thick,
+               width - thick,
+               length - thick,
+               radius);
+  
+  shape.holes.push(hole);
+  return shape;
+}
+
+export function tollMultiplyTexture(amount) {
+  const width = 64,
+        height = 32;
+  const texture = withCanvasTexture(width, height, (canvas, ctx) => {
+    ctx.fillStyle = 'rgba(0, 0, 0, 0)';
+    ctx.clearRect(0, 0, width, height);
+    ctx.fillRect(0, 0, width, height);
+    ctx.font = '18pt Fredoka One';
+    ctx.fillStyle = 'black';
+    ctx.textAlign='center';
+    ctx.textBaseline='middle';
+    ctx.fillText(amount, width / 2, height / 2);
+    return canvas;
+  });
+  return texture;
+}
+
 export function selectCityTexture(amount, color, color2) {
   const width = 256,
         height = 128;
-  const canvas = withCanvas(width, height, (canvas, ctx) => {
+  const texture = withCanvasTexture(width, height, (canvas, ctx) => {
     const border1 = 2,
           border2 = 10,
           radius = 50;
 
-    ctx.font = '60pt Arial';
+    ctx.font = '60pt Fredoka One';
     ctx.fillStyle = 'black';
     roundRect(ctx, 0, 0, width, height, radius);
     ctx.fillStyle = color;
@@ -422,10 +530,7 @@ export function selectCityTexture(amount, color, color2) {
     ctx.fillText(amount, 128, 80);
     return canvas;
   });
-
-  const texture = newTexture(canvas);
-  texture.needsUpdate = true;
-  return texture;  
+  return texture;
 }
 
 // https://github.com/stemkoski/stemkoski.github.com/blob/master/Three.js/Sprite-Text-Labels.html
@@ -447,9 +552,27 @@ function roundRect(ctx, x, y, w, h, r)
   ctx.stroke();   
 }
 
-function withCanvas(width, height, f) {
+function withCanvasTexture(width, height, f) {
   var canvas = document.createElement('canvas');
   canvas.width = width;
   canvas.height = height;
-  return f(canvas, canvas.getContext('2d'));
+  f(canvas, canvas.getContext('2d'));
+
+  // document.body.appendChild(canvas);
+
+  const texture = newTexture(canvas);
+  texture.needsUpdate = true;
+  return texture;  
+}
+
+function roundedRect3(ctx, x, y, width, height, radius) {
+  ctx.moveTo( x, y + radius );
+  ctx.lineTo( x, y + height - radius );
+  ctx.quadraticCurveTo( x, y + height, x + radius, y + height );
+  ctx.lineTo( x + width - radius, y + height );
+  ctx.quadraticCurveTo( x + width, y + height, x + width, y + height - radius );
+  ctx.lineTo( x + width, y + radius );
+  ctx.quadraticCurveTo( x + width, y, x + width - radius, y );
+  ctx.lineTo( x + radius, y );
+  ctx.quadraticCurveTo( x, y, x, y + radius );
 }

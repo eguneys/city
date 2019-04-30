@@ -1,4 +1,4 @@
-import { Settings, Tiles, Cities } from './state';
+import { Settings, Tiles, Cities, nextTileKey } from './state';
 import TWEEN from '@tweenjs/tween.js';
 import { vec3, addProperty, getTilePosition, selectCityTexture, newSprite } from './objects';
 import { mesh, geoCube, matBasic } from './objects';
@@ -250,8 +250,16 @@ export default function Controller(state, redraw) {
     redraw();
   };
 
-  this.cityStreak = function() {
+  this.cityStreak = function(city) {
+    state.streaks[city] = state.turnColor;
     
+    const cities = [city, nextTileKey(city)];
+
+    for (var key of cities) {
+      state.tolls[key] = {
+        multiply: state.tolls[key].multiply * 2
+      };
+    }
   };
 
   this.buyCity = function(landType) {
@@ -264,7 +272,7 @@ export default function Controller(state, redraw) {
     state.tolls[currentTile.key] = {
       owner: state.turnColor,
       owned: landType,
-      toll: land.toll
+      multiply: 1
     };
 
     return this

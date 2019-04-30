@@ -46,8 +46,8 @@ export default function start(ctrl, redraw) {
       return anim(ctrl.data, () => ctrl.clearCamera());
     },
 
-    cityStreak() {
-      return anim(ctrl.data, () => ctrl.cityStreak());
+    cityStreak(city) {
+      return anim(ctrl.data, () => ctrl.cityStreak(city));
     },
 
     bankrupt() {

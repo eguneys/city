@@ -18,6 +18,7 @@ export function defaults() {
       },
     },
     tolls: {},
+    streaks: {},
     events: {}
   };
 }
@@ -137,6 +138,17 @@ export const Cities = {
     hotel: { toll: 96, cost: 125 },
   },
 };
+
+export function nextTileKey(key) {
+  return Tiles[tileIndexByKey(key) + 1].key;
+}
+
+export function tileIndexByKey(key) {
+  for (var i = 0; i < Tiles.length; i++) {
+    if (Tiles[i].key === key) return i;
+  }
+  return -1;
+}
 
 export const Tiles = [
   { type: 'corner', key: 'go' },
