@@ -98,33 +98,71 @@ function meshBoard(state, objects) {
   tilesGroup.position.set(-3, 3, 0);
   boardMesh.add(tilesGroup);
 
+  const goMat = [
+    matPhong({ color: 0xffffff }),
+    matPhong({ color: 0xffffff }),
+    matPhong({ color: 0xffffff }),
+    matPhong({ color: 0xffffff }),
+    matBasic({ map: goTexture() }),
+    matPhong({ color: 0xffffff })
+  ];
   let tileMesh = oneSideTileGroup(
     objects.tiles,
     state.textures,
+    goMat,
     Tiles.slice(1, 6));
   
   tileMesh.position.set(40, -40, 2);
   tilesGroup.add(tileMesh);
 
+  const tornadoMat = [
+    matPhong({ color: 0xffffff }),
+    matPhong({ color: 0xffffff }),
+    matPhong({ color: 0xffffff }),
+    matPhong({ color: 0xffffff }),
+    matBasic({ map: spiralTexture() }),
+    matPhong({ color: 0xffffff })
+  ];
   tileMesh = oneSideTileGroup(
     objects.tiles,
     state.textures,
+    tornadoMat,
     Tiles.slice(7, 12));
   tileMesh.position.set(-30 - (6 * .5), -40, 2);
   tileMesh.rotation.z = - Math.PI / 2;
   tilesGroup.add(tileMesh);
 
+
+  const cannonMat = [
+    matPhong({ color: 0xffffff }),
+    matPhong({ color: 0xffffff }),
+    matPhong({ color: 0xffffff }),
+    matPhong({ color: 0xffffff }),
+    matBasic({ map: cannonTexture() }),
+    matPhong({ color: 0xffffff })
+  ];
   tileMesh = oneSideTileGroup(
     objects.tiles,
     state.textures,
+    cannonMat,
     Tiles.slice(13, 18), -1);
   tileMesh.position.set(-30 - (6 * .5), 30 + (6 * .5), 2);
   tileMesh.rotation.z = - Math.PI;
   tilesGroup.add(tileMesh);
 
+
+  const starMat = [
+    matPhong({ color: 0xffffff }),
+    matPhong({ color: 0xffffff }),
+    matPhong({ color: 0xffffff }),
+    matPhong({ color: 0xffffff }),
+    matBasic({ map: starTexture() }),
+    matPhong({ color: 0xffffff })
+  ];
   tileMesh = oneSideTileGroup(
     objects.tiles,
     state.textures,
+    starMat,
     Tiles.slice(19, 24), -1);
   tileMesh.position.set(40, 30 + (6 * .5), 2);
   tileMesh.rotation.z = - Math.PI * (3 / 2);
@@ -334,7 +372,7 @@ export function getTilePosition(tiles, index) {
   return vec3().setFromMatrixPosition(tile.matrixWorld);
 }
 
-function oneSideTileGroup(objectsTiles, textures, tiles, rotation = 1) {
+function oneSideTileGroup(objectsTiles, textures, cornerMat, tiles, rotation = 1) {
   const colorMap = {
     hongkong: { color: 0xffd700 },
     shanghai: { color: 0xffd700 },
@@ -358,7 +396,6 @@ function oneSideTileGroup(objectsTiles, textures, tiles, rotation = 1) {
   const tileGroup = group();
 
   const cornerGeo = geoCube(20, 20, 2),
-        cornerMat = matPhong({ color: 0xffffff }),
         cornerMesh = mesh(cornerGeo, cornerMat);
   // cornerMesh.position.set(38, -38, 2);
   tileGroup.add(cornerMesh);
@@ -509,6 +546,113 @@ export function tollMultiplyTexture(amount) {
     return canvas;
   });
   return texture;
+}
+
+// https://subscription.packtpub.com/book/web_development/9781849691369/1/ch01lvl1sec16/drawing-a-spiral
+export function spiralTexture() {
+  const width = 128,
+        height = 128;
+  return withCanvasTexture(width, height, (canvas, ctx) => {
+    ctx.fillStyle = 'white';
+    ctx.fillRect(0, 0, width, height);
+
+    var radius = 0,
+        angle = 0;
+    ctx.lineWidth = 10;
+    ctx.strokeStyle = "#0096FF";
+    ctx.beginPath();
+    ctx.moveTo(width / 2, height / 2);
+    for (var n = 0; n < 150; n++) {
+      radius += 0.75;
+      angle += (Math.PI * 2) / 50;
+      var x = width / 2 + radius * Math.cos(angle);
+      var y = height / 2 + radius * Math.sin(angle);
+      ctx.lineTo(x, y);
+    }
+    ctx.stroke();
+    return canvas;
+  });
+}
+
+export function cannonTexture() {
+  const width = 128,
+        height = 128;
+  return withCanvasTexture(width, height, (canvas, ctx) => {
+    ctx.fillStyle = 'white';
+    ctx.fillRect(0, 0, width, height);
+    ctx.lineWidth = 10;
+    ctx.strokeStyle = "#000600";
+
+    ctx.beginPath();
+    ctx.arc(width / 2, height / 2, 50, 0, Math.PI * 2, true);
+    ctx.stroke();
+
+    return canvas;
+  });
+}
+
+
+export function starTexture() {
+  const width = 128,
+        height = 128;
+  return withCanvasTexture(width, height, (canvas, ctx) => {
+    var r = 20,
+        inset = 2;
+
+    ctx.fillStyle = 'white';
+    ctx.fillRect(0, 0, width, height);
+    ctx.lineWidth = 10;
+    ctx.strokeStyle = "#96FF00";
+
+    ctx.save();
+    ctx.beginPath();
+    ctx.translate(width / 2, height / 2);
+    ctx.moveTo(0, 0 - r);
+    for (var i = 0; i < 5; i++) {
+      ctx.rotate(Math.PI / 5);
+      ctx.lineTo(0, 0 - (r * inset));
+      ctx.rotate(Math.PI / 5);
+      ctx.lineTo(0, 0 - r);
+    }
+
+    ctx.closePath();
+    ctx.stroke();
+    ctx.restore();
+
+    return canvas;
+  });
+}
+
+
+export function goTexture() {
+  const width = 128,
+        height = 128;
+  return withCanvasTexture(width, height, (canvas, ctx) => {
+    const border = 10;
+    ctx.fillStyle = 'white';
+    ctx.fillRect(0, 0, width, height);
+    ctx.lineWidth = 10;
+    ctx.fillStyle = "#00f6FF";
+    ctx.fillRect(border, border, width - border * 2, height - border * 2);
+    
+    // https://stackoverflow.com/questions/4649836/using-html5-canvas-rotate-image-about-arbitrary-point
+    ctx.translate(width / 2, height / 2);
+    ctx.rotate(-Math.PI * 0.25);
+    ctx.translate(-width / 2, -height / 2);
+    ctx.font = '50pt Fredoka One';
+    ctx.strokeStyle = "#00c6FF";
+    ctx.lineWidth = 8;
+    ctx.textAlign='center';
+    ctx.textBaseline='middle';
+    ctx.strokeText('GO', width / 2, height / 2);
+    ctx.fillStyle = '#ffff00';
+    ctx.textAlign='center';
+    ctx.textBaseline='middle';
+    ctx.fillText('GO', width / 2, height / 2);
+
+
+    return canvas;
+  });
 }
 
 export function selectCityTexture(amount, color, color2) {
