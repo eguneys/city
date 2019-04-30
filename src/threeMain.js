@@ -1,5 +1,6 @@
 import * as THREE from 'three';
 
+import { anim } from './api';
 import initObjects from './objects';
 import { addProperty, removeProperty } from './objects';
 
@@ -34,7 +35,8 @@ export default function threeStart(element, state) {
   if (module.hot) {
     module.hot.accept('./objects', function() {
       try {
-      redrawAll();      
+        redrawAll();
+        anim(state, () => {});
       } catch (e) {
         console.log(e);
       }

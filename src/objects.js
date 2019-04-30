@@ -147,19 +147,6 @@ function meshBoard(state, objects) {
     objects[key] = playerMesh;
   }
 
-  for (key in state.tolls) {
-    var toll = state.tolls[key];
-    var tile = objects.tiles[tileIndexByKey(Tiles, key)];
-
-    if (toll.owner) {
-      addProperty(state, objects,
-                  key,
-                  tile,
-                  toll.owner,
-                  toll.owned);
-    }
-  }
-
   return result;
 }
 
@@ -174,10 +161,23 @@ function getMeshForProperty(color, propType) {
   var pMesh = group();
   switch(propType) {
   case 'land':
-    pMesh.add(mesh(geoCube(4, 4, 0.5),
+    const cMesh = mesh(geoCylinder(0.5,0.5,8,5),
+                       matPhong({
+                         color: '#ffffff' }));
+
+    const tMesh = mesh(geoTriangle(vec3(0,0,0),
+                                   vec3(4,0,0),
+                                   vec3(0,4,0)),
+                       matPhong({
+                         color: color, side: THREE.DoubleSide }));
+
+    tMesh.rotation.setFromVector3(vec3(0,Math.PI * 0.5,-Math.PI*0.0));
+    tMesh.position.z = 4;
+    cMesh.rotation.x = Math.PI * 0.5;
+    pMesh.add(mesh(geoCube(4, 4, 0.1),
                    matPhong({ color: color })));
-    pMesh.add(mesh(geoCube(1, 1, 8),
-                   matPhong({ color: '#ffffff' })));
+    pMesh.add(cMesh);
+    // pMesh.add(tMesh);
     break;
   case 'hotel':
     pMesh.add(mesh(geoCube(5, 2, 5),
@@ -191,7 +191,8 @@ function getMeshForProperty(color, propType) {
     pMesh.add(mesh(geoCube(4, 2, 4),
                    matPhong({ color: color })));
   }
-
+  pMesh.add(mesh(geoCube(10, 4, 0.01),
+                 matPhong({ color: '#00cc00' })));
   return pMesh;
 }
 
@@ -235,9 +236,9 @@ export function addProperty(state,
   result.add(pMesh);
 
   if (tileIndex < 6 || tileIndex > 18) {
-    result.position.set(0, 8, 2);
+    result.position.set(0, 8, 1.1);
   } else {
-    result.position.set(0, -8, 2);
+    result.position.set(0, -8, 1.1);
   }
 
   if (objects.cities[key]) {
@@ -253,6 +254,7 @@ export function addProperty(state,
     .to({x: 1, y: 1, z: 1 }, 500)
     .start();
 
+  
   return result;
 }
 
@@ -345,6 +347,21 @@ export function lightAmbient(color) {
 
 export function lightDirectional(color, intensity) {
   return new THREE.DirectionalLight(color, intensity);
+}
+
+export function geoTriangle(v1, v2, v3) {
+  var geom = new THREE.Geometry();
+  geom.vertices.push(v1);
+  geom.vertices.push(v2);
+  geom.vertices.push(v3);
+
+  geom.faces.push(new THREE.Face3(0,1,2));
+  geom.computeFaceNormals();
+  return geom;
+}
+
+export function geoCylinder(rt, rb, h, r, hs) {
+  return new THREE.CylinderGeometry(rt, rb, h, r, hs);
 }
 
 export function geoCube(w, h, d) {
