@@ -1,22 +1,48 @@
+html, body {
+  width: 100%;
+  height: 100%;
+  padding: 0px;
+  margin: 0px;
+
+}
+
 body {
   font-family: 'Fredoka One', cursive;
   /* font-family: 'Luckiest Guy', cursive; */
   background: black;
 }
 
+section {
+  width: 100%;
+  height: 100%;
+  background: #202020;
+}
+
+#controls {
+  text-align: center;
+}
+
+#app_wrap {
+  margin: auto;
+  width: 90%;
+  height: 90%;
+}
+
 #app_wrap {
   background: #dddddd;
-  height: 480px;
-  width: 640px;  
+  /* height: 480px; */
+  /* width: 640px; */
   display: flex;
   overflow: hidden;
 }
 
 .play_area {
+  width: 100%;
+  height: 100%;
   background: #ddaaaa;
   position: absolute;
-  height: 480px;
-  width: 640px;
+  /* height: 480px; */
+  /* width: 640px; */
 }
 
 .app {
@@ -148,8 +174,8 @@ background: linear-gradient(to bottom, #FFD200, #F7971E); /* W3C, IE 10+/ Edge, 
 
 .myturn {
   position: absolute;
-  top: 360px;
-  right: 140px;
+  top: 80%;
+  right: 15%;
   display: flex;
   flex-direction: column;
   animation: up_down 1s infinite;

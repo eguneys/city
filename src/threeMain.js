@@ -23,6 +23,7 @@ export default function threeStart(element, state) {
     };
 
     state.threeD = {
+      dom: element,
       elements: elements,
       renderer: renderer,
       raycaster: raycaster,
@@ -47,6 +48,22 @@ export default function threeStart(element, state) {
     redrawAll();
     if (state.events.onLoad) state.events.onLoad();
   });
+
+  window.addEventListener('resize', handleResize.bind(null, state), false);
+}
+
+function handleResize(state) {
+  const canvas = state.threeD.dom;
+
+  const width = canvas.getBoundingClientRect().width,
+        height = canvas.getBoundingClientRect().height;
+  console.log(width, height);
+  const { camera } = state.threeD.elements;
+  const { renderer } = state.threeD;
+  camera.aspect = width / height * 1.4;
+  camera.updateProjectionMatrix();
+  renderer.setSize(width, height, false);
+  //renderer.setViewport(width, height);
 }
 
 function loadAssets(state, renderer, onLoad) {
@@ -95,7 +112,8 @@ function initRenderer(canvas) {
 
   renderer.sortObjects = false;
   renderer.autoClear = false;
-  renderer.setSize(w, h);
+  renderer.setSize(w, h, false);
+  //renderer.setViewport(0,0,w,h);
 
   return renderer;
 }
