@@ -18,7 +18,8 @@
   <div id="app"></div>
 
   <div id="controls">
-    <button id="citySelect"> Select city</button>
+    <button id="promptSell"> Prompt Sell</button>
+    <button id="cityStreak"> City Streak</button>
   </div>
 </section>
 
@@ -31,7 +32,7 @@ const promiseSerial = funcs =>
 
  const api = init();
  const tests = new City.Tests();
- tests.run();
+ // tests.run();
 
  function init() {
  
@@ -148,8 +149,12 @@ const promiseSerial = funcs =>
    api.set(config);
  }
 
- onClick(document.getElementById('citySelect'), (e) => {
-   api.selectCity(100);
+ onClick(document.getElementById('promptSell'), (e) => {
+   api.promptSell(100);
+ });
+
+ onClick(document.getElementById('cityStreak'), e => {
+   api.cityStreak();
  });
 
  function onClick(button, f) {

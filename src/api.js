@@ -46,6 +46,10 @@ export default function start(ctrl, redraw) {
       return anim(ctrl.data, () => ctrl.clearCamera());
     },
 
+    cityStreak() {
+      return anim(ctrl.data, () => ctrl.cityStreak());
+    },
+
     bankrupt() {
       return anim(ctrl.data, () => ctrl.bankrupt());
     },
@@ -81,7 +85,7 @@ const perf = window.performance !== undefined ? window.performance : Date;
 
 const raf = window.requestAnimationFrame;
 
-function anim(state, mutate) {
+export function anim(state, mutate) {
   const resultP = mutate(state);
 
   return Promise

@@ -45,3 +45,12 @@ export function bindSelectEvents(ctrl, redraw) {
 
   };
 }
+
+if (module.hot) {
+  module.hot.accept('./objects', function() {
+    try {
+    } catch (e) {
+      console.log(e);
+    }
+  });
+}

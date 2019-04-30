@@ -250,8 +250,11 @@ export default function Controller(state, redraw) {
     redraw();
   };
 
+  this.cityStreak = function() {
+    
+  };
+
   this.buyCity = function(landType) {
-    const threeD = state.threeD.elements;
     const player = state.players[state.turnColor],
           currentTileNo = player.currentTile,
           currentTile = Tiles[currentTileNo],
