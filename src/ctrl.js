@@ -369,6 +369,53 @@ export default function Controller(state, redraw) {
     }
   };
 
+  this.tornado = function(i) {
+    const isMyTurn = state.turnColor === state.playerColor,
+          noFollow = !isMyTurn;
+
+    const threeD = state.threeD.elements;
+    const player = state.players[state.turnColor],
+          colors = Settings.colors[state.turnColor],
+          currentTile = player.currentTile,
+          nextTile = i;
+    
+    player.currentTile = nextTile;
+
+    const currentTilePos = getTilePosition(
+      threeD.tiles, currentTile);
+
+    const nextTilePos = getTilePosition(
+      threeD.tiles, nextTile);
+
+    const threeDPlayer = threeD[state.turnColor];
+    const oldZ = threeDPlayer.position.z;
+
+    var t = tween(threeDPlayer.position)
+        .to({ z: 100 })
+        .onComplete(() => {
+          threeDPlayer.position.x = nextTilePos.x + colors.dx.x;
+          threeDPlayer.position.y = -nextTilePos.z + colors.dx.y;
+          var cameraTween;
+          if (!noFollow) {
+            cameraTween = tween(threeD.camera.position)
+              .to({ x: threeDPlayer.position.x + 170,
+                    y: oldZ + 100,
+                    z: -threeDPlayer.position.y + 170 }, 500);
+          } else {
+            cameraTween = tween({}).to({x:0}, 500);
+          }
+
+          cameraTween.onComplete(() => {
+            var t2 = tween(threeDPlayer.position)
+                .to({ z: oldZ })
+                .onStart(() => {
+                }).start();
+          });
+          cameraTween.start();
+        });
+    t.start();
+  };
+
   function tween(obj) {
     return new TWEEN.Tween(obj);
   }

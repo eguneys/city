@@ -20,6 +20,7 @@
   <div id="controls">
     <button id="promptSell"> Prompt Sell</button>
     <button id="cityStreak"> City Streak</button>
+    <button id="tornado"> Tornado </button>
   </div>
 </section>
 
@@ -45,6 +46,9 @@ const promiseSerial = funcs =>
        api.clearCamera();
 
        const reqs = o.events.map(event => {
+         if (event.tornado) {
+           return () => api.tornado(event.tornado);
+         }
          if (event.streak) {
            return () => api.cityStreak(event.streak);
           }
@@ -159,6 +163,10 @@ const promiseSerial = funcs =>
  onClick(document.getElementById('cityStreak'), e => {
 
    api.cityStreak('hongkong');
+ });
+
+ onClick(document.getElementById('tornado'), e=> {
+   api.tornado(10);
  });
 
  function onClick(button, f) {
