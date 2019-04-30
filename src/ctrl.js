@@ -250,6 +250,7 @@ export default function Controller(state, redraw) {
     redraw();
   };
 
+
   this.cityStreak = function(city) {
     state.streaks[city] = state.turnColor;
     

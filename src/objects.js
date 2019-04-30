@@ -166,9 +166,10 @@ function getMeshForProperty(color, propType) {
                        matPhong({
                          color: color, side: THREE.DoubleSide }));
 
-    tMesh.rotation.z = Math.PI * 0.5;
-    tMesh.rotation.z = Math.PI * 0.5;
-    tMesh.position.z = 0;
+
+    // tMesh.rotation.y = Math.PI * 0.5;
+    // tMesh.position.z = 4;
+
     cMesh.rotation.x = Math.PI * 0.5;
     pMesh.add(mesh(geoCube(4, 4, 0.1),
                    matPhong({ color: color })));
@@ -233,6 +234,7 @@ export function addProperty(state,
 
   if (tileIndex < 6 || tileIndex > 18) {
     result.position.set(0, 8, 1.1);
+    result.rotation.z = Math.PI;
   } else {
     result.position.set(0, -8, 1.1);
   }
