@@ -353,5 +353,13 @@ function gameTests() {
     noevent("no streak event after upgrade", game4, 'streak');
   });
 
+  withGame(game => {
+    log("tornado corner");
+    const game2 = applyMoves(game,
+                             RollWith(6, 0));
+    oneevent("tornado event", game2, 'tornado');
+    not("current tile is changed", game2.players['player1'].currentTile, 6);
+  });
+
 }
 

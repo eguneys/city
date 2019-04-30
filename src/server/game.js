@@ -139,7 +139,7 @@ export function Game({
     const player = this.players[this.turnColor];
     const tile = Tiles[player.currentTile];
     const tilePrev = Tiles[player.currentTile - 1];
-    const tileNext = Tiles[player.currentTile + 1];
+    const tileNext = Tiles[(player.currentTile + 1) % Tiles.length];
 
 
     const toll = this.tolls[tile.key],
@@ -248,6 +248,19 @@ export function Game({
     return this;
   };
 
+  const playCorner = () => {
+    const player = this.players[this.turnColor];
+    const tile = Tiles[player.currentTile];
+
+    if (tile.key === 'tornado') {
+      player.currentTile = Tiles.safeIndex();
+      this.events.push({ tornado: player.currentTile });
+
+      return this.playOnLandTile(Chances.random());
+    }
+    return this.nextTurn();
+  };
+
   this.playOnLandTile = (chance) => {
     const player = this.players[this.turnColor];
     const tile = Tiles[player.currentTile];
@@ -265,7 +278,7 @@ export function Game({
       return chance.play(this);
       break;
     case "corner":
-      return this.nextTurn();
+      return playCorner();
     }
     return null;
   };

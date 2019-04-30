@@ -49,11 +49,11 @@ const rollTest4 = withRolls([1]);
 export function Roll() {
   return {
     uci: 'roll',
-    dice1: rollTest4(),
+    dice1: withRolls([6])(),
     dice2: 0,
     // dice1: Math.ceil(Math.random() * 6),
     // dice2: Math.ceil(Math.random() * 6),
-    chance: Chances.all[Math.floor(Math.random() * Chances.all.length)]
+    chance: Chances.random()
 
   };
 };
