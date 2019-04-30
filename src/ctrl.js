@@ -89,7 +89,7 @@ export default function Controller(state, redraw) {
 
     const city = Cities[cityKey];
     const toll = state.tolls[cityKey];
-    const amount = city[toll.owned].toll;
+    const amount = city[toll.owned].toll * toll.multiply;
     const toPlayerKey = toll.owner;
     const toPlayer = state.players[toPlayerKey];
 
@@ -257,9 +257,8 @@ export default function Controller(state, redraw) {
     const cities = [city, nextTileKey(city)];
 
     for (var key of cities) {
-      state.tolls[key] = {
-        multiply: state.tolls[key].multiply * 2
-      };
+      state.tolls[key].multiply = 
+        state.tolls[key].multiply * 2;
     }
   };
 

@@ -96,12 +96,12 @@ export function anim(state, mutate) {
              // step(state, perf.now());
 
              function step() {
-               // state.redraw();
-               const tweens = TWEEN.getAll();
 
                TWEEN.update();
                state.redraw();
                state.threeD.redraw();
+
+               const tweens = TWEEN.getAll();
 
                if (tweens.length === 0) {
                  resolve();

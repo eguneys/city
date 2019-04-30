@@ -312,5 +312,46 @@ function gameTests() {
     oneevent("toll event", game7, 'toll');
   });
 
+  withGame(game => {
+    log("city streak");
+    const game2 = applyMoves(game,
+                             landOnShanghai,
+                             Buy("land"),
+                             landOnShanghai,
+                             // hongkong
+                             RollWith(23, 0),
+                             Buy("land"));
+    oneevent("streak event", game2, 'streak');
+
+    const game3 = applyMoves(makeGame(),
+                             //hongkong
+                             RollWith(1,0),
+                             Buy("land"),
+                             RollWith(1,0),
+                             // shanghai
+                             RollWith(1,0),
+                             Buy("land"));
+    oneevent("streak event", game3, 'streak');
+
+    const game5 = applyMoves(game3,
+                             // shanghai toll 2
+                             RollWith(1,0));
+    is("player pays double", game5.players['player2'].cash, 2000 - Cities['hongkong']['land'].toll - Cities['shanghai']['land'].toll * 2);
+
+
+    const game4 = applyMoves(makeGame(),
+                             //hongkong
+                             RollWith(1,0),
+                             Buy("land"),
+                             RollWith(1,0),
+                             // shanghai
+                             RollWith(1,0),
+                             Buy("land"),
+                             RollWith(1,0),
+                             RollWith(23, 0),
+                             Buy("hotel"));
+    noevent("no streak event after upgrade", game4, 'streak');
+  });
+
 }
 

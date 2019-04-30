@@ -32,7 +32,7 @@ const promiseSerial = funcs =>
 
  const api = init();
  const tests = new City.Tests();
- // tests.run();
+ tests.run();
 
  function init() {
  
@@ -46,10 +46,8 @@ const promiseSerial = funcs =>
 
        const reqs = o.events.map(event => {
          if (event.streak) {
-           return () => {
-             return api.cityStreak(event.streak);
-           }
-         }
+           return () => api.cityStreak(event.streak);
+          }
          if (event.roll) {
            return () =>
              api.roll(event.roll[0], event.roll[1]);

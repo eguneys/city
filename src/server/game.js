@@ -16,6 +16,7 @@ export function testGame() {
         currentTile: 0
       },
     },
+    streaks: {},
     tolls: {
       // 'shanghai': { owned: 'land', owner: 'player2' },
       // 'hongkong': { owned: 'land', owner: 'player2' },
@@ -42,17 +43,19 @@ export function makeGame() {
       },
     },
     tolls: {},
+    streaks: {},
     status: 'created'
   });
 }
 
 export function Game({
-  prompt, turnColor, turns, players, tolls, status }) {
+  prompt, turnColor, turns, players, tolls, streaks, status }) {
   this.prompt = prompt;
   this.turnColor = turnColor;
   this.turns = turns;
   this.players = players;
   this.tolls = tolls;
+  this.streaks = streaks;
   this.status = status;
 
   this.finished = () => this.status === 'end';
@@ -126,7 +129,40 @@ export function Game({
       multiply: 1
     };
     this.events.push({ buy: type });
+
+    cityStreak();
+
     return this.nextTurn();
+  };
+
+  const cityStreak = (key) => {
+    const player = this.players[this.turnColor];
+    const tile = Tiles[player.currentTile];
+    const tilePrev = Tiles[player.currentTile - 1];
+    const tileNext = Tiles[player.currentTile + 1];
+
+
+    const toll = this.tolls[tile.key],
+          tollNext = this.tolls[tileNext.key],
+          tollPrev = this.tolls[tilePrev.key];
+
+    if (toll && tollNext && !this.streaks[tile.key]) {
+      toll.multiply *= 2;
+      tollNext.multiply *= 2;
+
+      this.streaks[tile.key] = this.turnColor;
+
+      this.events.push({ streak: tile.key });
+    } else if (toll && tollPrev && !this.streaks[tilePrev.key]) {
+      toll.multiply *= 2;
+      tollPrev.multiply *= 2;
+
+      this.streaks[tilePrev.key] = this.turnColor;
+
+      this.events.push({ streak: tilePrev.key });      
+    }
+    
+
   };
 
   const payToll = () => {
@@ -134,7 +170,7 @@ export function Game({
     const tile = Tiles[player.currentTile];
     const toll = this.tolls[tile.key];
     const owner = this.players[toll.owner];
-    const amount = Cities[tile.key][toll.owned].toll;
+    const amount = Cities[tile.key][toll.owned].toll * toll.multiply;
 
     if (player.cash < amount) {
       if (this.playerAsset(this.turnColor) < Math.abs(player.cash - amount)) {
