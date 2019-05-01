@@ -79,6 +79,9 @@ export default function start(ctrl, redraw) {
     },
     tornado(i) {
       return anim(ctrl.data, () => ctrl.tornado(i));
+    },
+    bomb(i) {
+      return anim(ctrl.data, () => ctrl.bomb(i));
     }
   };
 

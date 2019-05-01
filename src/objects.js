@@ -97,6 +97,7 @@ function meshBoard(state, objects) {
   const tilesGroup = group();
   tilesGroup.position.set(-3, 3, 0);
   boardMesh.add(tilesGroup);
+  objects.tilesGroup = tilesGroup;
 
   const goMat = [
     matPhong({ color: 0xffffff }),
@@ -190,6 +191,39 @@ function meshBoard(state, objects) {
   return result;
 }
 
+export function addBomb(state, { i, onComplete }) {
+  const objects = state.threeD.elements;
+  const bombTilePos = getTilePosition(objects.tiles, 12);
+  const iTilePos = getTilePosition(objects.tiles, i);
+
+
+  if (!objects['bomb']) {
+    const bombGeo = geoSphere(2),
+          bombMat = matPhong({ color: 0x000000 });
+    const bombMesh = mesh(bombGeo, bombMat);
+
+    objects.tilesGroup.add(bombMesh);
+    objects['bomb'] = bombMesh;
+  }
+
+  const bombMesh = objects['bomb'];
+
+  bombMesh.position.set(bombTilePos.x,
+                        - bombTilePos.z,
+                        -10);
+
+  tween(bombMesh.position)
+    .to({z: 100 }, 500)
+    .chain(tween(bombMesh.position)
+           .to({z: 0}, 500)
+           .onComplete(onComplete))
+    .onComplete(() => {
+      bombMesh.position.x = iTilePos.x;
+      bombMesh.position.y = -iTilePos.z;
+    }).start();
+
+}
+
 function getMeshForProperty(color, propType) {
   var pMesh = group();
   switch(propType) {
@@ -236,8 +270,6 @@ export function removeProperty(state, key) {
   const objects = state.threeD.elements;
   const tileIndex = tileIndexByKey(key);
   const tile = objects.tiles[tileIndex];
-
-
 
   tween(objects.cities[key].scale)
     .to({x: 0.1, y: 0.1, z: 0.1 }, 500)
@@ -477,6 +509,10 @@ export function geoTriangle(v1, v2, v3) {
   geom.faces.push(new THREE.Face3(0,1,2));
   geom.computeFaceNormals();
   return geom;
+}
+
+export function geoSphere(radius) {
+  return new THREE.SphereGeometry(radius, 32, 32);
 }
 
 export function geoCylinder(rt, rb, h, r, hs) {

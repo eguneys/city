@@ -21,6 +21,7 @@
     <button id="promptSell"> Prompt Sell</button>
     <button id="cityStreak"> City Streak</button>
     <button id="tornado"> Tornado </button>
+    <button id="bomb"> Bomb </button>
   </div>
 </section>
 
@@ -167,6 +168,10 @@ const promiseSerial = funcs =>
 
  onClick(document.getElementById('tornado'), e=> {
    api.tornado(10);
+ });
+
+ onClick(document.getElementById('bomb'), e=> {
+   api.bomb(10);
  });
 
  function onClick(button, f) {

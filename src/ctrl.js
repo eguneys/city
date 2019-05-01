@@ -252,12 +252,12 @@ export default function Controller(state, redraw) {
 
 
   this.cityStreak = function(city) {
+    const cities = [city, nextTileKey(city)];
+
     state.streaks[city] = {
       color: state.turnColor,
-      
+      cities
     };
-    
-    const cities = [city, nextTileKey(city)];
 
     for (var key of cities) {
       state.tolls[key].multiply = 
@@ -291,9 +291,13 @@ export default function Controller(state, redraw) {
     }, 0);
 
     cities.forEach(city => {
-      this.data.tolls[city].multiply = 1;
       if (this.data.streaks[city]) {
         this.data.streaks[city].sold = true;
+        for (var streak of this.data.streaks[city].cities) {
+          if (this.data.tolls[streak]) {
+            this.data.tolls[streak].multiply = 1;
+          }
+        }
       }
     });
 
@@ -377,6 +381,24 @@ export default function Controller(state, redraw) {
       ct.chain(firstTween);
       ct.start();
     }
+  };
+
+  this.bomb = function(i) {
+    const threeD = state.threeD.elements;
+    const city = Tiles[i].key;
+
+    this.data.addBomb = {
+      i,
+      onComplete: () => {
+        if (this.data.streaks[city]) {
+          this.data.streaks[city].sold = true;
+          for (var streakCity of this.data.streaks[city].cities) {
+            this.data.tolls[streakCity].multiply = 1;
+          }
+        }
+        this.data.removeTolls = [city];        
+      }
+    };
   };
 
   this.tornado = function(i) {

@@ -2,7 +2,7 @@ import * as THREE from 'three';
 
 import { anim } from './api';
 import initObjects from './objects';
-import { addTollMultiply, removeStreak, addStreak, addProperty, removeProperty } from './objects';
+import { addBomb, addTollMultiply, removeStreak, addStreak, addProperty, removeProperty } from './objects';
 
 export default function threeStart(element, state) {
 
@@ -133,7 +133,12 @@ function initCamera(w, h) {
 }
 
 function updateObjects(state) {
-
+  
+  if (state.addBomb) {
+    addBomb(state, state.addBomb);
+    delete state.addBomb;
+  }
+  
   if (state.removeTolls) {
     for (var city of state.removeTolls) {
       const toll = state.tolls[city];
