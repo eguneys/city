@@ -142,6 +142,21 @@ function roll(ctrl) {
   return '';
 }
 
+function double(ctrl) {
+  if (ctrl.vm.double) {
+    return h('div.double_wrap', {
+      style: {
+        transition: 'transform .2s',
+        remove: { transform: 'scale(0, 0)' }
+      }
+    },
+             h('span.yellowred', 'DOUBLE')
+            );
+    
+  }
+  return '';
+}
+
 function dice(ctrl) {
   if (ctrl.vm.dice) {
 
@@ -392,6 +407,7 @@ function renderApp(ctrl) {
     overlay(ctrl),
     roll(ctrl),
     dice(ctrl),
+    double(ctrl),
     buycity(ctrl),
     myturn(ctrl),
     turn(ctrl),

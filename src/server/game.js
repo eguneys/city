@@ -81,7 +81,11 @@ export function Game({
   };
 
   this.nextTurn = () => {
-    this.turns++;
+    if (this.doubleRoll) {
+      this.doubleRoll = false;
+    } else {
+      this.turns++;
+    }
     this.turnColor = this.turns % 2 === 1 ? 'player1':'player2';
     this.prompt = 'roll';
     return this;
@@ -236,6 +240,10 @@ export function Game({
     const tile = Tiles[player.currentTile];
 
     const advanceAmount = dice1 + dice2;
+
+    if (dice1 === dice2) {
+      this.doubleRoll = true;
+    }
 
     player.currentTile =
       (player.currentTile + advanceAmount);

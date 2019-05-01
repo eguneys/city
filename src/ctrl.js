@@ -121,10 +121,14 @@ export default function Controller(state, redraw) {
     return new Promise(resolve =>
       setTimeout(() => {
         this.vm.dice = dice1 + dice2;
+        if (dice1 === dice2) {
+          this.vm.double = true;
+        }
         redraw();
 
         setTimeout(() => {
           delete this.vm.dice;
+          delete this.vm.double;
           redraw();
 
           resolve();

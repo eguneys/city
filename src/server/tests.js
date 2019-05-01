@@ -57,6 +57,14 @@ function gameTests() {
     // not('prompt is not roll', game2.prompt, 'roll');
   });
 
+  withGame(game => {
+    log('double roll');
+    var doubleRoll = RollWith(1,1);
+    var game2 = applyMoves(game, doubleRoll,
+                           Buy("land"));
+    is('player turn is not changed', game2.turnColor, 'player1');    
+  });
+
   log('foreveryroll');
   let chance = 'ragstoriches';
   [RollWith(1,1), RollWith(1,2, chance), RollWith(1,5)].forEach(rollMove => {
@@ -68,7 +76,7 @@ function gameTests() {
   });
 
   log('buycity');
-  const landOnCity = RollWith(1,1);
+  const landOnCity = RollWith(2, 0);
   const landOnCity2 = RollWith(1,3);
   const landOnChance = RollWith(1,2, 'ragstoriches');
   const landOnCorner = RollWith(12, 0);
