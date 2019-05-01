@@ -102,6 +102,13 @@ export function Game({
 
     for (key of cities) {
       delete this.tolls[key];
+      if (this.streaks[key]) {
+        this.streaks[key].sold = true;
+        for (var streak of this.streaks[key].cities) {
+          if (this.tolls[streak])
+            this.tolls[streak].multiply = 1;
+        }
+      }
     }
 
     delete this.needMoney;
@@ -146,18 +153,29 @@ export function Game({
           tollNext = this.tolls[tileNext.key],
           tollPrev = this.tolls[tilePrev.key];
 
-    if (toll && tollNext && !this.streaks[tile.key]) {
+    if (toll && tollNext &&
+        toll.owner === tollNext.owner &&
+        (!this.streaks[tile.key] || this.streaks[tile.key].sold)) {
       toll.multiply *= 2;
       tollNext.multiply *= 2;
 
-      this.streaks[tile.key] = this.turnColor;
+      this.streaks[tile.key] = {
+        color: this.turnColor,
+        cities: [tile.key, tileNext.key]
+      };
+      this.streaks[tileNext.key] = this.streaks[tile.key];
 
       this.events.push({ streak: tile.key });
-    } else if (toll && tollPrev && !this.streaks[tilePrev.key]) {
+    } else if (toll && tollPrev && 
+               toll.owner === tollPrev.owner &&
+               (!this.streaks[tilePrev.key] || this.streaks[tilePrev.key].sold)) {
       toll.multiply *= 2;
       tollPrev.multiply *= 2;
 
-      this.streaks[tilePrev.key] = this.turnColor;
+      this.streaks[tilePrev.key] = {
+        color: this.turnColor,
+        cities: [tilePrev.key, tile.key]
+      };
 
       this.events.push({ streak: tilePrev.key });      
     }

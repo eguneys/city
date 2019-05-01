@@ -353,5 +353,63 @@ function gameTests() {
     noevent("no streak event after upgrade", game4, 'streak');
   });
 
+  withGame(game => {
+
+    const game2 = applyMoves(game,
+                             RollWith(1,0),
+                             Buy("land"),
+                             RollWith(2,0),
+                             Buy("land"));    
+    noevent("no streak evnet on different owners", game2, 'streak');
+  });
+
+  withGame(game => {
+    log('streak is removed on sell');
+    const game2 = applyMoves(makeGame(),
+                             //hongkong
+                             RollWith(1,0),
+                             Buy("land"),
+                             RollWith(4,0),
+                             Buy("land"),
+                             // shanghai
+                             RollWith(1,0),
+                             Buy("land"),
+                             RollWith(1,0),
+                             Nobuyland);
+    game2.players['player1'].cash = 0;
+    const game3 = applyMoves(game2,
+                             RollWith(2, 0),
+                             Sell(['hongkong']));
+
+    is('streak is gone', game3.streaks['hongkong'].sold, true);
+    is('multiply is gone', game3.tolls['shanghai'].multiply, 1);
+  });
+
+  withGame(game => {
+    log('streak is added after a sell');
+    const game2 = applyMoves(makeGame(),
+                             //hongkong
+                             RollWith(1,0),
+                             Buy("land"),
+                             RollWith(4,0),
+                             Buy("land"),
+                             // shanghai
+                             RollWith(1,0),
+                             Buy("land"),
+                             RollWith(1,0),
+                             Nobuyland);
+    game2.players['player1'].cash = 0;
+    const game3 = applyMoves(game2,
+                             RollWith(2, 0),
+                             Sell(['hongkong', 'shanghai']),
+                             RollWith(20, 0),
+                             Buy("land"),
+                             RollWith(1,0),
+                             RollWith(1,0),
+                             Buy("land"));
+
+    oneevent("streak event", game3, 'streak');
+  });
+
 }
 

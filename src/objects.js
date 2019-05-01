@@ -268,18 +268,28 @@ function getStreakMesh(color) {
               matPhong({ color: color, side: THREE.DoubleSide }));
 }
 
-export function addStreak(state, key, owner) {
+export function removeStreak(state, key) {
   const objects = state.threeD.elements;
+  
+  const tileIndex = tileIndexByKey(key);
+  const tile = objects.tiles[tileIndex];
+
+  tile.remove(objects.streaks[key]);
+  delete objects.streaks[key];
+}
+
+export function addStreak(state, key, streak) {
+  const objects = state.threeD.elements;
+
+  const tileIndex = tileIndexByKey(key);
+  const tile = objects.tiles[tileIndex];
   
   if (objects.streaks[key]) {
     return;
   }
-  const { color } = Settings.colors[owner];
+  const { color } = Settings.colors[streak.color];
 
   const result = group();
-
-  const tileIndex = tileIndexByKey(key);
-  const tile = objects.tiles[tileIndex];
 
   let pMesh = getStreakMesh(color);
   pMesh.position.x = -15 - 0.25;
@@ -303,12 +313,16 @@ export function addStreak(state, key, owner) {
 export function addTollMultiply(state, key, multiply) {
   const objects = state.threeD.elements;
   
-  if (objects.multiplies[key] === multiply) {
-    return;
-  }
-
   const tileIndex = tileIndexByKey(key);
   const tile = objects.tiles[tileIndex];
+
+  if (objects.multiplies[key]) {
+    if (objects.multiplies[key].multiply === 
+        multiply) return;
+    else {
+      tile.remove(objects.multiplies[key]);
+    }
+  }
 
   let pMesh = mesh(geoPlane(10, 5.5),
                    matBasic({ transparent: true,
@@ -322,7 +336,8 @@ export function addTollMultiply(state, key, multiply) {
   }
 
   tile.add(pMesh);
-  objects.multiplies[key] = multiply;
+  objects.multiplies[key] = pMesh;
+  objects.multiplies[key].multiply = multiply;
 }
 
 function tween(obj) {

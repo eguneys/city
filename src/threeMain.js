@@ -2,7 +2,7 @@ import * as THREE from 'three';
 
 import { anim } from './api';
 import initObjects from './objects';
-import { addTollMultiply, addStreak, addProperty, removeProperty } from './objects';
+import { addTollMultiply, removeStreak, addStreak, addProperty, removeProperty } from './objects';
 
 export default function threeStart(element, state) {
 
@@ -136,6 +136,11 @@ function updateObjects(state) {
 
   if (state.removeTolls) {
     for (var city of state.removeTolls) {
+      const toll = state.tolls[city];
+      addTollMultiply(state,
+                      city,
+                      toll.multiply);
+
       delete state.tolls[city];
       removeProperty(state, city);
     }
@@ -155,6 +160,10 @@ function updateObjects(state) {
   }
 
   for (key of Object.keys(state.streaks)) {
-    addStreak(state, key, state.streaks[key]);
+    if (state.streaks[key].sold) {
+      removeStreak(state, key);
+    } else {
+      addStreak(state, key, state.streaks[key]);
+    }
   }
 }

@@ -45,11 +45,12 @@ const rollTest1 = withRolls([1, 2, 3, 12, 5, 12]);
 const rollTest2 = withRolls([1, 2, 3, 2]);
 const rollTest3 = withRolls([1, 4, 3, 12]);
 const rollTest4 = withRolls([1]);
+const rollTest5 = withRolls([1, 4, 1, 1, 2, 20, 1, 1]);
 
 export function Roll() {
   return {
     uci: 'roll',
-    dice1: rollTest4(),
+    dice1: rollTest5(),
     dice2: 0,
     // dice1: Math.ceil(Math.random() * 6),
     // dice2: Math.ceil(Math.random() * 6),

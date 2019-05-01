@@ -252,7 +252,10 @@ export default function Controller(state, redraw) {
 
 
   this.cityStreak = function(city) {
-    state.streaks[city] = state.turnColor;
+    state.streaks[city] = {
+      color: state.turnColor,
+      
+    };
     
     const cities = [city, nextTileKey(city)];
 
@@ -286,6 +289,13 @@ export default function Controller(state, redraw) {
       const toll = this.data.tolls[city];
       return Cities[city][toll.owned].cost + amount;
     }, 0);
+
+    cities.forEach(city => {
+      this.data.tolls[city].multiply = 1;
+      if (this.data.streaks[city]) {
+        this.data.streaks[city].sold = true;
+      }
+    });
 
     this.data.removeTolls = cities;
     state.players[state.turnColor].cash += amount;
