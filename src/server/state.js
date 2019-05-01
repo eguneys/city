@@ -25,6 +25,20 @@ export const Tiles = [
   { type: 'city', key: 'newyork' }
 ];
 
+Tiles.safeIndex = () => {
+  const unsafe = [0, 6];
+  const index = Tiles.randomIndex();
+  if (unsafe.indexOf(index) !== -1) {
+    return Tiles.safeIndex();
+  } else {
+    return index;
+  }
+};
+
+Tiles.randomIndex = () => Math.floor(Math.random() * Tiles.length);
+Tiles.random = () => Tiles[Tiles.randomIndex()];
+
+
 export const Cities = {
   // paris
   newyork: {

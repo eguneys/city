@@ -54,7 +54,7 @@ export function Roll() {
     dice2: 0,
     // dice1: Math.ceil(Math.random() * 6),
     // dice2: Math.ceil(Math.random() * 6),
-    chance: Chances.all[Math.floor(Math.random() * Chances.all.length)]
+    chance: Chances.random()
 
   };
 };

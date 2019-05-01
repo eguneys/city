@@ -354,7 +354,6 @@ function gameTests() {
   });
 
   withGame(game => {
-
     const game2 = applyMoves(game,
                              RollWith(1,0),
                              Buy("land"),
@@ -409,6 +408,15 @@ function gameTests() {
                              Buy("land"));
 
     oneevent("streak event", game3, 'streak');
+  });
+
+  withGame(game => {
+    log("tornado corner");
+    const game2 = applyMoves(game,
+                             RollWith(6, 0));
+    oneevent("tornado event", game2, 'tornado');
+    not("current tile is changed", game2.players['player1'].currentTile, 6);
+
   });
 
 }

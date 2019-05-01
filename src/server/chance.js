@@ -113,3 +113,5 @@ export const Chances = {
 
 Chances.byKey = Chances.all.reduce((map, chance) => { map[chance.key] = chance;
                                                       return map; }, {});
+
+Chances.random = () => Chances.all[Math.floor(Math.random() * Chances.all.length)];
