@@ -188,6 +188,9 @@ export function Game({
         cities: [tilePrev.key, tile.key]
       };
 
+      this.streaks[tile.key] = this.streaks[tilePrev.key];
+
+
       this.events.push({ streak: tilePrev.key });      
     }
     
