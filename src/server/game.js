@@ -101,14 +101,7 @@ export function Game({
     if (player.cash + amount < this.needMoney) return null;
 
     for (key of cities) {
-      delete this.tolls[key];
-      if (this.streaks[key]) {
-        this.streaks[key].sold = true;
-        for (var streak of this.streaks[key].cities) {
-          if (this.tolls[streak])
-            this.tolls[streak].multiply = 1;
-        }
-      }
+      removeToll(key);
     }
 
     delete this.needMoney;
@@ -117,6 +110,17 @@ export function Game({
     this.events.push({ sell: cities });
 
     return payToll();
+  };
+
+  const removeToll = (key) => {
+    delete this.tolls[key];
+    if (this.streaks[key]) {
+      this.streaks[key].sold = true;
+      for (var streak of this.streaks[key].cities) {
+        if (this.tolls[streak])
+          this.tolls[streak].multiply = 1;
+      }
+    }
   };
 
   const buyLandBase = (type) => {
@@ -275,6 +279,10 @@ export function Game({
       this.events.push({ tornado: player.currentTile });
 
       return this.playOnLandTile(Chances.random());
+    } if (tile.key === 'bomb') {
+      const bombCity = Tiles.cityIndex();
+      this.events.push({ bomb: bombCity });
+      removeToll(Tiles[bombCity].key);
     }
     return this.nextTurn();
   };

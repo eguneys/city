@@ -25,6 +25,20 @@ export const Tiles = [
   { type: 'city', key: 'newyork' }
 ];
 
+Tiles.cityIndex = () => {
+  const indexes = Tiles
+        .map((tile, i) => 
+          ({ type: tile.type, i }))
+        .filter(tile => tile.type ==='city')
+        .map(tile => tile.i);
+  const index = Tiles.randomIndex();
+  if (indexes.indexOf(index) === -1) {
+    return Tiles.cityIndex();
+  } else {
+    return index;
+  }
+};
+
 Tiles.safeIndex = () => {
   const unsafe = [0, 6];
   const index = Tiles.randomIndex();

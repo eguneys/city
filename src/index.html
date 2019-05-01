@@ -50,6 +50,9 @@ const promiseSerial = funcs =>
          if (event.tornado) {
            return () => api.tornado(event.tornado);
          }
+         if (event.bomb) {
+           return () => api.bomb(event.bomb);
+         }
          if (event.streak) {
            return () => api.cityStreak(event.streak);
           }

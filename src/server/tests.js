@@ -27,6 +27,11 @@ export function Tests() {
 
 function gameTests() {
 
+  for (var i = 0; i<100; i++) {
+    var cityIndex = Tiles.cityIndex();
+    is('city index', Tiles[cityIndex].type, 'city');
+  }
+
   withGame(game => {
     const invalidMoves = [Buy('land'),
                           Nobuyland,
@@ -66,7 +71,7 @@ function gameTests() {
   const landOnCity = RollWith(1,1);
   const landOnCity2 = RollWith(1,3);
   const landOnChance = RollWith(1,2, 'ragstoriches');
-  const landOnCorner = RollWith(3,3);
+  const landOnCorner = RollWith(12, 0);
   withGame(game => {
     const game2 = game.move(landOnCity);
     is('prompt is ok', game2.prompt, 'buycity');

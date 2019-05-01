@@ -387,6 +387,8 @@ export default function Controller(state, redraw) {
     const threeD = state.threeD.elements;
     const city = Tiles[i].key;
 
+    this.clearCamera();
+
     this.data.addBomb = {
       i,
       onComplete: () => {
@@ -396,7 +398,9 @@ export default function Controller(state, redraw) {
             this.data.tolls[streakCity].multiply = 1;
           }
         }
-        this.data.removeTolls = [city];        
+        if (this.data.tolls[city]) {
+          this.data.removeTolls = [city];
+        }
       }
     };
   };
