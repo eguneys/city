@@ -22,6 +22,7 @@
     <button id="cityStreak"> City Streak</button>
     <button id="tornado"> Tornado </button>
     <button id="bomb"> Bomb </button>
+    <button id="dump"> Server Dump </button>
   </div>
 </section>
 
@@ -140,6 +141,10 @@ const promiseSerial = funcs =>
    const socket = new City.Socket(handlers);
 
    const api = City(document.getElementById('app'), config);
+
+   onClick(document.getElementById('dump'), e => {
+     console.log(server.get());
+   });
 
    return api;
  }

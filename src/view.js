@@ -316,7 +316,7 @@ function playerRank(ctrl, key) {
   const players = [];  
   for (var i of Object.keys(ctrl.data.players)) {
     const p = ctrl.data.players[i];
-    players.push({ name: i, asset: p.asset });
+    players.push({ name: i, asset: playerAsset(ctrl, i) });
   }
   players.sort((a, b) => a.asset<b.asset?-1:1);
 

@@ -12,7 +12,7 @@ export function testGame() {
         currentTile: 0
       },
       player2: {
-        cash: 1300,
+        cash: 460,
         currentTile: 0
       },
     },
@@ -157,6 +157,9 @@ export function Game({
           tollNext = this.tolls[tileNext.key],
           tollPrev = this.tolls[tilePrev.key];
 
+    // prevent jejudo from streak
+    if (tile.key === 'jejudo' || tileNext.key === 'jejudo' || tilePrev.key === 'jejudo') return;
+
     if (toll && tollNext &&
         toll.owner === tollNext.owner &&
         (!this.streaks[tile.key] || this.streaks[tile.key].sold)) {
@@ -195,7 +198,7 @@ export function Game({
     const amount = Cities[tile.key][toll.owned].toll * toll.multiply;
 
     if (player.cash < amount) {
-      if (this.playerAsset(this.turnColor) < Math.abs(player.cash - amount)) {
+      if (this.playerAsset(this.turnColor) < amount) {
         this.events.push({ bankrupt: true });
         this.winner = this.turnColor==='player1'?'player2':'player1';
         this.status = 'end';
