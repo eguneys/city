@@ -22,7 +22,56 @@ function applyMoves(game, ...args) {
 export function Tests() {
   this.run = () => {
     gameTests();
+    chanceTests();
   };
+}
+
+function chanceTests() {
+
+  const rollChance = (chance) => RollWith(3, 0, chance);
+
+  log("chances");
+
+  withGame(game => {
+    game.players['player1'].cash = 1000;
+    const game2 = game.move(rollChance('ragstoriches'));
+    is('exchange cash', game2.players['player1'].cash, 2000);
+    is('exchange cash', game2.players['player2'].cash, 1000);
+    oneevent('rags event', game2, 'rags');
+  });
+
+  withGame(game => {
+    const game2 = game.move(rollChance('visitseoul'));
+    is('on seoul', game2.players['player1'].currentTile, 21);
+    is('move event', game2.events.filter(e => e['move'] === 18).length, 1);
+  });  
+
+
+  withGame(game => {
+    const game2 = game.move(rollChance('backward1'));
+    isabove('backward move event', game.events.filter(e => e['move']).length, 2);
+    is("move backwards", game.players['player1'].currentTile, 2);
+
+    const game3 = makeGame().move(rollChance('forward2'));
+    isabove('forward move event', game3.events.filter(e => e['move']).length, 2);
+    is("move forwards", game3.players['player1'].currentTile, 5);
+  });
+
+  withGame(game => {
+    const game2 = game.move(rollChance('starcity'));
+    oneevent('no place to select', game2, 'nocity');
+
+    const game3 = applyMoves(makeGame(),
+                             RollWith(1,0),
+                             Buy("land"),
+                             RollWith(1,0),
+                             RollWith(2,0, 'starcity'));
+    is('star city prompt', game3.prompt, 'starcity');
+    is('same turn', game3.turns, 3);
+    deep_is('select city', game3.selectCities, ['hongkong']);
+
+  });
+
 }
 
 function gameTests() {

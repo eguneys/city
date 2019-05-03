@@ -67,6 +67,16 @@ export function Game({
     this.status = 'started';
   };
 
+  this.citiesOf = (name) => {
+    const cities = [];
+    for (var key of Object.keys(this.tolls)) {
+      const toll = this.tolls[key];
+      if (toll.owner === name)
+        cities.push(key);
+    }
+    return cities;
+  };
+
   this.playerAsset = (name) => {
     const player = this.players[name];
 
@@ -321,12 +331,7 @@ export function Game({
       this.events.push({ bomb: bombCity });
       removeToll(Tiles[bombCity].key);
     } if (tile.key === 'flight') {
-      const cities = [];
-      for (var key of Object.keys(this.tolls)) {
-        const toll = this.tolls[key];
-        if (toll.owner === this.turnColor)
-          cities.push(key);
-      }
+      const cities = this.citiesOf(this.turnColor);
       if (cities.length > 0) {
         this.selectCities = cities;
         // theme park

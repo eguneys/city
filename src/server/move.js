@@ -68,12 +68,12 @@ const rollTest11 = withRolls([1,2,1,2,2,14,22]);
 export function Roll() {
   return {
     uci: 'roll',
-    dice1: rollTest11(),
-    dice2: 0,
+    // dice1: rollTest11(),
+    // dice2: 0,
     // dice1: 1,
     // dice2: Math.ceil(Math.random() * 2),
-    // dice1: Math.ceil(Math.random() * 6),
-    // dice2: Math.ceil(Math.random() * 6),
+    dice1: Math.ceil(Math.random() * 6),
+    dice2: Math.ceil(Math.random() * 6),
     chance: Chances.random()
 
   };
