@@ -74,12 +74,12 @@ function selectCities(ctrl) {
 
 
     return h('div.popup_h.select_city_wrap', [
-      h('div.left_arrow', h('span.green.stroked', {
+      h('div.left_arrow', {
         on: {
           click: () => ctrl.selectCity(1)
         }
       },
-                            '<')),
+        h('span.green.stroked', '<')),
       h('div.select_city', [
         h('div.up', [
           h('div.title', h('span.stroked', title)),
@@ -102,13 +102,11 @@ function selectCities(ctrl) {
           }
         }, h('span.stroked', 'OK'))
       ]),
-      h('div.right_arrow', h('span.green.stroked',
-                             {
-                               on: {
-                                 click: () => ctrl.selectCity(1)
-                               }
-                             },
-                             '>')),
+      h('div.right_arrow', {
+        on: {
+          click: () => ctrl.selectCity(1)
+        }
+      }, h('span.green.stroked', '>')),
     ]);
   }
   return '';
@@ -242,12 +240,11 @@ function buycity(ctrl) {
   const data = ctrl.data;
 
   if (ctrl.vm.buyingCity) {
-    const city = ctrl.vm.buyingCity;
     const player = data.players[data.playerColor];
-
+    const { city, toll } = ctrl.vm.buyingCity;
+    const currentToll = toll?city[toll.owned].toll:undefined;
     const landTypes = ['land', 'villa', 'building', 'hotel'];
     const lands = landTypes.map(landName => {
-      let { city, toll } = ctrl.vm.buyingCity;
       let land = city[landName],
           canAfford = land.cost < player.cash;
       
@@ -271,10 +268,7 @@ function buycity(ctrl) {
 
       if (!alreadyBought) {
         if (canAfford) {
-          landInfo = h('div.land_info', {
-            on: {
-              click: () => ctrl.onBuyland(landName) }
-          }, [
+          landInfo = h('div.land_info', [
             h('img', { attrs: {
               src: 'http://placekitten.com/200/200'
             } }),
@@ -302,11 +296,17 @@ function buycity(ctrl) {
                     );
       }
 
-      return h('div.land.' + landName, {}, [
-        preText,
-        h('span.land_name', landName.toUpperCase()),
-        landInfo
-      ]);
+      return h('div.land.' + landName,  {
+        on: {
+          click: () => {
+            if (!alreadyBought && canAfford) 
+              ctrl.onBuyland(landName);
+          }
+        } }, [
+          preText,
+          h('span.land_name', landName.toUpperCase()),
+          landInfo
+        ]);
     });
 
     return h('div.card.buycity',
@@ -323,7 +323,7 @@ function buycity(ctrl) {
                      h('span', 'CURRENT'),
                      h('span', 'TOLL')
                    ]),
-                   h('span', city.currentToll)
+                   h('span', currentToll)
                  ]),
                  h('div.city', h('span', city.name)),
                  h('div.cash', [

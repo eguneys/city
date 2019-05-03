@@ -177,7 +177,12 @@ export default function Controller(state, redraw) {
     const threeD = state.threeD.elements;
     const player = state.players[state.turnColor];
 
-    const cityIndexes = [1,2,4];
+    const cityIndexes = [];
+
+    Tiles.forEach((tile, i) => {
+      if (cities.indexOf(tile.key) >= 0)
+        cityIndexes.push(i);
+    });
 
     this.vm.selectCity = {
       title: titles[title],
