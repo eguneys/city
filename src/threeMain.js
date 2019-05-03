@@ -3,6 +3,7 @@ import * as THREE from 'three';
 import { anim } from './api';
 import initObjects from './objects';
 import { addBomb, addTollMultiply, removeStreak, addStreak, addProperty, removeProperty } from './objects';
+import { tollMultiply } from './state';
 
 export default function threeStart(element, state) {
 
@@ -161,7 +162,7 @@ function updateObjects(state) {
 
     addTollMultiply(state,
                     key,
-                    toll.multiply);
+                    tollMultiply(toll));
   }
 
   for (key of Object.keys(state.streaks)) {

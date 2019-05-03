@@ -63,7 +63,7 @@ const rollTest8 = withRolls([1, 12, 1]);
 const rollTest9 = withRolls([4, 1, 1, 1, 2, 2]);
 
 const rollTest10 = withRolls([1,1,1,1,16]);
-const rollTest11 = withRolls([1,2,1,2,1,14]);
+const rollTest11 = withRolls([1,2,1,2,2,14,22]);
 
 export function Roll() {
   return {

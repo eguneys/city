@@ -1,4 +1,4 @@
-import { Settings, Tiles, Cities, nextTileKey } from './state';
+import { Settings, Tiles, Cities, nextTileKey, tollMultiply } from './state';
 import TWEEN from '@tweenjs/tween.js';
 import { vec3, addProperty, getTilePosition, selectCityTexture, newSprite } from './objects';
 import { mesh, geoCube, matBasic } from './objects';
@@ -89,7 +89,8 @@ export default function Controller(state, redraw) {
 
     const city = Cities[cityKey];
     const toll = state.tolls[cityKey];
-    const amount = city[toll.owned].toll * toll.multiply;
+    const amount = city[toll.owned].toll * tollMultiply(toll);
+
     const toPlayerKey = toll.owner;
     const toPlayer = state.players[toPlayerKey];
 
@@ -456,7 +457,9 @@ export default function Controller(state, redraw) {
   };
 
   this.themecity = function(city) {
-    console.log('themecity', city);
+    this.data.tolls[city].theme = true;
+    redraw();
+    state.threeD.redraw();
   };
 
   this.bomb = function(i) {

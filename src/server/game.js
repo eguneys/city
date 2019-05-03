@@ -80,6 +80,13 @@ export function Game({
     return assets + player.cash;
   };
 
+  const tollAmount = (key) => {
+    const toll = this.tolls[key];
+    let amount = Cities[key][toll.owned].toll * toll.multiply;
+    if (toll.theme) amount *= 2;
+    return amount;
+  };
+
   this.nextTurn = () => {
     if (this.doubleRoll) {
       this.doubleRoll = false;
@@ -98,6 +105,8 @@ export function Game({
     if (!this.selectCities || this.selectCities.indexOf(city) === -1) {
       return null;
     }
+
+    this.tolls[city].theme = true;
 
     this.events.push({ themecity: city });
 
@@ -216,7 +225,7 @@ export function Game({
     const tile = Tiles[player.currentTile];
     const toll = this.tolls[tile.key];
     const owner = this.players[toll.owner];
-    const amount = Cities[tile.key][toll.owned].toll * toll.multiply;
+    const amount = tollAmount(tile.key);
 
     if (player.cash < amount) {
       if (this.playerAsset(this.turnColor) < amount) {

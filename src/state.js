@@ -139,6 +139,12 @@ export const Cities = {
   },
 };
 
+export function tollMultiply(toll) {
+  let amount = toll.multiply;
+  if (toll.theme) amount *= 2;
+  return amount;
+}
+
 export function nextTileKey(key) {
   return Tiles[tileIndexByKey(key) + 1].key;
 }

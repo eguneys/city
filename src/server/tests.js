@@ -466,5 +466,23 @@ function gameTests() {
     oneevent('no city to select', game2, 'nocity');
   });
 
+  withGame(game => {
+    const game2 = applyMoves(game,
+                             RollWith(1, 0),
+                             Buy("land"),
+                             RollWith(1, 0),
+                             RollWith(1, 0),
+                             Buy("land"),
+                             RollWith(1, 0),
+                             RollWith(16, 0),
+                             ThemeCity("hongkong"),
+                             RollWith(23, 0));
+    is("theme city costs double", game2.players['player2'].cash,
+       2000 + 300 -
+       Cities['hongkong']['land'].toll -
+       Cities['shanghai']['land'].toll * 2 -
+       Cities['hongkong']['land'].toll * 4 );
+  });
+
 }
 
