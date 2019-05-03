@@ -1,5 +1,5 @@
 import { h } from 'snabbdom';
-import { Cities, Chances } from './state';
+import { Tiles, Cities, Chances } from './state';
 import threeStart from './threeMain';
 
 function canvas(ctrl) {
@@ -63,6 +63,57 @@ function youwin(ctrl) {
   ]);
 }
 
+function selectCities(ctrl) {
+  if (ctrl.vm.selectCity) {
+    const { cityIndexes, selected, title } = ctrl.vm.selectCity;
+
+    const tile = Tiles[cityIndexes[selected]];
+    const city = Cities[tile.key];
+
+    const land = city['land'];
+
+
+    return h('div.popup_h.select_city_wrap', [
+      h('div.left_arrow', h('span.green.stroked', {
+        on: {
+          click: () => ctrl.selectCity(1)
+        }
+      },
+                            '<')),
+      h('div.select_city', [
+        h('div.up', [
+          h('div.title', h('span.stroked', title)),
+          h('div.details', [
+            h('div.city', [
+              h('span', 'CITY'),
+              h('span.yellow', city.name)
+            ]),
+            h('div.toll', [
+              h('span', 'TOLL'),
+              h('span.red', land.toll)
+            ])
+          ])
+        ]),
+        h('div.button', {
+          on: {
+            click: () => {
+              ctrl.onSelectCity();
+            }
+          }
+        }, h('span.stroked', 'OK'))
+      ]),
+      h('div.right_arrow', h('span.green.stroked',
+                             {
+                               on: {
+                                 click: () => ctrl.selectCity(1)
+                               }
+                             },
+                             '>')),
+    ]);
+  }
+  return '';
+}
+
 function sellCities(ctrl) {
   if (ctrl.vm.sellCity) {
     const { needMoney, selectedCities } = ctrl.vm.sellCity;
@@ -113,6 +164,17 @@ function showchance(ctrl) {
         h('span', chance.details)
       ])
     ]);
+  }
+  return '';
+}
+
+function noselect(ctrl) {
+  if (ctrl.vm.noselect) {
+    return h('div.popup.noselect_wrap',
+             h('div.noselect',
+               h('span.yellow.stroked', 'There is no place to select')
+              )
+            );
   }
   return '';
 }
@@ -414,6 +476,8 @@ function renderApp(ctrl) {
     paytoll(ctrl),
     showchance(ctrl),
     sellCities(ctrl),
+    selectCities(ctrl),
+    noselect(ctrl),
     youwin(ctrl),
     h('div.player_wrap.player1', {}, [
       playerCashDiff(ctrl, 'player1'),

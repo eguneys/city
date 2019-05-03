@@ -18,8 +18,9 @@
   <div id="app"></div>
 
   <div id="controls">
-    <button id="promptSell"> Prompt Sell</button>
-    <button id="cityStreak"> City Streak</button>
+    <button id="promptSell"> Prompt Sell </button>
+    <button id="promptSelect"> Prompt Select </button>
+    <button id="cityStreak"> City Streak </button>
     <button id="tornado"> Tornado </button>
     <button id="bomb"> Bomb </button>
     <button id="dump"> Server Dump </button>
@@ -35,7 +36,7 @@ const promiseSerial = funcs =>
 
  const api = init();
  const tests = new City.Tests();
- tests.run();
+ // tests.run();
 
  function init() {
  
@@ -80,6 +81,12 @@ const promiseSerial = funcs =>
          if (event.sell) {
            return () => api.sell(event.sell);
          }
+         if (event.themecity) {
+           return () => api.themecity(event.themecity);
+         }
+         if (event.nocity) {
+           return () => api.noselect();
+         }
          return () => Promise.reject("Unhandled move event " + JSON.stringify(event));
        });
        return promiseSerial(reqs).then(() => {
@@ -94,6 +101,10 @@ const promiseSerial = funcs =>
          } else if (o.prompt === 'sell') {
            if (myTurn) {
              api.promptSell(o.needMoney);
+           }
+         } else if (o.prompt === 'themecity') {
+           if (myTurn) {
+             api.promptSelect(o.selectCities, 'themecity');
            }
          }
          api.set({
@@ -127,6 +138,9 @@ const promiseSerial = funcs =>
        },
        sellcities: (cities) => {
          server.send('player2', { uci: 'sell', cities });
+       },
+       selectCity: (city) => {
+         server.send('player2', { uci: 'themecity', city });
        },
        onLoad: () => {
          server.connect('player2', socket);
@@ -180,6 +194,10 @@ const promiseSerial = funcs =>
 
  onClick(document.getElementById('bomb'), e=> {
    api.bomb(10);
+ });
+
+ onClick(document.getElementById('promptSelect'), e=> {
+   api.promptSelect('player1');
  });
 
  function onClick(button, f) {

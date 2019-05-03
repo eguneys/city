@@ -34,6 +34,14 @@ export default function start(ctrl, redraw) {
         });
     },
 
+    promptSelect(cities, title) {
+      return anim(ctrl.data, (state) =>
+                  ctrl.clearCamera())
+        .then(() => {
+          anim(ctrl.data, (state) => ctrl.promptSelect(cities, title));
+        });
+    },
+
     youLose() {
       return anim(ctrl.data, () => ctrl.youLose());
     },    
@@ -76,6 +84,12 @@ export default function start(ctrl, redraw) {
 
     move(amount) {
       return anim(ctrl.data, () => ctrl.move(amount));
+    },
+    noselect() {
+      return anim(ctrl.data, () => ctrl.noselect());
+    },
+    themecity(city) {
+      return anim(ctrl.data, () => ctrl.themecity(city));
     },
     tornado(i) {
       return anim(ctrl.data, () => ctrl.tornado(i));

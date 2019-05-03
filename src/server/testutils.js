@@ -6,10 +6,10 @@ export const is = runtest(matcher((a, b) => a === b, '!=='));
 
 export const isabove = runtest(matcher((a, b) => a >= b), '>=!');
 
-export const deep_is = runtest((a, b) => {
+export const deep_is = runtest(matcher((a, b) => {
   if (a !== null && b !== null && typeof a === 'object' && typeof b === 'object') return objectCompare(a, b);
   else return a === b;
-});
+}), '!==');
 
 export function matcher(f, s) {
   return { matcher: f, onfail: s };

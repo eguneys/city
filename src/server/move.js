@@ -11,10 +11,19 @@ export const Move = {
       return Roll();
     case "sell":
       return Sell(move.cities);
+    case "themecity":
+      return ThemeCity(move.city);
     }
     return null;
   }
 };
+
+export function ThemeCity(city) {
+  return {
+    uci: 'themecity',
+    city
+  };
+}
 
 export function Buy(type) {
   return {
@@ -53,11 +62,16 @@ const rollTest8 = withRolls([1, 12, 1]);
 
 const rollTest9 = withRolls([4, 1, 1, 1, 2, 2]);
 
+const rollTest10 = withRolls([1,1,1,1,16]);
+const rollTest11 = withRolls([1,2,1,2,1,14]);
+
 export function Roll() {
   return {
     uci: 'roll',
-    dice1: 1,
-    dice2: Math.ceil(Math.random() * 2),
+    dice1: rollTest11(),
+    dice2: 0,
+    // dice1: 1,
+    // dice2: Math.ceil(Math.random() * 2),
     // dice1: Math.ceil(Math.random() * 6),
     // dice2: Math.ceil(Math.random() * 6),
     chance: Chances.random()

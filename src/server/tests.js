@@ -1,6 +1,6 @@
 import { ok, is, not, isabove, deep_is, runtest, matcher, log } from './testutils';
 import { makeGame, Game } from './game';
-import { Sell, Buy, Nobuyland, Roll, RollWith } from './move';
+import { ThemeCity, Sell, Buy, Nobuyland, Roll, RollWith } from './move';
 import { Cities, Tiles } from './state';
 
 
@@ -35,7 +35,8 @@ function gameTests() {
   withGame(game => {
     const invalidMoves = [Buy('land'),
                           Nobuyland,
-                          Sell(['jakarta'])];
+                          Sell(['jakarta']),
+                          ThemeCity('jakarta')];
     
     invalidMoves.forEach(move =>
       withGame(game => {
@@ -430,6 +431,39 @@ function gameTests() {
     oneevent("tornado event", game2, 'tornado');
     not("current tile is changed", game2.players['player1'].currentTile, 6);
 
+  });
+
+  withGame(game => {
+    log("theme park corner");
+    const game2 = applyMoves(game,
+                             RollWith(1, 0),
+                             Buy("land"),
+                             RollWith(1, 0),
+                             RollWith(1, 0),
+                             Buy("land"),
+                             RollWith(1, 0),
+                             RollWith(16, 0));
+    is("prompt select theme city", game2.prompt, 'themecity');
+    is("turn is ok ", game2.turns, 5);
+    deep_is("selectcities is ok", game2.selectCities, ['hongkong', 'shanghai']);
+
+    const game3 = game2.move(ThemeCity('mumbai'));
+    is("cant select other city", game3, null);
+
+    const game4 = game2.move(ThemeCity('hongkong'));
+    ok("can select city", game4);
+    is("prompt is ok", game4.prompt, 'roll');
+    is("turn is ok", game4.turns, 6);
+    oneevent("themecity event", game4, 'themecity');
+  });
+
+  withGame(game => {
+    log("theme park corner no city to select");
+    const game2 = applyMoves(game,
+                             RollWith(18, 0));
+    is("prompt roll", game2.prompt, 'roll');
+    is("turn is ok ", game2.turns, 2);
+    oneevent('no city to select', game2, 'nocity');
   });
 
 }

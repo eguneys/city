@@ -151,6 +151,57 @@ export default function Controller(state, redraw) {
     this.vm.buyingCity = { city, toll };
   };
 
+  this.selectCity = function(d) {
+    this.vm.selectCity.selected = (this.vm.selectCity.selected + d) % this.vm.selectCity.cityIndexes.length;
+    redraw();
+    state.threeD.redraw();
+  };
+
+  this.noselect = function() {
+    this.vm.noselect = true;
+    redraw();
+    return new Promise(resolve => {
+      setTimeout(() => {
+        delete this.vm.noselect;
+        
+        redraw();
+        resolve();
+      }, 1000);
+    });
+  };
+
+  this.promptSelect = function(cities, title) {
+    const titles = {
+      'themecity': 'SELECT A THEME PARK CITY'
+    };
+    const threeD = state.threeD.elements;
+    const player = state.players[state.turnColor];
+
+    const cityIndexes = [1,2,4];
+
+    this.vm.selectCity = {
+      title: titles[title],
+      cityIndexes,
+      selected: 0
+    };
+
+    const undoChanges = cityIndexes.map(index => {
+      const tile = Tiles[index];
+      const toll = state.tolls[tile.key];
+
+      const tileMesh = threeD.tiles[index];
+      tileMesh.position.z += 2;
+
+      return () => {
+        tileMesh.position.z -= 2;
+      };
+    });
+
+    this.vm.selectCity.undo = () => {
+      undoChanges.forEach(f => f());
+    };
+  };
+
   this.promptSell = function(needMoney) {
     const threeD = state.threeD.elements;
     const player = state.players[state.turnColor];
@@ -239,6 +290,18 @@ export default function Controller(state, redraw) {
     redraw();
     this.data.threeD.redraw();
     callUserFunction(state.events.sellcities, selectedCities);
+  };
+
+  this.onSelectCity = function() {
+    const city = Tiles[this.vm.selectCity.cityIndexes[
+      this.vm.selectCity.selected]].key;
+
+    this.vm.selectCity.undo();
+    delete this.vm.selectCity;
+    redraw();
+    state.threeD.redraw();
+
+    callUserFunction(state.events.selectCity, city);
   };
 
   this.clearCamera = function() {
@@ -385,6 +448,10 @@ export default function Controller(state, redraw) {
       ct.chain(firstTween);
       ct.start();
     }
+  };
+
+  this.themecity = function(city) {
+    console.log('themecity', city);
   };
 
   this.bomb = function(i) {

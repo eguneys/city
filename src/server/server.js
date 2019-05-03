@@ -86,6 +86,11 @@ function requestFishnet(server, game) {
         }
         server.send('player1', { uci: 'sell', cities });
       }, 5000);
+    } else if (game.prompt === 'themecity') {
+      setTimeout(() => {
+        const cities = game.selectCities;
+        server.send('player1', { uci: 'themecity', city: cities[0] });
+      }, 5000);
     }
   }
 }
@@ -105,6 +110,7 @@ function MoveEvent(game, move) {
         turns: game.turns,
         prompt: game.prompt,
         needMoney: game.needMoney,
+        selectCities: game.selectCities,
         events: game.events
       }
     };

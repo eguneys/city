@@ -91,6 +91,20 @@ export function Game({
     return this;
   };
 
+  this.themecity = (city) => {
+    if (this.prompt !== 'themecity') {
+      return null;
+    }
+    if (!this.selectCities || this.selectCities.indexOf(city) === -1) {
+      return null;
+    }
+
+    this.events.push({ themecity: city });
+
+    delete this.selectCities;
+    return this.nextTurn();
+  };
+
   this.sell = (cities) => {
     if (this.prompt !== 'sell') return null;
 
@@ -297,6 +311,21 @@ export function Game({
       const bombCity = Tiles.cityIndex();
       this.events.push({ bomb: bombCity });
       removeToll(Tiles[bombCity].key);
+    } if (tile.key === 'flight') {
+      const cities = [];
+      for (var key of Object.keys(this.tolls)) {
+        const toll = this.tolls[key];
+        if (toll.owner === this.turnColor)
+          cities.push(key);
+      }
+      if (cities.length > 0) {
+        this.selectCities = cities;
+        // theme park
+        this.prompt = 'themecity';
+        return this;
+      } else {
+        this.events.push({ nocity: true });
+      }
     }
     return this.nextTurn();
   };
@@ -346,6 +375,9 @@ export function Game({
       break;
     case 'sell':
       return this.sell(move.cities);
+      break;
+    case 'themecity':
+      return this.themecity(move.city);
       break;
     }
     return null;
