@@ -457,9 +457,28 @@ export default function Controller(state, redraw) {
   };
 
   this.themecity = function(city) {
+    this.vm.themePark = city;
     this.data.tolls[city].theme = true;
-    redraw();
-    state.threeD.redraw();
+
+    const threeD = state.threeD.elements;
+    const cityIndex = Tiles.findIndex(tile => tile.key === city);
+
+    const themeTilePos = getTilePosition(
+      threeD.tiles, cityIndex);
+
+    tween(threeD.camera.position)
+      .to({ x: themeTilePos.x + 170,
+            y: 100,
+            z: themeTilePos.z + 170 }, 500)
+      .start();
+
+    return new Promise(resolve =>
+      setTimeout(() => {
+        delete this.vm.themePark;
+        redraw();
+        resolve();
+      }, 1000)
+    );
   };
 
   this.bomb = function(i) {

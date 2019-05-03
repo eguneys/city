@@ -177,6 +177,22 @@ function noselect(ctrl) {
   return '';
 }
 
+function themepark(ctrl) {
+  if (ctrl.vm.themePark) {
+    return h('div.popup.themepark', [
+      h('span.build', 'BUILD'),
+      h('span.park', 'THEMEPARK'),
+      h('div.toll', [
+        h('span', 'TOLL'),
+        h('span', 'x'),
+        h('span', '2')
+      ]),
+      h('span.city', Cities[ctrl.vm.themePark].name)
+    ]);
+  }
+  return '';
+}
+
 function overlay(ctrl) {
   if (ctrl.vm.rollingDice) {
     return h('div.roll_overlay');
@@ -475,6 +491,7 @@ function renderApp(ctrl) {
     turn(ctrl),
     paytoll(ctrl),
     showchance(ctrl),
+    themepark(ctrl),
     sellCities(ctrl),
     selectCities(ctrl),
     noselect(ctrl),

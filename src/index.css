@@ -197,7 +197,7 @@ background: linear-gradient(to bottom, #FFD200, #F7971E); /* W3C, IE 10+/ Edge, 
 .myturn {
   position: absolute;
   top: 80%;
-  right: 15%;
+  right: 22%;
   display: flex;
   flex-direction: column;
   animation: up_down 1s infinite;
@@ -230,6 +230,54 @@ background: linear-gradient(to bottom, #FFD200, #F7971E); /* W3C, IE 10+/ Edge, 
   display: flex;
   flex-flow: row nowrap;
   overflow: hidden;
+}
+
+.themepark {
+  top: 33%;
+  left: 0%;
+  width: 100%;
+  text-align: center;
+}
+
+.themepark .build {
+  padding: 0px;
+  margin: 0px;
+  color: white;
+  font-size: 3em;
+  -webkit-text-stroke-width: 3px;
+  -webkit-text-stroke-color: black;
+}
+
+.themepark .park {
+  margin-top: -16px;
+  margin-bottom: 0px;
+  color: lightgreen;
+  font-size: 3em;
+  -webkit-text-stroke-width: 3px;
+  -webkit-text-stroke-color: black;
+}
+
+.themepark .toll span:nth-child(1) {
+  color: white;
+  font-size: 2em;
+  -webkit-text-stroke-width: 3px;
+  -webkit-text-stroke-color: black;  
+}
+
+.themepark .toll span:nth-child(2),
+.themepark .toll span:nth-child(3) {
+  color: yellow;
+  font-size: 2em;
+  -webkit-text-stroke-width: 3px;
+  -webkit-text-stroke-color: black;
+}
+
+.themepark span.city {
+  color: white;
+  background: rgba(0, 0, 0, 0.8);
+  border-radius: 10px;
+  margin: 0 auto;
+  padding: 10px 50px;
 }
 
 .select_city_wrap .left_arrow,
@@ -623,7 +671,7 @@ background: linear-gradient(to bottom, #FFD200, #F7971E); /* W3C, IE 10+/ Edge, 
 
 .player_wrap {
   position: absolute;
-  width: 200px;
+  width: 30%;
 }
 
 .player_wrap > .bankrupt {
@@ -689,7 +737,7 @@ background: linear-gradient(to bottom, #FFD200, #F7971E); /* W3C, IE 10+/ Edge, 
 }
 
 .player {
-  background: #bababa;
+  background: rgba(0, 0, 0, 0.5);
   margin: 0px 2px;
   display: flex;
   flex-direction: column;
