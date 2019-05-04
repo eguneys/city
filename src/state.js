@@ -142,6 +142,7 @@ export const Cities = {
 export function tollMultiply(toll) {
   let amount = toll.multiply;
   if (toll.theme) amount *= 2;
+  if (toll.star) amount *= 2;
   return amount;
 }
 

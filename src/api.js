@@ -88,6 +88,9 @@ export default function start(ctrl, redraw) {
     noselect() {
       return anim(ctrl.data, () => ctrl.noselect());
     },
+    starcity(city) {
+      return anim(ctrl.data, () => ctrl.starcity(city));
+    },
     themecity(city) {
       return anim(ctrl.data, () => ctrl.themecity(city));
     },

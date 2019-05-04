@@ -13,6 +13,8 @@ export const Move = {
       return Sell(move.cities);
     case "themecity":
       return ThemeCity(move.city);
+    case "starcity":
+      return StarCity(move.city);
     }
     return null;
   }
@@ -21,6 +23,13 @@ export const Move = {
 export function ThemeCity(city) {
   return {
     uci: 'themecity',
+    city
+  };
+}
+
+export function StarCity(city) {
+  return {
+    uci: 'starcity',
     city
   };
 }
@@ -62,20 +71,24 @@ const rollTest8 = withRolls([1, 12, 1]);
 
 const rollTest9 = withRolls([4, 1, 1, 1, 2, 2]);
 
+// theme park
 const rollTest10 = withRolls([1,1,1,1,16]);
 const rollTest11 = withRolls([1,2,1,2,2,14,22]);
+
+// chance
+const rollTest12 = withRolls([1,2,1,1]);
 
 export function Roll() {
   return {
     uci: 'roll',
-    // dice1: rollTest11(),
-    // dice2: 0,
+    dice1: rollTest11(),
+    dice2: 0,
     // dice1: 1,
     // dice2: Math.ceil(Math.random() * 2),
-    dice1: Math.ceil(Math.random() * 6),
-    dice2: Math.ceil(Math.random() * 6),
-    chance: Chances.random()
-
+    // dice1: Math.ceil(Math.random() * 6),
+    // dice2: Math.ceil(Math.random() * 6),
+    // chance: Chances.random()
+    chance: Chances.byKey['starcity']
   };
 };
 

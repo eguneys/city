@@ -94,6 +94,7 @@ export function Game({
     const toll = this.tolls[key];
     let amount = Cities[key][toll.owned].toll * toll.multiply;
     if (toll.theme) amount *= 2;
+    if (toll.star) amount *= 2;
     return amount;
   };
 
@@ -120,6 +121,18 @@ export function Game({
 
     this.events.push({ themecity: city });
 
+    delete this.selectCities;
+    return this.nextTurn();
+  };
+
+  this.starcity = (city) => {
+    if (this.prompt !== 'starcity') return null;
+
+    if (!this.selectCities || this.selectCities.indexOf(city) === -1) {
+      return null;
+    }
+    this.tolls[city].star = true;
+    this.events.push({ starcity: city });
     delete this.selectCities;
     return this.nextTurn();
   };
@@ -392,6 +405,9 @@ export function Game({
       break;
     case 'themecity':
       return this.themecity(move.city);
+      break;
+    case 'starcity':
+      return this.starcity(move.city);
       break;
     }
     return null;

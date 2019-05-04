@@ -177,6 +177,21 @@ function noselect(ctrl) {
   return '';
 }
 
+function starcity(ctrl) {
+  if (ctrl.vm.starCity) {
+    return h('div.popup.starcity', [
+      h('span.star.yellow', 'STARCITY'),
+      h('div.toll', [
+        h('span', 'TOLL'),
+        h('span', 'x'),
+        h('span', '2')
+      ]),
+      h('span.city', Cities[ctrl.vm.starCity].name)
+    ]);
+  }
+  return '';
+}
+
 function themepark(ctrl) {
   if (ctrl.vm.themePark) {
     return h('div.popup.themepark', [
@@ -492,6 +507,7 @@ function renderApp(ctrl) {
     paytoll(ctrl),
     showchance(ctrl),
     themepark(ctrl),
+    starcity(ctrl),
     sellCities(ctrl),
     selectCities(ctrl),
     noselect(ctrl),

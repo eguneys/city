@@ -173,7 +173,8 @@ export default function Controller(state, redraw) {
 
   this.promptSelect = function(cities, title) {
     const titles = {
-      'themecity': 'SELECT A THEME PARK CITY'
+      'themecity': 'SELECT A THEME PARK CITY',
+      'starcity': 'SELECT A STAR CITY'
     };
     const threeD = state.threeD.elements;
     const player = state.players[state.turnColor];
@@ -186,6 +187,7 @@ export default function Controller(state, redraw) {
     });
 
     this.vm.selectCity = {
+      key: title,
       title: titles[title],
       cityIndexes,
       selected: 0
@@ -302,12 +304,14 @@ export default function Controller(state, redraw) {
     const city = Tiles[this.vm.selectCity.cityIndexes[
       this.vm.selectCity.selected]].key;
 
+    const key = this.vm.selectCity.key;
+
     this.vm.selectCity.undo();
     delete this.vm.selectCity;
     redraw();
     state.threeD.redraw();
 
-    callUserFunction(state.events.selectCity, city);
+    callUserFunction(state.events.selectCity, key, city);
   };
 
   this.clearCamera = function() {
@@ -456,9 +460,37 @@ export default function Controller(state, redraw) {
     }
   };
 
+  this.starcity = function(city) {
+    this.vm.starCity = city;
+
+    const threeD = state.threeD.elements;
+    const cityIndex = Tiles.findIndex(tile => tile.key === city);
+
+    const starTilePos = getTilePosition(
+      threeD.tiles, cityIndex);
+
+    tween(threeD.camera.position)
+      .to({ x: starTilePos.x + 170,
+            y: 100,
+            z: starTilePos.z + 170 }, 500)
+      .delay(1000)
+      .onComplete(() => {
+        this.data.tolls[city].star = true;
+      })
+      .chain(tween({}).to({x:10}, 1000))
+      .start();
+
+    return new Promise(resolve =>
+      setTimeout(() => {
+        delete this.vm.starCity;
+        redraw();
+        resolve();
+      }, 1000)
+    );    
+  };
+
   this.themecity = function(city) {
     this.vm.themePark = city;
-    this.data.tolls[city].theme = true;
 
     const threeD = state.threeD.elements;
     const cityIndex = Tiles.findIndex(tile => tile.key === city);
@@ -470,6 +502,11 @@ export default function Controller(state, redraw) {
       .to({ x: themeTilePos.x + 170,
             y: 100,
             z: themeTilePos.z + 170 }, 500)
+      .delay(1000)
+      .chain(tween({}).to({x:10}, 1000))
+      .onComplete(() => {
+        this.data.tolls[city].theme = true;
+      })
       .start();
 
     return new Promise(resolve =>

@@ -36,7 +36,7 @@ const promiseSerial = funcs =>
 
  const api = init();
  const tests = new City.Tests();
- tests.run();
+ // tests.run();
 
  function init() {
  
@@ -84,6 +84,9 @@ const promiseSerial = funcs =>
          if (event.themecity) {
            return () => api.themecity(event.themecity);
          }
+         if (event.starcity) {
+           return () => api.starcity(event.starcity);
+         }
          if (event.nocity) {
            return () => api.noselect();
          }
@@ -105,6 +108,10 @@ const promiseSerial = funcs =>
          } else if (o.prompt === 'themecity') {
            if (myTurn) {
              api.promptSelect(o.selectCities, 'themecity');
+           }
+         } else if (o.prompt === 'starcity') {
+           if (myTurn) {
+             api.promptSelect(o.selectCities, 'starcity');
            }
          }
          api.set({
@@ -139,8 +146,8 @@ const promiseSerial = funcs =>
        sellcities: (cities) => {
          server.send('player2', { uci: 'sell', cities });
        },
-       selectCity: (city) => {
-         server.send('player2', { uci: 'themecity', city });
+       selectCity: (key, city) => {
+         server.send('player2', { uci: key, city });
        },
        onLoad: () => {
          server.connect('player2', socket);

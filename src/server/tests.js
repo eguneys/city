@@ -1,6 +1,6 @@
 import { ok, is, not, isabove, deep_is, runtest, matcher, log } from './testutils';
 import { makeGame, Game } from './game';
-import { ThemeCity, Sell, Buy, Nobuyland, Roll, RollWith } from './move';
+import { StarCity, ThemeCity, Sell, Buy, Nobuyland, Roll, RollWith } from './move';
 import { Cities, Tiles } from './state';
 
 
@@ -70,6 +70,10 @@ function chanceTests() {
     is('same turn', game3.turns, 3);
     deep_is('select city', game3.selectCities, ['hongkong']);
 
+    const game4 = game3.move(StarCity('hongkong'));
+
+    ok("can select city", game4);
+    oneevent("star city event", game4, 'starcity');
   });
 
 }
@@ -85,7 +89,8 @@ function gameTests() {
     const invalidMoves = [Buy('land'),
                           Nobuyland,
                           Sell(['jakarta']),
-                          ThemeCity('jakarta')];
+                          ThemeCity('jakarta'),
+                          StarCity('jakarta')];
     
     invalidMoves.forEach(move =>
       withGame(game => {

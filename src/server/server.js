@@ -91,6 +91,11 @@ function requestFishnet(server, game) {
         const cities = game.selectCities;
         server.send('player1', { uci: 'themecity', city: cities[0] });
       }, 5000);
+    } else if (game.prompt === 'starcity') {
+      setTimeout(() => {
+        const cities = game.selectCities;
+        server.send('player1', { uci: 'starcity', city: cities[0] });
+      }, 5000);
     }
   }
 }
