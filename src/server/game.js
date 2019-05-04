@@ -95,7 +95,20 @@ export function Game({
     let amount = Cities[key][toll.owned].toll * toll.multiply;
     if (toll.theme) amount *= 2;
     if (toll.star) amount *= 2;
+
+    if (toll.reduce0) amount = 0;
     return amount;
+  };
+
+  const tollsTurnExpire = () => {
+    for(var key of Object.keys(this.tolls)) {
+      const toll = this.tolls[key];
+
+      if (this.turns - toll.reduce0 === 3 * 2 + 1) {
+        delete toll.reduce0;
+        this.events.push({ reduceexpire: key });
+      }
+    }
   };
 
   this.nextTurn = () => {
@@ -103,20 +116,42 @@ export function Game({
       this.doubleRoll = false;
     } else {
       this.turns++;
+
+      tollsTurnExpire();
     }
     this.turnColor = this.turns % 2 === 1 ? 'player1':'player2';
     this.prompt = 'roll';
     return this;
   };
 
-  this.themecity = (city) => {
-    if (this.prompt !== 'themecity') {
-      return null;
-    }
+  this.selectcity = (city) => {
     if (!this.selectCities || this.selectCities.indexOf(city) === -1) {
       return null;
     }
 
+    switch (this.prompt) {
+    case 'themecity':
+      return this.themecity(city);
+      break;
+    case 'starcity':
+      return this.starcity(city);
+      break;
+    case 'reducetolls':
+      return this.reducetolls(city);
+      break;
+    }
+    return null;
+  };
+
+  this.reducetolls = (city) => {
+    this.tolls[city].reduce0 = this.turns;
+    this.events.push({ reducetolls: city });
+
+    delete this.selectCities;
+    return this.nextTurn();
+  };
+
+  this.themecity = (city) => {
     this.tolls[city].theme = true;
 
     this.events.push({ themecity: city });
@@ -126,11 +161,6 @@ export function Game({
   };
 
   this.starcity = (city) => {
-    if (this.prompt !== 'starcity') return null;
-
-    if (!this.selectCities || this.selectCities.indexOf(city) === -1) {
-      return null;
-    }
     this.tolls[city].star = true;
     this.events.push({ starcity: city });
     delete this.selectCities;
@@ -403,11 +433,8 @@ export function Game({
     case 'sell':
       return this.sell(move.cities);
       break;
-    case 'themecity':
-      return this.themecity(move.city);
-      break;
-    case 'starcity':
-      return this.starcity(move.city);
+    case 'selectcity':
+      return this.selectcity(move.city);
       break;
     }
     return null;

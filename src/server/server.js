@@ -86,15 +86,12 @@ function requestFishnet(server, game) {
         }
         server.send('player1', { uci: 'sell', cities });
       }, 5000);
-    } else if (game.prompt === 'themecity') {
+    } else if (game.prompt === 'themecity' ||
+               game.prompt === 'starcity' ||
+               game.prompt === 'reducetolls') {
       setTimeout(() => {
         const cities = game.selectCities;
-        server.send('player1', { uci: 'themecity', city: cities[0] });
-      }, 5000);
-    } else if (game.prompt === 'starcity') {
-      setTimeout(() => {
-        const cities = game.selectCities;
-        server.send('player1', { uci: 'starcity', city: cities[0] });
+        server.send('player1', { uci: 'selectcity', city: cities[0] });
       }, 5000);
     }
   }

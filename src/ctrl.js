@@ -174,7 +174,8 @@ export default function Controller(state, redraw) {
   this.promptSelect = function(cities, title) {
     const titles = {
       'themecity': 'SELECT A THEME PARK CITY',
-      'starcity': 'SELECT A STAR CITY'
+      'starcity': 'SELECT A STAR CITY',
+      'reducetolls': 'SELECT CITY TO REDUCE TOLL'
     };
     const threeD = state.threeD.elements;
     const player = state.players[state.turnColor];
@@ -311,7 +312,7 @@ export default function Controller(state, redraw) {
     redraw();
     state.threeD.redraw();
 
-    callUserFunction(state.events.selectCity, key, city);
+    callUserFunction(state.events.selectCity, city);
   };
 
   this.clearCamera = function() {
@@ -460,25 +461,36 @@ export default function Controller(state, redraw) {
     }
   };
 
+  this.reduceexpire = (city) => {
+    console.log(city);
+    console.log(this.data.tolls);
+    delete this.data.tolls[city].reduce0;
+    this.data.threeD.redraw();
+  };
+
+  const tweenFollowCity = (city, onComplete) => {
+    const threeD = this.data.threeD.elements;
+    const cityIndex = Tiles.findIndex(tile => tile.key === city);
+
+    const themeTilePos = getTilePosition(
+      threeD.tiles, cityIndex);
+
+    return tween(threeD.camera.position)
+      .to({ x: themeTilePos.x + 170,
+            y: 100,
+            z: themeTilePos.z + 170 }, 500)
+      .delay(1000)
+      .chain(tween({}).to({x:10}, 1000))
+      .onComplete(onComplete)
+      .start();
+  };
+
   this.starcity = function(city) {
     this.vm.starCity = city;
 
-    const threeD = state.threeD.elements;
-    const cityIndex = Tiles.findIndex(tile => tile.key === city);
-
-    const starTilePos = getTilePosition(
-      threeD.tiles, cityIndex);
-
-    tween(threeD.camera.position)
-      .to({ x: starTilePos.x + 170,
-            y: 100,
-            z: starTilePos.z + 170 }, 500)
-      .delay(1000)
-      .onComplete(() => {
-        this.data.tolls[city].star = true;
-      })
-      .chain(tween({}).to({x:10}, 1000))
-      .start();
+    tweenFollowCity(city, () => {
+      this.data.tolls[city].star = true;
+    });
 
     return new Promise(resolve =>
       setTimeout(() => {
@@ -492,26 +504,29 @@ export default function Controller(state, redraw) {
   this.themecity = function(city) {
     this.vm.themePark = city;
 
-    const threeD = state.threeD.elements;
-    const cityIndex = Tiles.findIndex(tile => tile.key === city);
-
-    const themeTilePos = getTilePosition(
-      threeD.tiles, cityIndex);
-
-    tween(threeD.camera.position)
-      .to({ x: themeTilePos.x + 170,
-            y: 100,
-            z: themeTilePos.z + 170 }, 500)
-      .delay(1000)
-      .chain(tween({}).to({x:10}, 1000))
-      .onComplete(() => {
-        this.data.tolls[city].theme = true;
-      })
-      .start();
+    tweenFollowCity(city, () => {
+      this.data.tolls[city].theme = true;
+    });
 
     return new Promise(resolve =>
       setTimeout(() => {
         delete this.vm.themePark;
+        redraw();
+        resolve();
+      }, 1000)
+    );
+  };
+
+  this.reducetolls = function(city) {
+    this.vm.reduceTolls = city;
+
+    tweenFollowCity(city, () => {
+      this.data.tolls[city].reduce0 = 3 * 2;
+    });
+
+    return new Promise(resolve =>
+      setTimeout(() => {
+        delete this.vm.reduceTolls;
         redraw();
         resolve();
       }, 1000)

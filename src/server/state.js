@@ -1,3 +1,7 @@
+export function nextColor(color) {
+  return (color==='player1')?'player2':'player1';
+}
+
 export const Tiles = [
   { type: 'corner', key: 'go' },
   { type: 'city', key: 'hongkong' },
@@ -51,7 +55,6 @@ Tiles.safeIndex = () => {
 
 Tiles.randomIndex = () => Math.floor(Math.random() * Tiles.length);
 Tiles.random = () => Tiles[Tiles.randomIndex()];
-
 
 export const Cities = {
   // paris

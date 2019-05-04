@@ -88,6 +88,12 @@ export default function start(ctrl, redraw) {
     noselect() {
       return anim(ctrl.data, () => ctrl.noselect());
     },
+    reduceexpire(city) {
+      return anim(ctrl.data, () => ctrl.reduceexpire(city));
+    },
+    reducetolls(city) {
+      return anim(ctrl.data, () => ctrl.reducetolls(city));
+    },
     starcity(city) {
       return anim(ctrl.data, () => ctrl.starcity(city));
     },

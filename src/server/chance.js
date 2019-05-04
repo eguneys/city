@@ -1,4 +1,4 @@
-import { Tiles } from './state';
+import { Tiles, nextColor } from './state';
 
 function moveCurrentTile(game, by) {
   const player = game.players[game.turnColor];
@@ -66,6 +66,16 @@ export const starcity = {
 export const reducetolls = {
   key: 'reducetolls',
   play(game) {
+    const cities = game.citiesOf(nextColor(game.turnColor));
+
+    if (cities.length > 0) {
+      game.selectCities = cities;
+      game.prompt = 'reducetolls';
+      return game;
+    } else {
+      game.events.push({ nocity: true });
+    }
+
     return game.nextTurn();
   }
 };

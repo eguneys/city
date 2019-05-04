@@ -143,6 +143,8 @@ export function tollMultiply(toll) {
   let amount = toll.multiply;
   if (toll.theme) amount *= 2;
   if (toll.star) amount *= 2;
+
+  if (toll.reduce0) amount = 0;
   return amount;
 }
 

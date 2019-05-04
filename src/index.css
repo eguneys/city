@@ -232,11 +232,36 @@ background: linear-gradient(to bottom, #FFD200, #F7971E); /* W3C, IE 10+/ Edge, 
   overflow: hidden;
 }
 
-.themepark, .starcity {
+.themepark, .starcity, .reducetolls {
   top: 33%;
   left: 0%;
   width: 100%;
   text-align: center;
+}
+
+.reducetolls .turns span:nth-child(1) {
+  font-size: 1.6em;
+}
+.reducetolls .turns span:nth-child(2) {
+  color: white;
+  font-size: 1.2em;
+  -webkit-text-stroke-width: 3px;
+  -webkit-text-stroke-color: black;  
+}
+
+.reducetolls .toll {
+  font-size: 1.8em;
+  margin-top: -16px;
+  -webkit-text-stroke-width: 3px;
+  -webkit-text-stroke-color: black;
+}
+
+.reducetolls .toll span:nth-child(1) {
+  color: white;
+  margin-right: 10px;
+}
+.reducetolls .toll span:nth-child(2) {
+  font-size: 1.8em;
 }
 
 .themepark .build {
@@ -248,7 +273,7 @@ background: linear-gradient(to bottom, #FFD200, #F7971E); /* W3C, IE 10+/ Edge, 
   -webkit-text-stroke-color: black;
 }
 
-.starcity .star {
+.starcity .star, .reducetolls .turns {
   margin-bottom: 0px;
   font-size: 3em;
   -webkit-text-stroke-width: 3px;
@@ -283,7 +308,8 @@ background: linear-gradient(to bottom, #FFD200, #F7971E); /* W3C, IE 10+/ Edge, 
 }
 
 .starcity span.city,
-.themepark span.city {
+.themepark span.city,
+.reducetolls span.city {
   color: white;
   background: rgba(0, 0, 0, 0.8);
   border-radius: 10px;

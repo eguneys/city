@@ -1,6 +1,6 @@
 import { ok, is, not, isabove, deep_is, runtest, matcher, log } from './testutils';
 import { makeGame, Game } from './game';
-import { StarCity, ThemeCity, Sell, Buy, Nobuyland, Roll, RollWith } from './move';
+import { SelectCity, Sell, Buy, Nobuyland, Roll, RollWith } from './move';
 import { Cities, Tiles } from './state';
 
 
@@ -70,10 +70,59 @@ function chanceTests() {
     is('same turn', game3.turns, 3);
     deep_is('select city', game3.selectCities, ['hongkong']);
 
-    const game4 = game3.move(StarCity('hongkong'));
+    const game4 = game3.move(SelectCity('hongkong'));
 
     ok("can select city", game4);
     oneevent("star city event", game4, 'starcity');
+  });
+
+  withGame(game => {
+    const game4 = applyMoves(game,
+                             RollWith(1,0),
+                             Nobuyland,
+                             RollWith(4,0),
+                             Buy("land"),
+                             RollWith(2, 0, 'reducetolls'),
+                             SelectCity('jakarta'));
+    ok('can select city for reduce tolls', game4);
+    oneevent("reduce tolls event", game4, 'reducetolls');
+
+    const game2 = applyMoves(makeGame(),
+                             RollWith(1,0),
+                             Nobuyland,
+                             RollWith(4,0),
+                             Buy("land"),
+                             RollWith(2, 0, 'reducetolls'),
+                             SelectCity('jakarta'),
+                             RollWith(1,0),
+                             Nobuyland,
+                             // jakarta
+                             RollWith(1,0));
+    is("reduce tolls no pay toll", game2.players['player1'].cash, 2000);
+
+    const game3 = applyMoves(game2,
+                             // 2
+                             RollWith(2,0),
+                             Nobuyland,
+                             RollWith(3, 0),
+                             Nobuyland,
+                             // 3
+                             RollWith(1,0),
+                             Nobuyland,
+                             RollWith(1,0),
+                             Nobuyland);
+
+    oneevent('reduce tolls expire event', game3, 'reduceexpire');
+
+    const game5 = applyMoves(game3,
+                             // 4
+                             RollWith(2,0),
+                             Nobuyland,
+                             RollWith(20, 0));
+
+    is("reduce tolls pay toll after 3 turns", game5.players['player1'].cash, 2000 + 300 -
+       Cities['jakarta']['land'].toll);
+                             
   });
 
 }
@@ -89,8 +138,7 @@ function gameTests() {
     const invalidMoves = [Buy('land'),
                           Nobuyland,
                           Sell(['jakarta']),
-                          ThemeCity('jakarta'),
-                          StarCity('jakarta')];
+                          SelectCity('jakarta')];
     
     invalidMoves.forEach(move =>
       withGame(game => {
@@ -501,10 +549,10 @@ function gameTests() {
     is("turn is ok ", game2.turns, 5);
     deep_is("selectcities is ok", game2.selectCities, ['hongkong', 'shanghai']);
 
-    const game3 = game2.move(ThemeCity('mumbai'));
+    const game3 = game2.move(SelectCity('mumbai'));
     is("cant select other city", game3, null);
 
-    const game4 = game2.move(ThemeCity('hongkong'));
+    const game4 = game2.move(SelectCity('hongkong'));
     ok("can select city", game4);
     is("prompt is ok", game4.prompt, 'roll');
     is("turn is ok", game4.turns, 6);
@@ -529,7 +577,7 @@ function gameTests() {
                              Buy("land"),
                              RollWith(1, 0),
                              RollWith(16, 0),
-                             ThemeCity("hongkong"),
+                             SelectCity("hongkong"),
                              RollWith(23, 0));
     is("theme city costs double", game2.players['player2'].cash,
        2000 + 300 -

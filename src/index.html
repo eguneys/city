@@ -87,8 +87,14 @@ const promiseSerial = funcs =>
          if (event.starcity) {
            return () => api.starcity(event.starcity);
          }
+         if (event.reducetolls) {
+           return () => api.reducetolls(event.reducetolls);
+         }
          if (event.nocity) {
            return () => api.noselect();
+         }
+         if (event.reduceexpire) {
+           return () => api.reduceexpire(event.reduceexpire);
          }
          return () => Promise.reject("Unhandled move event " + JSON.stringify(event));
        });
@@ -112,6 +118,10 @@ const promiseSerial = funcs =>
          } else if (o.prompt === 'starcity') {
            if (myTurn) {
              api.promptSelect(o.selectCities, 'starcity');
+           }
+         } else if (o.prompt === 'reducetolls') {
+           if (myTurn) {
+             api.promptSelect(o.selectCities, 'reducetolls');
            }
          }
          api.set({
@@ -146,8 +156,8 @@ const promiseSerial = funcs =>
        sellcities: (cities) => {
          server.send('player2', { uci: 'sell', cities });
        },
-       selectCity: (key, city) => {
-         server.send('player2', { uci: key, city });
+       selectCity: (city) => {
+         server.send('player2', { uci: 'selectcity', city });
        },
        onLoad: () => {
          server.connect('player2', socket);
