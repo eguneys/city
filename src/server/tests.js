@@ -1,7 +1,7 @@
-import { ok, is, not, isabove, deep_is, runtest, matcher, log } from './testutils';
-import { makeGame, Game } from './game';
-import { SelectCity, Sell, Buy, Nobuyland, Roll, RollWith } from './move';
-import { Cities, Tiles } from './state';
+var { ok, is, not, isabove, deep_is, runtest, matcher, log } = require('./testutils');
+var { makeGame, Game } = require('./game');
+var { SelectCity, Sell, Buy, Nobuyland, Roll, RollWith } = require('./move');
+var { Cities, Tiles } = require('./state');
 
 
 const noevent = runtest(matcher((game, ename) => {
@@ -19,7 +19,7 @@ function applyMoves(game, ...args) {
   return args.reduce((g, arg) => !!g?g.move(arg):null, game);
 }
 
-export function Tests() {
+function Tests() {
   this.run = () => {
     gameTests();
     chanceTests();
@@ -588,3 +588,6 @@ function gameTests() {
 
 }
 
+module.exports = {
+  Tests
+};

@@ -547,7 +547,7 @@ function renderApp(ctrl) {
 
 export default function(ctrl) {
 
-  return h('div#app_wrap', [
+  return h('div.app_wrap', [
     h('div.app', renderApp(ctrl))
   ]);
   

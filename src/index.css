@@ -22,14 +22,14 @@ section {
   text-align: center;
 }
 
-#app_wrap {
+.app_wrap {
   user-select: none;
   margin: auto;
   width: 90%;
   height: 90%;
 }
 
-#app_wrap {
+.app_wrap {
   background: #dddddd;
   /* height: 480px; */
   /* width: 640px; */

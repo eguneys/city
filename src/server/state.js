@@ -1,8 +1,8 @@
-export function nextColor(color) {
+function nextColor(color) {
   return (color==='player1')?'player2':'player1';
-}
+};
 
-export const Tiles = [
+const Tiles = [
   { type: 'corner', key: 'go' },
   { type: 'city', key: 'hongkong' },
   { type: 'city', key: 'shanghai' },
@@ -56,7 +56,7 @@ Tiles.safeIndex = () => {
 Tiles.randomIndex = () => Math.floor(Math.random() * Tiles.length);
 Tiles.random = () => Tiles[Tiles.randomIndex()];
 
-export const Cities = {
+const Cities = {
   // paris
   newyork: {
     name: 'New York',
@@ -170,4 +170,10 @@ export const Cities = {
     building: { toll: 32, cost: 68, },
     hotel: { toll: 96, cost: 125 },
   },
+};
+
+module.exports = {
+  nextColor,
+  Tiles,
+  Cities
 };

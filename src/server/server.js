@@ -1,7 +1,7 @@
-import { Move } from './move';
-import { testGame, makeGame } from './game';
+var { Move } = require('./move');
+var { testGame, makeGame } = require('./game');
 
-export function Server() {
+exports.Server = function Server() {
 
   const player1 = new Pov('player1');
   const player2 = new Pov('player2');

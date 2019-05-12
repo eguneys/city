@@ -1,21 +1,21 @@
-export const ok = runtest(matcher((a) => a !== null && a !== undefined, '[is null or undefined]'));
+const ok = runtest(matcher((a) => a !== null && a !== undefined, '[is null or undefined]'));
 
-export const not = runtest(matcher((a, b) => a !== b, '==='));
+const not = runtest(matcher((a, b) => a !== b, '==='));
 
-export const is = runtest(matcher((a, b) => a === b, '!=='));
+const is = runtest(matcher((a, b) => a === b, '!=='));
 
-export const isabove = runtest(matcher((a, b) => a >= b, '>=!'));
+const isabove = runtest(matcher((a, b) => a >= b, '>=!'));
 
-export const deep_is = runtest(matcher((a, b) => {
+const deep_is = runtest(matcher((a, b) => {
   if (a !== null && b !== null && typeof a === 'object' && typeof b === 'object') return objectCompare(a, b);
   else return a === b;
 }, '!=='));
 
-export function matcher(f, s) {
+function matcher(f, s) {
   return { matcher: f, onfail: s };
 }
 
-export function runtest({ matcher, onfail }) {
+function runtest({ matcher, onfail }) {
   return function(msg, a, b) {
     var passfail = '';
     var res = '';
@@ -33,9 +33,20 @@ export function runtest({ matcher, onfail }) {
   };
 }
 
-export function log(msg) {
+function log(msg) {
   console.log('%c ## ', 'background: yellow;', msg);
 }
+
+module.exports = {
+  ok,
+  not,
+  is,
+  isabove,
+  deep_is,
+  matcher,
+  runtest,
+  log
+};
 
 function objectCompare(obj1, obj2) {
 	//Loop through properties in object 1

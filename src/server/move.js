@@ -1,11 +1,11 @@
-import { Chances } from './chance';
+var { Chances } = require('./chance');
 
-export const Move = {
+const Move = {
   apply: (move) => {
     switch (move.uci) {
     case "buy":
       return Buy(move.type);
-    case "nobuy":
+    case "nobuyland":
       return Nobuyland;
     case "roll":
       return Roll();
@@ -18,25 +18,25 @@ export const Move = {
   }
 };
 
-export function SelectCity(city) {
+function SelectCity(city) {
   return {
     uci: 'selectcity',
     city
   };
 }
 
-export function Buy(type) {
+function Buy(type) {
   return {
     uci: 'buy',
     type
   };
 }
 
-export const Nobuyland = {
+const Nobuyland = {
   uci: 'nobuyland'
 };
 
-export function Sell(cities) {
+function Sell(cities) {
   return {
     uci: 'sell',
     cities
@@ -50,40 +50,31 @@ const withRolls = function(arr) {
   };
 };
 
-const rollTest1 = withRolls([1, 2, 3, 12, 5, 12]);
-const rollTest2 = withRolls([1, 2, 3, 2]);
-const rollTest3 = withRolls([1, 4, 3, 12]);
-const rollTest4 = withRolls([1]);
-const rollTest5 = withRolls([1, 4, 1, 1, 2, 20, 1, 1]);
-const rollTest6 = withRolls([1, 10, 2, 1]);
-
-const rollTest7 = withRolls([1, 4, 9, 1, 1, 5, 18]);
-const rollTest8 = withRolls([1, 12, 1]);
-
-const rollTest9 = withRolls([4, 1, 1, 1, 2, 2]);
-
 // theme park
-const rollTest10 = withRolls([1,1,1,1,16]);
-const rollTest11 = withRolls([1,2,1,2,2,14,22]);
+const rollTest1 = withRolls([1,1,1,1,16]);
+const rollTest2 = withRolls([1,2,1,2,2,14,22]);
 
 // chance
-const rollTest12 = withRolls([1,2,1,1]);
+const rollTest3 = withRolls([1,2,1,1]);
 
-export function Roll() {
+// bankrupt
+const rollTest4 = withRolls([1]);
+
+function Roll() {
   return {
     uci: 'roll',
-    dice1: rollTest12(),
-    dice2: 0,
+    // dice1: rollTest4(),
+    // dice2: 0,
     // dice1: 1,
     // dice2: Math.ceil(Math.random() * 2),
-    // dice1: Math.ceil(Math.random() * 6),
-    // dice2: Math.ceil(Math.random() * 6),
-    // chance: Chances.random()
-    chance: Chances.byKey['reducetolls']
+    dice1: Math.ceil(Math.random() * 6),
+    dice2: Math.ceil(Math.random() * 6),
+    chance: Chances.random()
+    // chance: Chances.byKey['reducetolls']
   };
 };
 
-export function RollWith(dice1, dice2, chance) {
+function RollWith(dice1, dice2, chance) {
   return {
     uci: 'roll',
     dice1: dice1,
@@ -92,3 +83,12 @@ export function RollWith(dice1, dice2, chance) {
   };
 };
 
+module.exports = {
+  Move,
+  SelectCity,
+  Buy,
+  Nobuyland,
+  Sell,
+  Roll,
+  RollWith
+};

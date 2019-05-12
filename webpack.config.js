@@ -2,7 +2,8 @@ var path = require('path');
 const webpack = require('webpack');
 const HtmlWebpackPlugin = require('html-webpack-plugin');
 
-module.exports = {
+const devConfig = {
+  mode: 'development',
   entry: [
     path.resolve(__dirname, 'src') + '/boot.js'
   ],
@@ -13,10 +14,9 @@ module.exports = {
     disableHostCheck: true
   },
   output: {
-    path: path.resolve(__dirname, 'dist') + '/app',
     filename: 'bundle.js',
     libraryTarget: 'var',
-    library: 'City'
+    library: 'City',
   },
   target: 'web',
   devtool: 'source-map',
@@ -48,4 +48,23 @@ module.exports = {
     }),
     new webpack.HotModuleReplacementPlugin({})
   ]
+};
+
+const prodConfig = {
+  ...devConfig,
+//  mode: 'production',
+  output: {
+    path: path.resolve(__dirname, 'dist') + '/app',
+    filename: 'bundle.js',
+    libraryTarget: 'umd'
+  }
+};
+
+module.exports = (env) => {
+  switch (env) {
+  case 'production':
+    return [devConfig, prodConfig];
+  default:
+    return devConfig;
+  }
 };

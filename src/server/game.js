@@ -1,7 +1,8 @@
-import { Chances } from './chance';
-import { Cities, Tiles } from './state';
+var { Chances } = require('./chance');
+var { Cities, Tiles } = require('./state');
+var Status = require('./status');
 
-export function testGame() {
+function testGame() {
   return new Game({
     prompt: 'roll',
     turnColor: 'player1',
@@ -27,7 +28,7 @@ export function testGame() {
   });
 }
 
-export function makeGame() {
+function makeGame() {
   return new Game({
     prompt: 'roll',
     turnColor: 'player1',
@@ -44,27 +45,27 @@ export function makeGame() {
     },
     tolls: {},
     streaks: {},
-    status: 'created'
   });
 }
 
-export function Game({
-  prompt, turnColor, turns, players, tolls, streaks, status }) {
+function Game({
+  prompt, turnColor, turns, players, tolls, streaks, selectCities, needMoney }) {
   this.prompt = prompt;
   this.turnColor = turnColor;
   this.turns = turns;
   this.players = players;
   this.tolls = tolls;
   this.streaks = streaks;
-  this.status = status;
 
-  this.finished = () => this.status === 'end';
-  this.started = () => this.status === 'started';
+  this.selectCities = selectCities;
+  this.needMoney = needMoney;
 
-  this.start = () => {
-    if (this.started()) return;
-    
-    this.status = 'started';
+  this.status = () => {
+    if (this.winner) {
+      return Status.VariantEnd;
+    } else {
+      return Status.Started;
+    }
   };
 
   this.citiesOf = (name) => {
@@ -76,6 +77,8 @@ export function Game({
     }
     return cities;
   };
+
+  this.player = () => this.turnColor;
 
   this.playerAsset = (name) => {
     const player = this.players[name];
@@ -282,9 +285,10 @@ export function Game({
 
     if (player.cash < amount) {
       if (this.playerAsset(this.turnColor) < amount) {
+        owner.cash += player.cash;
+        player.cash = 0;
         this.events.push({ bankrupt: true });
         this.winner = this.turnColor==='player1'?'player2':'player1';
-        this.status = 'end';
         return this;
       } else {
         this.needMoney = Math.abs(player.cash - amount);
@@ -441,3 +445,10 @@ export function Game({
   };
 }
 
+Game.make = makeGame;
+
+module.exports = {
+  testGame,
+  makeGame,
+  Game
+};

@@ -1,4 +1,4 @@
-import { Tiles, nextColor } from './state';
+var { Tiles, nextColor } = require('./state');
 
 function moveCurrentTile(game, by) {
   const player = game.players[game.turnColor];
@@ -8,7 +8,7 @@ function moveCurrentTile(game, by) {
   return game;  
 }
 
-export const ragstoriches = {
+const ragstoriches = {
   key: 'ragstoriches',
   play(game) {
     const tmp = game.players['player1'].cash;
@@ -22,7 +22,7 @@ export const ragstoriches = {
   }
 };
 
-export const visitseoul = {
+const visitseoul = {
   key: 'visitseoul',
   play(game) {
     const currentTile = game.players[game.turnColor].currentTile;
@@ -32,21 +32,21 @@ export const visitseoul = {
   }
 };
 
-export const backward1 = {
+const backward1 = {
   key: 'backward1',
   play(game) {
     return moveCurrentTile(game, -1);
   }
 };
 
-export const forward2 = {
+const forward2 = {
   key: 'forward2',
   play(game) {
     return moveCurrentTile(game, 2);
   }
 };
 
-export const starcity = {
+const starcity = {
   key: 'starcity',
   play(game) {
     const cities = game.citiesOf(game.turnColor);
@@ -63,7 +63,7 @@ export const starcity = {
   }
 };
 
-export const reducetolls = {
+const reducetolls = {
   key: 'reducetolls',
   play(game) {
     const cities = game.citiesOf(nextColor(game.turnColor));
@@ -80,56 +80,56 @@ export const reducetolls = {
   }
 };
 
-export const halvetolls = {
+const halvetolls = {
   key: 'halvetolls',
   play(game) {
     return game.nextTurn();
   }
 };
 
-export const doubletolls = {
+const doubletolls = {
   key: 'doubletolls',
   play(game) {
     return game.nextTurn();
   }
 };
 
-export const triplesantorini = {
+const triplesantorini = {
   key: 'triplesantorini',
   play(game) {
     return game.nextTurn();
   }
 };
 
-export const attractinvestments = {
+const attractinvestments = {
   key: 'attractinvestments',
   play(game) {
     return game.nextTurn();
   }
 };
 
-export const taxoffice = {
+const taxoffice = {
   key: 'taxoffice',
   play(game) {
     return game.nextTurn();
   }
 };
 
-export const donate = {
+const donate = {
   key: 'donate',
   play(game) {
     return game.nextTurn();
   }
 };
 
-export const downgrade = {
+const downgrade = {
   key: 'downgrade',
   play(game) {
     return game.nextTurn();
   }
 };
 
-export const Chances = {
+const Chances = {
   all: [
     ragstoriches,
     visitseoul,
@@ -137,7 +137,7 @@ export const Chances = {
     forward2,
     starcity,
     reducetolls,
-    halvetolls,
+    // halvetolls,
     doubletolls,
     triplesantorini,
     attractinvestments,
@@ -151,3 +151,21 @@ Chances.byKey = Chances.all.reduce((map, chance) => { map[chance.key] = chance;
                                                       return map; }, {});
 
 Chances.random = () => Chances.all[Math.floor(Math.random() * Chances.all.length)];
+
+
+module.exports = {
+  moveCurrentTile,
+  ragstoriches,
+  visitseoul,
+  backward1,
+  forward2,
+  starcity,
+  reducetolls,
+  doubletolls,
+  triplesantorini,
+  attractinvestments,
+  taxoffice,
+  donate,
+  downgrade,
+  Chances
+};
